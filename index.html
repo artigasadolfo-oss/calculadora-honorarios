@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
 <html lang="es">
-<head> FAVICON: Sustituye REEMPLAZA_POR_NOMBRE_DEL_REPO por el nombre exacto del repo en GitHub Pages <link href="/REEMPLAZA_POR_NOMBRE_DEL_REPO/favicon.ico?v11" rel="icon" type="image/x-icon"/><link href="/REEMPLAZA_POR_NOMBRE_DEL_REPO/favicon.png?v11" rel="icon" sizes="32x32" type="image/png"/><link href="/REEMPLAZA_POR_NOMBRE_DEL_REPO/apple-touch-icon.png?v11" rel="apple-touch-icon"/><link href="favicon.ico?v11" rel="shortcut icon" type="image/x-icon"/><link href="favicon.png?v11" rel="icon" type="image/png"/><link href="apple-touch-icon.png?v11" rel="apple-touch-icon"/><meta content="#1f2937" name="theme-color"/>
-<meta content="light dark" name="color-scheme"/>
-<meta charset="utf-8"/>
+<head>
+<link href="favicon.ico" rel="icon" type="image/x-icon"/><link href="favicon.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><meta content="light dark" name="color-scheme"/>
+<meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>CALCULADORA HONORARIOS</title>
 <style>
@@ -204,42 +204,26 @@
   #col-izq { row-gap: 10px; }
 }
 </style>
-<style id="ajustes-20250924">
-/* Ajustes — columna izquierda y responsividad */
+</meta><style id="ajustes-20250924">
+/* Layout ajustes */
 #col-izq .top-row{
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  align-items: end;
+  display:grid; grid-template-columns:1fr auto; gap:12px; align-items:end;
 }
 #cuantia{ max-width:160px; }
 
-/* Botonera de procesos a lo ancho (5 → 3 → 2 → 1) */
+/* Botonera procesos */
 #grupoBtns.btn-group{
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0,1fr));
-  gap: 8px;
+  display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px;
 }
-@media (max-width: 1100px){
-  #grupoBtns.btn-group{ grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 700px){
-  #grupoBtns.btn-group{ grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 420px){
-  #grupoBtns.btn-group{ grid-template-columns: 1fr; }
-}
+@media (max-width:1100px){ #grupoBtns.btn-group{ grid-template-columns:repeat(3,1fr);} }
+@media (max-width:700px){ #grupoBtns.btn-group{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:420px){ #grupoBtns.btn-group{ grid-template-columns:1fr;} }
 
-/* Etiquetas arriba en estrecho (solo fila superior) */
-@media (max-width: 980px){
-  #col-izq .top-row .field{
-    display:flex; flex-wrap:wrap; align-items:flex-start; gap:4px 8px;
-  }
-  #col-izq .top-row .field label{
-    order:-1; flex:0 0 100%; margin-bottom:2px;
-  }
-  #col-izq .top-row .field input,
-  #col-izq .top-row .field select{ flex:1 1 100%; width:100%; min-width:0; }
+/* Etiquetas arriba en estrecho (fila superior) */
+@media (max-width:980px){
+  #col-izq .top-row .field{ display:flex; flex-wrap:wrap; align-items:flex-start; gap:4px 8px; }
+  #col-izq .top-row .field label{ order:-1; flex:0 0 100%; margin-bottom:2px; }
+  #col-izq .top-row .field input, #col-izq .top-row .field select{ flex:1 1 100%; width:100%; min-width:0; }
 }
 </style></head>
 <body>
@@ -1419,5 +1403,52 @@ s(q('dg2_titulo'), showFin); s(q('finalizacionButtons'),showFin);
   }
 }
 </style>
-</body>
+<script id="eu-number-support">
+(function(){
+  if (!window._origParseFloat){
+    window._origParseFloat = window.parseFloat;
+    window.parseFloat = function(x){
+      try{
+        if (typeof x === 'string'){
+          var s = x.trim().replace(/\s+/g,'');
+          if (/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){
+            s = s.replace(/\./g,'').replace(',', '.');
+          } else if (/^\d+,\d+$/.test(s)){
+            s = s.replace(',', '.');
+          }
+          return window._origParseFloat(s);
+        }
+        return window._origParseFloat(x);
+      }catch(e){ return NaN; }
+    };
+  }
+  var ids=['cuantia','gastosExtras','rentaMensual','cantAsimiladas','cuantiaAdeudada'];
+  function relax(el){
+    if(!el) return;
+    if (el.tagName==='INPUT'){
+      if ((el.type||'').toLowerCase()==='number'){ try{ el.type='text'; }catch(e){} }
+      el.setAttribute('inputmode','decimal');
+      el.setAttribute('pattern','[0-9.,]*');
+    }
+  }
+  ids.forEach(function(id){ relax(document.getElementById(id)); });
+  var mo=new MutationObserver(function(ms){
+    ms.forEach(function(m){
+      m.addedNodes && m.addedNodes.forEach(function(n){
+        if(n.nodeType===1){
+          if(n.matches && n.matches('input.rec-cuantia')) relax(n);
+          var list=n.querySelectorAll? n.querySelectorAll('input.rec-cuantia'):[];
+          list.forEach(relax);
+        }
+      });
+    });
+  });
+  try{ mo.observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
+  function fmt(num){ if(!isFinite(num)) return ''; try{ return num.toLocaleString('es-ES',{minimumFractionDigits:2, maximumFractionDigits:2}); }catch(e){ return (Math.round(num*100)/100)+''; } }
+  function norm(v){ var s=(v||'').toString().trim().replace(/\s+/g,''); if(/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){ s=s.replace(/\./g,'').replace(',', '.'); } else if(/^\d+,\d+$/.test(s)){ s=s.replace(',', '.'); } return s; }
+  function onBlur(ev){ var el=ev.target; if(!(el&&el.tagName==='INPUT'))return; if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return; var n=window._origParseFloat(norm(el.value)); if(isFinite(n)){ el.value=fmt(n); el.dataset.num=''+n; var e1=new Event('input',{bubbles:true}); el.dispatchEvent(e1); var e2=new Event('change',{bubbles:true}); el.dispatchEvent(e2);} }
+  function onInput(ev){ var el=ev.target; if(!(el&&el.tagName==='INPUT'))return; if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return; el.dataset.num=norm(el.value); }
+  document.addEventListener('blur', onBlur, true);
+  document.addEventListener('input', onInput, true);
+})();</script></body>
 </html>
