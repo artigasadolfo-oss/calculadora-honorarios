@@ -2,8 +2,8 @@
 
 <html lang="es">
 <head>
-<meta content="light dark" name="color-scheme"/>
-<meta charset="utf-8">
+<link href="favicon.ico" rel="icon" type="image/x-icon"/><link href="favicon.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><meta content="light dark" name="color-scheme"/>
+<meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>CALCULADORA HONORARIOS</title>
 <style>
@@ -204,73 +204,47 @@
   #col-izq { row-gap: 10px; }
 }
 </style>
-</meta><style id="ajustes-20250924">
-:root{ --input-compact:160px; }
-
-/* Fila superior: Tipo de procedimiento + Cuantía */
-#col-izq .top-row{
-  display:grid; grid-template-columns:1fr auto; gap:12px; align-items:end;
-}
-#cuantia{ max-width: var(--input-compact); }
-
-/* Botonera procesos a lo ancho */
-#grupoBtns.btn-group{
-  display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px;
-}
+<style id="ajustes-20250924">
+#col-izq .top-row{ display:grid; grid-template-columns:1fr auto; gap:12px; align-items:end; }
+#cuantia{ max-width:260px; }
+#grupoBtns.btn-group{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
 @media (max-width:1100px){ #grupoBtns.btn-group{ grid-template-columns:repeat(3,1fr);} }
 @media (max-width:700px){ #grupoBtns.btn-group{ grid-template-columns:repeat(2,1fr);} }
 @media (max-width:420px){ #grupoBtns.btn-group{ grid-template-columns:1fr;} }
-
-/* Desplegable "Cálculo cuantía": inputs compactos e inline con texto a la derecha */
+@media (max-width:980px){
+  #col-izq .top-row .field{ display:flex; flex-wrap:wrap; align-items:flex-start; gap:4px 8px; }
+  #col-izq .top-row .field label{ order:-1; flex:0 0 100%; margin-bottom:2px; }
+  #col-izq .top-row .field input, #col-izq .top-row .field select{ flex:1 1 100%; width:100%; min-width:0; }
+}
+</style><style id="calc-cuantia-mobile-fix">
 #calcCuantiaBox{ max-width:100%; }
-#calcCuantiaBox .field{
-  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+#calcCuantiaBox .field{ display:flex; flex-wrap:wrap; align-items:flex-start; gap:6px 8px; }
+#calcCuantiaBox .field label{ order:-1; flex:0 0 100%; margin-bottom:2px; white-space:normal; overflow-wrap:anywhere; }
+#calcCuantiaBox .field input, #calcCuantiaBox .field select, #calcCuantiaBox .field textarea{ flex:1 1 100%; width:100%; min-width:0; }
+@media (max-width:768px){ #calcCuantiaBox [style*="grid-template-columns"]{ grid-template-columns:1fr !important; } #calcCuantiaBox{ padding-right:0; } }
+</style><style id="toprow-macos-fix">
+#col-izq .top-row{
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 260px; /* selector >= cuantía */
+  gap: 12px;
+  align-items: end;
+  width: 100%;
 }
-#calcCuantiaBox .field input:not([type="checkbox"]):not([type="radio"]),
-#calcCuantiaBox .field select,
-#calcCuantiaBox .field textarea{
-  width: var(--input-compact) !important;
-  flex: 0 0 var(--input-compact) !important;
-  min-width: 0;
+#col-izq .top-row .field{ width: 100%; }
+#col-izq .top-row .field label[for="subtipo"],
+#col-izq .top-row .field label[for="cuantia"]{ font-weight: 800; }
+
+/* quitar resaltado */
+select#subtipo, input#cuantia{
+  border: 1px solid var(--border-300, #cbd5e1);
+  box-shadow: none;
+  outline: none;
+  border-radius: 6px;
 }
-#calcCuantiaBox .field label{
-  order:0; flex:1 1 auto; margin:0; white-space:normal; line-height:1.25; overflow-wrap:anywhere; word-break:break-word;
-}
-@media (max-width: 768px){
-  #calcCuantiaBox [style*="grid-template-columns"]{ grid-template-columns: 1fr !important; }
-}
-</style><style id="safari-macos-fix">
-/* Safari macOS (aprox.) en pantallas grandes: el label debe ocupar la franja entre su input y el siguiente */
-@media (min-width: 1200px) and (hover:hover) and (pointer:fine){
-  #calcCuantiaBox .field{ min-width: 0; }
-  #calcCuantiaBox .field label{
-    flex: 1 1 calc(100% - var(--input-compact));
-    max-width: calc(100% - var(--input-compact));
-    white-space: normal;
-    overflow-wrap:anywhere;
-    word-break: break-word;
-  }
-}
-</style><style id="safari-ios-fix">
-/* Heurística para Safari iOS */
-@supports (-webkit-touch-callout: none){
-  /* Inputs compactos como #cuantia */
-  #gastosExtras,
-  input.rec-cuantia{
-    width: var(--input-compact) !important;
-    flex: 0 0 var(--input-compact) !important;
-    min-width: 0;
-  }
-  /* "Tipo de procedimiento": texto por encima del selector en iOS (vertical y apaisado) */
-  #col-izq .top-row .field label[for="subtipo"]{
-    order: -1 !important;
-    flex: 0 0 100% !important;
-    margin: 0 0 4px 0 !important;
-  }
-  #col-izq .top-row .field select#subtipo{
-    flex: 0 0 auto;
-  }
-}
+
+@media (max-width:1100px){ #col-izq .top-row{ grid-template-columns: 1fr; } }
+#subtipo{ width: 100%; min-width: 260px; }
+#cuantia{ width: 260px !important; max-width: 260px !important; }
 </style></head>
 <body>
 <header>
@@ -1457,7 +1431,7 @@ s(q('dg2_titulo'), showFin); s(q('finalizacionButtons'),showFin);
       try{
         if (typeof x === 'string'){
           var s = x.trim().replace(/\s+/g,'');
-          if (/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){ s=s.replace(/\./g,'').replace(',', '.'); }
+          if (/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){ s = s.replace(/\./g,'').replace(',', '.'); }
           else if(/^\d+,\d+$/.test(s)){ s=s.replace(',', '.'); }
           return window._origParseFloat(s);
         }
@@ -1466,63 +1440,13 @@ s(q('dg2_titulo'), showFin); s(q('finalizacionButtons'),showFin);
     };
   }
   var ids=['cuantia','gastosExtras','rentaMensual','cantAsimiladas','cuantiaAdeudada'];
-  function relax(el){
-    if(!el) return;
-    if (el.tagName==='INPUT'){
-      if ((el.type||'').toLowerCase()==='number'){ try{ el.type='text'; }catch(e){} }
-      el.setAttribute('inputmode','decimal');
-      el.setAttribute('pattern','[0-9.,]*');
-    }
-  }
+  function relax(el){ if(!el) return; if(el.tagName==='INPUT'){ if((el.type||'').toLowerCase()==='number'){ try{ el.type='text'; }catch(e){} } el.setAttribute('inputmode','decimal'); el.setAttribute('pattern','[0-9.,]*'); } }
   ids.forEach(function(id){ relax(document.getElementById(id)); });
-  var mo=new MutationObserver(function(ms){
-    ms.forEach(function(m){
-      m.addedNodes && m.addedNodes.forEach(function(n){
-        if(n.nodeType===1){
-          if(n.matches && n.matches('input.rec-cuantia')) relax(n);
-          var list=n.querySelectorAll? n.querySelectorAll('input.rec-cuantia'):[];
-          list.forEach(relax);
-        }
-      });
-    });
-  });
+  var mo=new MutationObserver(function(ms){ ms.forEach(function(m){ m.addedNodes && m.addedNodes.forEach(function(n){ if(n.nodeType===1){ if(n.matches && n.matches('input.rec-cuantia')) relax(n); var list=n.querySelectorAll? n.querySelectorAll('input.rec-cuantia'):[]; list.forEach(relax);} }); });});
   try{ mo.observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
-
-  function fmtES(num){
-    if (!isFinite(num)) return '';
-    try{ return num.toLocaleString('es-ES',{minimumFractionDigits:2, maximumFractionDigits:2}); }
-    catch(e){ return (Math.round(num*100)/100)+''; }
-  }
-  function normalizeForCalc(v){
-    var s=(v||'').toString().trim().replace(/\s+/g,'');
-    if(/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){ s=s.replace(/\./g,'').replace(',', '.'); }
-    else if(/^\d+,\d+$/.test(s)){ s=s.replace(',', '.'); }
-    return s;
-  }
-  function onBlur(ev){
-    var el=ev.target;
-    if(!(el&&el.tagName==='INPUT'))return;
-    if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return;
-    var original=(el.value||'').toString().trim();
-    var n=window._origParseFloat(normalizeForCalc(original));
-    if(isFinite(n)){
-      if (/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(original.replace(/\s+/g,''))){
-        el.value = original;
-      } else {
-        el.value = fmtES(n);
-      }
-      el.dataset.num=''+n;
-      el.dispatchEvent(new Event('input',{bubbles:true}));
-      el.dispatchEvent(new Event('change',{bubbles:true}));
-    }
-  }
-  function onInput(ev){
-    var el=ev.target;
-    if(!(el&&el.tagName==='INPUT'))return;
-    if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return;
-    el.dataset.num = normalizeForCalc(el.value);
-  }
-  document.addEventListener('blur', onBlur, true);
-  document.addEventListener('input', onInput, true);
+  function fmtES(num){ if(!isFinite(num)) return ''; try{ return num.toLocaleString('es-ES',{minimumFractionDigits:2, maximumFractionDigits:2}); }catch(e){ return (Math.round(num*100)/100)+''; } }
+  function norm(v){ var s=(v||'').toString().trim().replace(/\s+/g,''); if(/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){ s=s.replace(/\./g,'').replace(',', '.'); } else if(/^\d+,\d+$/.test(s)){ s=s.replace(',', '.'); } return s; }
+  document.addEventListener('blur', function(ev){ var el=ev.target; if(!(el&&el.tagName==='INPUT'))return; if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return; var original=(el.value||'').toString().trim(); var n=window._origParseFloat(norm(original)); if(isFinite(n)){ if(/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(original.replace(/\s+/g,''))){ el.value=original; } else { el.value=fmtES(n); } el.dataset.num=''+n; el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true})); } }, true);
+  document.addEventListener('input', function(ev){ var el=ev.target; if(!(el&&el.tagName==='INPUT'))return; if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return; el.dataset.num=norm(el.value); }, true);
 })();</script></body>
 </html>
