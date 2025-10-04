@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<link href="favicon.ico" rel="icon" type="image/x-icon"/><link href="favicon.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><meta content="light dark" name="color-scheme"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>CALCULADORA HONORARIOS</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --card:#ffffff; --ink:#0b1a33; --muted:#6b7280;
+    --brand:#0f5bd7; --brand-600:#0b49ac; --ok:#16a34a; --warn:#ef4444; --info:#2563eb;
+    --border:#e5e7eb; --shadow:0 10px 25px rgba(0,0,0,.06);
+    --fs:14px; --fs-title:24px; --radius:14px; --maxw:1400px;
+    --amber:#F59E0B; --amber-700:#B45309; --amber-600:#D97706;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:var(--fs)}
+  header{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--border)}
+  .header-inner{max-width: calc(var(--maxw) * 1.05);margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:12px}
+  .brand{font-weight:900;font-size:var(--fs-title)}
+  .spacer{flex:1}
+  .btn{background:var(--brand);color:#fff;border:1px solid var(--brand-600);padding:9px 12px;border-radius:12px;font-weight:800;cursor:pointer;font-size:13px}
+  .btn.warn{background:var(--warn);border-color:#b91c1c}
+  .btn.ok{background:var(--ok);border-color:#15803d}
+  .wrap{max-width: calc(var(--maxw) * 1.05);margin:20px auto;padding:0 16px}
+  .mainCols{display:grid;grid-template-columns:55% 45%;gap:16px}
+  @media (max-width:700px){.mainCols{grid-template-columns:1fr !important}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+  .sep{height:1px;background:var(--border);margin:10px 0}
+  .btn-group{display:flex;gap:8px;flex-wrap:wrap}
+  .btn-switch{display:inline-flex;align-items:center;gap:6px;padding:9px 11px;border:1px solid var(--amber-600);background:var(--amber);color:#fff;border-radius:12px;cursor:pointer;user-select:none;font-size:13px;font-weight:800}
+  .btn-switch[data-grupo].active{background:var(--amber-600);border-color:var(--amber-700);outline:2px solid rgba(245,158,11,.28);box-shadow:0 0 0 2px rgba(0,0,0,.04) inset}
+  .inline-buttons{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .inline-buttons.nowrap{flex-wrap:nowrap;white-space:nowrap}
+  .note{color:var(--muted);font-size:12px}
+  .kvs{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+  .kvs .v{font-weight:700;text-align:right}
+  .warn-text{color:#b91c1c;font-weight:800}
+  .ok-text{color:#065f46;font-weight:800}
+  .info-text{color:#2563eb;font-weight:800}
+  .field{display:flex; align-items:center; gap:8px; margin:0 0 10px}
+  .field > input[type="number"], .field > select{
+    flex:0 0 18%; width:18%; min-width:100px; padding:6px 8px; border:1px solid var(--border);
+    border-radius:10px; background:#fff; color:#000; font-size:12px
+  }
+  #cuantia{width:30% !important; flex-basis:30% !important; min-width:130px}
+  #subtipo{min-width:320px; width:320px}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);padding:8px 12px;border-radius:999px;cursor:pointer;background:#fff;margin:0 6px 6px 0;font-size:13px;font-weight:600}
+  .chip.active{background:#f0f7ff;border-color:#bfdbfe}
+  .chip.green{background:#16a34a;color:#fff;border-color:#15803d}
+  .mini{font-size:12px;color:var(--muted)}
+  .resultado-final{font-size:22px;font-weight:900;color:#0b1a33}
+  .strong-frame{border:2px solid var(--ink)}
+  /* Inputs estrechos 20% */
+  #plurVencedores, #plurContrarios, #numClientes,
+  #numSalidasMedio, #numSalidasDia, #gastosExtras,
+  #sesAP, #sesVista, #recRev, #recRepo, #recQueja,
+  .rec-cuantia { width:20% !important; flex-basis:20% !important; min-width:90px }
+  /* Sesiones aún más compactas 14% */
+  .field > input#sesAP, .field > input#sesVista{
+    width:14% !important; flex:0 0 14% !important; flex-basis:14% !important; min-width:72px !important;
+  }
+  /* IPC row */
+  .ipc-row{display:grid;grid-template-columns:auto auto 1fr;gap:12px;align-items:center}
+  .ipc-var input#ipcManual{width:65px !important; margin-left:6px; padding:6px 8px; border:1px solid var(--border); border-radius:10px}
+  .ipc-total{display:flex;gap:8px;align-items:center;justify-content:flex-end;text-align:right;justify-self:end;margin-left:auto}
+  .ipc-total strong{font-weight:800}
+  /* móvil */
+  @media (max-width:700px){
+    .field > input[type="number"], .field > select{
+      width:100% !important; flex:0 0 100% !important; min-width:0 !important;
+    }
+    #subtipo{ min-width:0 !important; width:100% !important; }
+    #cuantia{ width:100% !important; flex-basis:100% !important; }
+    .ipc-row{ grid-template-columns:1fr; gap:10px; }
+    .ipc-total{ justify-content:flex-start; }
+    .btn-group .btn-switch{ flex:1 1 auto; }
+    .inline-buttons.nowrap{ white-space:normal; }
+  }
+</style>
+<style id="auto-dark-mode">
+@media (prefers-color-scheme: dark) {
+  :root{
+    --bg:#0b1220;
+    --card:#0f172a;
+    --ink:#e5e7eb;
+    --muted:#94a3b8;
+    --border:#1f2937;
+    --shadow:0 10px 25px rgba(0,0,0,.35);
+    /* Mantengo tu identidad de color usando tonos adecuados en dark */
+    --brand:#3b82f6;
+    --brand-600:#2563eb;
+    --ok:#22c55e;
+    --warn:#ef4444;
+    --info:#60a5fa;
+  
+  /* Inputs y selects en modo oscuro */
+  input, select, textarea {
+    background-color: var(--card) !important;
+    color: var(--ink) !important;
+    border-color: var(--border) !important;
+  
+  /* Botones de fases y opciones (chips) en oscuro */
+  .chip,
+  .chip.green {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--border) !important;
+  }
+  .chip:hover,
+  .chip:focus {
+    background: #0b1220 !important;
+  }
+
+  /* Botón "Ver norma completa" a oscuro (sin verde) */
+  #btnCriterioTexto.btn,
+  #btnCriterioTexto.btn.ok {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--border) !important;
+  }
+  #btnCriterioTexto.btn:hover {
+    background: #0b1220 !important;
+  }
+
+  /* Cuadro con el texto completo de la norma */
+  #criterioTexto {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--border) !important;
+  }
+
+}
+  input[type="number"] {
+    background-color: var(--card) !important;
+    color: var(--ink) !important;
+    border-color: var(--border) !important;
+    -moz-appearance: textfield;
+  }
+  /* Ocultar flechas de number en WebKit y darles contraste si se muestran */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    filter: invert(0.85);
+  }
+  /* Select con flecha personalizada en oscuro */
+  select {
+    background-color: var(--card) !important;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="%2394a3b8" d="M10.59.59 6 5.17 1.41.59 0 2l6 6 6-6z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right .6rem center;
+    background-size: 12px 8px;
+    padding-right: 2rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  /* Placeholder */
+  ::placeholder{ color: var(--muted); opacity: .7; }
+  /* Autofill WebKit */
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: var(--ink) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--card) inset !important;
+            box-shadow: 0 0 0px 1000px var(--card) inset !important;
+    transition: background-color 9999s ease-in-out 0s !important;
+  }
+
+}
+  header, .wrap, .card, .panel { background: var(--card); color: var(--ink); }
+  .k { color: var(--muted); }
+  .v { color: var(--ink); }
+  input, select, textarea { background:#0b1220; color:var(--ink); border-color:var(--border); }
+  .btn { border-color: var(--brand-600); }
+  /* Bordes y separadores */
+  .kvs, .section, .box, .fieldset, .table-row { border-color: var(--border) !important; }
+}
+</style>
+<style id="col-izq-responsive">
+/* Ajustes responsive exclusivos de la columna izquierda (sin tocar la derecha) */
+@media (max-width: 1200px) {
+  /* Evitar desbordes y garantizar que todo quede dentro del marco */
+  #col-izq, #col-izq * { min-width: 0; }
+  #col-izq .card, 
+  #col-izq .sep, 
+  #col-izq .field, 
+  #col-izq .kvs, 
+  #col-izq .btn-group, 
+  #col-izq .chip { max-width: 100%; }
+
+  /* Cualquier grid interno de la IZQUIERDA pasa a 1 columna para no expandirse hacia la derecha */
+  #col-izq [style*="grid-template-columns"] { 
+    grid-template-columns: 1fr !important; 
+  }
+  #col-izq .kvs { grid-template-columns: 1fr !important; }
+}
+
+/* Pequeñas pantallas: compactar aún más sin tocar la derecha */
+@media (max-width: 900px) {
+  #col-izq { row-gap: 10px; }
+}
+</style>
+<style id="ajustes-20250924">
+#col-izq .top-row{ display:grid; grid-template-columns:1fr auto; gap:12px; align-items:end; }
+#cuantia{ max-width:260px; }
+#grupoBtns.btn-group{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+@media (max-width:1100px){ #grupoBtns.btn-group{ grid-template-columns:repeat(3,1fr);} }
+@media (max-width:700px){ #grupoBtns.btn-group{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:420px){ #grupoBtns.btn-group{ grid-template-columns:1fr;} }
+@media (max-width:980px){
+  #col-izq .top-row .field{ display:flex; flex-wrap:wrap; align-items:flex-start; gap:4px 8px; }
+  #col-izq .top-row .field label{ order:-1; flex:0 0 100%; margin-bottom:2px; }
+  #col-izq .top-row .field input, #col-izq .top-row .field select{ flex:1 1 100%; width:100%; min-width:0; }
+}
+</style><style id="calc-cuantia-mobile-fix">
+#calcCuantiaBox{ max-width:100%; }
+#calcCuantiaBox .field{ display:flex; flex-wrap:wrap; align-items:flex-start; gap:6px 8px; }
+#calcCuantiaBox .field label{ order:-1; flex:0 0 100%; margin-bottom:2px; white-space:normal; overflow-wrap:anywhere; }
+#calcCuantiaBox .field input, #calcCuantiaBox .field select, #calcCuantiaBox .field textarea{ flex:1 1 100%; width:100%; min-width:0; }
+@media (max-width:768px){ #calcCuantiaBox [style*="grid-template-columns"]{ grid-template-columns:1fr !important; } #calcCuantiaBox{ padding-right:0; } }
+</style><style id="toprow-macos-fix">
+/* Escritorio: selector >= cuantía en una sola línea */
+#col-izq .top-row{
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 260px;
+  gap: 12px;
+  align-items: end;
+  width: 100%;
+}
+#col-izq .top-row .field{ width: 100%; }
+#col-izq .top-row .field label[for="subtipo"],
+#col-izq .top-row .field label[for="cuantia"]{ font-weight: 800; }
+
+/* Inputs sin resaltado */
+select#subtipo, input#cuantia{
+  border: 1px solid var(--border-300, #cbd5e1);
+  box-shadow: none;
+  outline: none;
+  border-radius: 6px;
+}
+
+/* Móvil/estrecho: mantenerlos EN LA MISMA LÍNEA; labels ya se ven encima por las reglas existentes */
+@media (max-width: 1100px){
+  #col-izq .top-row{
+    grid-template-columns: 1fr clamp(160px, 45vw, 260px) !important; /* fuerza 2 columnas */
+  }
+  #subtipo{ width: 100%; min-width: clamp(160px, 45vw, 260px) !important; }
+  #cuantia{ width: clamp(160px, 45vw, 260px) !important; max-width: none !important; }
+}
+
+/* Garantías escritorio */
+#subtipo{ width: 100%; min-width: 260px; }
+#cuantia{ width: 260px !important; max-width: 260px !important; }
+</style></head>
+<body>
+<header>
+<div class="header-inner">
+<div class="brand">CALCULADORA HONORARIOS</div>
+<div class="spacer"></div>
+<button class="btn warn" id="btnLimpiar" type="button">Limpiar</button>
+</div>
+</header>
+<main class="wrap">
+<div class="mainCols">
+<!-- IZQUIERDA -->
+<section class="card" id="col-izq">
+<div class="btn-group" id="grupoBtns">
+<button class="btn-switch active" data-grupo="monitorio" type="button">Monitorios</button>
+<button class="btn-switch" data-grupo="declarativos" type="button">Declarativos</button>
+<button class="btn-switch" data-grupo="desahucios" type="button">Desahucios</button>
+<button class="btn-switch" data-grupo="ejecuciones" type="button">Ejecuciones</button>
+<button class="btn-switch" data-grupo="recursos" type="button">Recursos</button>
+</div>
+<div class="sep"></div>
+<div class="top-row" style="display:grid;grid-template-columns:1fr 1fr; gap:12px; align-items:center">
+<div class="field">
+<select id="subtipo"></select>
+<label for="subtipo">Tipo de procedimiento</label>
+</div>
+<div class="field">
+<input autocomplete="off" id="cuantia" min="0" placeholder="0,00" step="0.01" type="number"/>
+<label for="cuantia">Cuantía (€)</label>
+</div>
+<div class="inline-buttons" id="slotCalcCuantia" style="grid-column:1/-1; justify-content:flex-start; display:none">
+<button class="chip green" id="calcCuantiaBtn" type="button">Cálculo cuantía</button>
+<button class="chip" data-flag="desOpo" id="chipDesOpo" type="button">Oposición (+25%)</button>
+<button class="chip" data-flag="reclRentas" id="reclRentasChip" type="button">Reclamación rentas (+25%)</button>
+<button class="chip" data-flag="enervacion" id="enervacionBtn" type="button">Enervación (75%)</button>
+</div>
+</div>
+<div id="camposExtra" style="margin-top:6px"></div>
+<div class="sep"></div>
+<div class="btn" style="pointer-events:none">Disposiciones generales</div>
+<div class="card" id="dispBox" style="padding:12px; margin-top:8px; display:block">
+<!-- 1. Fases -->
+<div id="dg1_titulo" style="font-weight:700;margin-bottom:6px">1. Distribución por fases</div>
+<div class="note" id="fasesNote"></div>
+<div class="inline-buttons" id="chipsFases"></div>
+<div class="sep"></div>
+<!-- 2. Sesiones adicionales -->
+<div id="dgSes_titulo" style="font-weight:700;margin-bottom:6px; display:none">2. Sesiones adicionales</div>
+<div id="dgSes_contenido" style="display:none"></div>
+<div class="sep" id="sepSes" style="display:none"></div>
+<!-- 3. Finalización -->
+<div id="dg2_titulo" style="font-weight:700;margin-bottom:6px">3. Finalización anticipada del procedimiento</div>
+<div class="inline-buttons" id="finalizacionButtons">
+<button class="chip" data-end="allanamiento" id="btnAllan" type="button">Allanamiento</button>
+<span class="inline-buttons" id="allanRoles" style="display:none">
+<button class="chip" data-role="actor" type="button">Demandante/Actor (70%)</button>
+<button class="chip" data-role="allanado" type="button">Allanado (50%)</button>
+</span>
+<button class="chip" data-end="renuncia" type="button">Renuncia/Desistimiento (60%)</button>
+<button class="chip" data-end="transaccion" type="button">Transacción (+25%)</button>
+</div>
+<!-- 1. Pluralidad -->
+<div id="dg3_titulo" style="font-weight:700;margin-bottom:6px">1. Pluralidad de partes</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr; gap:12px">
+<div class="field">
+<input id="plurVencedores" min="1" placeholder="1" step="1" type="number"/>
+<label for="plurVencedores">Nº letrados vencedores</label>
+</div>
+<div class="field">
+<input id="plurContrarios" min="1" placeholder="1" step="1" type="number"/>
+<label for="plurContrarios">Nº letrados contrarios</label>
+</div>
+<div class="field">
+<input id="numClientes" min="1" placeholder="1" step="1" type="number"/>
+<label for="numClientes">Nº clientes Jura de cuentas</label>
+</div>
+</div>
+<div class="sep"></div>
+<!-- 2. Gastos -->
+<div id="dispGastos">
+<div id="dg4_titulo" style="font-weight:700;margin-bottom:6px">2. Gastos</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr; gap:12px">
+<div class="field">
+<input id="numSalidasMedio" min="0" placeholder="0" step="1" type="number"/>
+<label for="numSalidasMedio">Nº salidas 1/2 día (150 €)</label>
+</div>
+<div class="field">
+<input id="numSalidasDia" min="0" placeholder="0" step="1" type="number"/>
+<label for="numSalidasDia">Nº salidas día completo (250 €)</label>
+</div>
+<div class="field">
+<input id="gastosExtras" min="0" placeholder="0,00" step="0.01" type="number"/>
+<label for="gastosExtras">Otros gastos</label>
+</div>
+</div>
+<div class="sep"></div>
+</div>
+<!-- 3. Otros -->
+<div id="dispOtros">
+<div id="dg5_titulo" style="font-weight:700;margin-bottom:6px">3. Otros</div>
+<div class="inline-buttons" id="otrosButtons">
+<button class="chip" data-flag="noMaterializa" id="noMaterializaBtn" type="button">Asuntos que no se materializan (-50%)</button>
+<button class="chip" data-flag="legEspecial" id="legEspecialBtn" style="display:none" type="button">Legislación especial (+50%)</button>
+</div>
+</div>
+<!-- 4. Recursos -->
+<div class="sep"></div>
+<div id="dg6_titulo" style="font-weight:700;margin-bottom:6px">4. Recursos</div>
+<div id="recursosBlock" style="display:block; margin-top:6px">
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; align-items:center; margin-bottom:8px">
+<div class="field">
+<input id="recRev" min="0" placeholder="0" step="1" type="number"/>
+<label for="recRev">Nº Revisión (300 €)</label>
+</div>
+<div class="field">
+<input id="recRepo" min="0" placeholder="0" step="1" type="number"/>
+<label for="recRepo">Nº Reposición (300 €)</label>
+</div>
+<div class="field">
+<input id="recQueja" min="0" placeholder="0" step="1" type="number"/>
+<label for="recQueja">Nº Queja (300 €)</label>
+</div>
+</div>
+<div class="inline-buttons">
+<button class="chip" id="addCuantiaRecurso" type="button">Con cuantía (15% escala)</button>
+</div>
+<div id="recursosCuantiasList" style="margin-top:8px"></div>
+</div>
+</div>
+</section>
+<!-- DERECHA -->
+<section id="col-der" style="display:flex;flex-direction:column;gap:12px">
+<!-- Criterio ICALI -->
+<div class="card">
+<div style="font-weight:800;margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; gap:8px">
+<span>Criterio ICALI aplicable</span>
+<button class="btn ok" id="btnCriterioTexto" type="button">Ver norma completa</button>
+</div>
+<div class="note" id="criterioHead">—</div>
+<div id="criterioTexto" style="display:none; margin-top:10px; padding:10px; border:1px solid var(--border); border-radius:10px;  white-space:pre-wrap; font-size:0.92embackground:var(--card); color:var(--ink); border:1px solid var(--border); display:none; margin-top:10px; padding:10px; border:1px solid var(--border); border-radius:10px; background:#fafafa; white-space:pre-wrap; font-size:0.92em"></div>
+</div>
+<!-- Verificaciones -->
+<div class="card" id="verificacionesCard">
+<div style="font-weight:800;margin-bottom:6px">Verificaciones</div>
+<div class="kvs"><div class="k">Preceptividad</div><div class="v" id="vhPrecLine">—</div></div>
+<div class="kvs"><div class="k" id="vhLimiteLabel">—</div><div class="v" id="vhLimite">—</div></div>
+<div class="kvs" id="rowAdecuacion" style="display:none"><div class="k">Adecuación tipo juicio</div><div class="v" id="vhAdecuacion">—</div></div>
+</div>
+<!-- Cálculo -->
+<div class="card">
+<div style="font-weight:800;margin-bottom:6px">Cálculo de honorarios criterios ICALI</div>
+<div class="kvs mini"><div class="k">Acumulado hasta</div><div class="v" id="vhEscalaPrev">—</div></div>
+<div class="kvs mini"><div class="k">Resto</div><div class="v" id="vhEscalaMarg">—</div></div>
+<div class="kvs"><div class="k">Resultado por escala (100%)</div><div class="v" id="vhEscala">—</div></div>
+<div class="kvs"><div class="k">Honorarios por norma</div><div class="v" id="vhNorma">—</div></div>
+<div class="kvs" id="minAppliedLine" style="display:none"><div class="k">Criterio mínimo aplicado</div><div class="v info-text" id="vhMinAplicado">—</div></div>
+<div class="kvs" id="lineEnervNorma" style="display:none"><div class="k">Enervación (75%)</div><div class="v" id="vhEnervNorma">—</div></div>
+<!-- Apelación -->
+<div class="kvs" id="lineApelVista" style="display:none"><div class="k">Vista apelación (+10%)</div><div class="v" id="vhApelVista">—</div></div>
+<div class="kvs" id="lineApelPrueba" style="display:none"><div class="k">Prueba apelación (+10%)</div><div class="v" id="vhApelPrueba">—</div></div>
+<!-- Declarativos -->
+<div class="kvs" id="lineDeriva" style="display:none"><div class="k">Deriva oposición monitorio (+10%)</div><div class="v" id="vhDeriva">—</div></div>
+<div class="kvs" id="lineReconv" style="display:none"><div class="k">Reconvención (indet.)</div><div class="v" id="vhReconv">—</div></div>
+<div class="kvs" id="legOnLine" style="display:none"><div class="k">Legislación especial (+50%)</div><div class="v" id="vhLegSobreNorma">—</div></div>
+<div class="kvs" id="noMatOnLine" style="display:none"><div class="k">Asuntos que no se materializan (−50%)</div><div class="v" id="vhNoMatSobreNorma">—</div></div>
+<div id="otrosBloque" style="display:none; margin-top:6px">
+<div class="sep"></div>
+<div style="font-weight:800;margin-bottom:6px">Otros</div>
+<div class="kvs" id="lineFases" style="display:none"><div class="k">Subtotal por fases</div><div class="v" id="vhTrasFase">—</div></div>
+<div class="kvs" id="lineSes" style="display:none"><div class="k">Sesiones adicionales</div><div class="v" id="vhSesiones">—</div></div>
+<div class="kvs" id="lineFA" style="display:none"><div class="k">Finalización anticipada</div><div class="v" id="vhAjustesFA">—</div></div>
+<div class="kvs" id="linePlur" style="display:none"><div class="k">Pluralidad de partes</div><div class="v" id="vhAjustesPlur">—</div></div>
+<div class="kvs" id="lineRecursos" style="display:none"><div class="k">Recursos</div><div class="v" id="vhRecursos">—</div></div>
+<div class="kvs" id="lineGastos" style="display:none"><div class="k">Gastos</div><div class="v" id="vhGastos">—</div></div>
+<div class="kvs" id="lineMedCaut" style="display:none"><div class="k">Medida cautelar (indet.)</div><div class="v" id="vhMedCaut">—</div></div>
+</div>
+<div class="sep" id="sepAntesTotal"></div>
+<div class="kvs"><div class="k"><strong>TOTAL BAREMO</strong></div><div class="v" id="vhTotalBaremo">—</div></div>
+</div>
+<!-- IPC -->
+<div class="card">
+<div style="font-weight:800;margin-bottom:6px">Actualización IPC (INE)</div>
+<div class="ipc-row">
+<label class="ipc-aplicar" style="margin:0"><input checked="" id="aplicarIPC" type="checkbox"/> <span>Aplicar IPC</span></label>
+<div class="ipc-var"><label class="note" for="ipcManual" style="margin:0">Variación (%)</label><input id="ipcManual" placeholder="25,30" step="0.01" type="number" value="25,30"/></div>
+<div class="ipc-total"><span>Resultado aplicado al Total baremo</span><strong id="vhTotalIPC">—</strong></div>
+</div>
+</div>
+<!-- Totales -->
+<div class="card strong-frame">
+<div style="font-weight:800;margin-bottom:6px">Honorarios finales</div>
+<div class="kvs"><div class="k">IVA (21%)</div><div class="v" id="vhIVA">—</div></div>
+<div class="kvs"><div class="k"><strong>TOTAL CON IVA</strong></div><div class="v resultado-final" id="vhTotalIVA">—</div></div>
+</div>
+</section>
+</div>
+</main>
+<script>
+(function(){
+  var criterioOpen=false;
+  function q(id){ return document.getElementById(id); }
+  function eur(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(isFinite(n)?n:0); }
+
+  var ESCALA=[
+    {to:300,rate:42},{to:600,rate:36},{to:1200,rate:30},{to:3000,rate:22},{to:4000,rate:20},
+    {to:6000,rate:18},{to:12000,rate:17},{to:18000,rate:16},{to:24000,rate:15},{to:30000,rate:14},
+    {to:36000,rate:13},{to:40000,rate:12},{to:50000,rate:9},{to:60000,rate:8},{to:80000,rate:7.4},
+    {to:100000,rate:7.25},{to:120000,rate:7.10},{to:300000,rate:6.5},{to:600000,rate:5},{to:1200000,rate:4},
+    {to:3000000,rate:3},{to:Infinity,rate:2}
+  ];
+  function computeEscalaBreakdown(c){
+    if(!isFinite(c)||c<=0) return {total:0, prev:0, marginal:0, tramoBase:0, tramoPct:0, prevTop:0};
+    var done=0,total=0,prevTotal=0,marginal=0,tramoBase=0,tramoPct=0,prevTop=0;
+    for(var i=0;i<ESCALA.length;i++){
+      var t=ESCALA[i];
+      var seg=Math.min(c,t.to);
+      var base=Math.max(0,seg-done);
+      if(base>0){
+        var add=base*(t.rate/100);
+        if(seg>=c){ prevTotal=total; marginal=add; tramoBase=base; tramoPct=t.rate; prevTop=done; }
+        total+=add;
+      }
+      done=t.to; if(c<=seg) break;
+    }
+    return {total:total, prev:prevTotal, marginal:marginal, tramoBase:tramoBase, tramoPct:tramoPct, prevTop:prevTop};
+  }
+
+  var SUBTIPOS={
+    monitorio:[
+      {value:'monitorio_lph',text:'Monitorio (Propiedad Horizontal)'},
+      {value:'monitorio_sin',text:'Monitorio (sin oposición)'},
+      {value:'monitorio_con',text:'Monitorio (con oposición)'}
+    ],
+    declarativos:[
+      {value:'verbal',text:'Juicio verbal (cuantía)'},
+      {value:'ordinario',text:'Juicio ordinario (cuantía)'}
+    ],
+    desahucios:[
+      {value:'ar_fp',text:'Desahucio: falta de pago o fin de plazo'},
+      {value:'ar_precario',text:'Desahucio por precario'}
+    ],
+    ejecuciones:[
+      {value:'ejecucion',text:'Ejecución dineraria (título judicial)'}
+    ],
+    recursos:[
+      {value:'recurso_apelacion',text:'Recurso de apelación'},
+      {value:'recurso_apelacion_parcial',text:'Recurso de apelación (impugnación parcial)'}
+    ]
+  };
+
+  var NORMAS={
+    monitorio_lph:{numero:'Art. 47',extracto:'Monitorio (PH): 50% Escala (mín. 150 €) y ejecución Art. 27. Preceptivo (art. 21 LPH).'},
+    monitorio_sin:{numero:'Art. 47',extracto:'Monitorio sin oposición: 50% Escala (mín. 150 €).'},
+    monitorio_con:{numero:'Art. 48',extracto:'Monitorio con oposición: 10% Escala (mín. 150 €). Declarativo aparte.'},
+    verbal:{numero:'Art. 13',extracto:'Verbal: Escala íntegra; mín. 500 €. Sesión extra: 150 €.'},
+    ordinario:{numero:'Art. 15',extracto:'Ordinario: Escala íntegra; mín. 2.000 €. Sesión AP/juicio extra: 150 €.'},
+    ar_fp:{numero:'Art. 18',extracto:'Desahucio: 75% sin oposición / 100% con oposición. Mín. 500 € (600 € con reclamación de rentas).'},
+    ar_precario:{numero:'Art. 14',extracto:'Precario: 40% de la Escala; mín. 800 €.'},
+    ejecucion:{numero:'Art. 27',extracto:'Pre-apremio 20%, Oposición 20%, Embargos 10%, Subasta 10%.'},
+    recurso_apelacion:{numero:'Art. 50',extracto:'Base 50% de la cuantía (mín. 150 €). Vista +10% y Prueba +10% (mín. 150 €).'},
+    recurso_apelacion_parcial:{numero:'Art. 50',extracto:'Base 50% de la escala (mín. 300 €). Vista +10% y Prueba +10% (mín. 150 €).'}
+  };
+
+  // Textos completos por artículo/procedimiento
+  var CRITERIO_TEXTOS = {
+    verbal: `Artículo 13.- Juicio verbal por razón de la cuantía.
+Por toda la tramitación de Juicio Verbal en primera instancia, incidencias y
+recursos aparte, se devengará la Escala en su integridad.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 500 €
+Por cada sesión más de la vista del Juicio Verbal que se celebre se devengará la
+cantidad de .................................................................................................................................... 150 €
+En el supuesto de que la Sentencia condene al pago de cantidad inferior a la
+solicitada en la demanda, la base cuantitativa para el cálculo de Honorarios en la
+tasación de costas frente al demandado condenado al pago será la señalada en
+Sentencia.
+En el Juicio Verbal de cuantía no determinada, indeterminable, o inestimable, se
+establece como criterio la cantidad de ............................................................................... 500 €
+Si se formula reconvención, la base para el cálculo de Honorarios vendrá
+determinada por la suma de las pretensiones de la demanda y de la reconvención.
+Si cualquiera de ellas fuese indeterminada, se establece como criterio por cada
+una de las indeterminadas..............................................................................................500 €`,
+    ordinario: `Artículo 15.- Juicio ordinario por razón de la cuantía.
+A) Por toda la tramitación del Juicio Ordinario en primera instancia –incidencias
+y recursos aparte– se devengará la Escala en su integridad.
+Se establece como criterio, si el resultado es inferior, la cantidad ........................... 2.000 €
+Por cada sesión más de la audiencia previa o del juicio que se practique, se
+devengará la suma de ......................................................................................................150 €
+B) En el supuesto de que la Sentencia condene al pago de cantidad inferior a la
+solicitada en la demanda, la base cuantitativa para el cálculo de Honorarios en la
+tasación de costas frente al demandado condenado al pago será la señalada en
+Sentencia.
+C) En el Juicio Ordinario de cuantía no determinada, indeterminable, o inestimable
+se establece como criterio la cantidad de ...................................................................... 2.000 €
+D) Si se formulase reconvención, la base de cálculo de Honorarios vendrá
+determinada por la suma de las pretensiones de la demanda y reconvención.
+Si cualquiera de ellas fuese indeterminada, se establece como criterio por cada
+una de las indeterminadas ...................................................................................................... 2.000 €`,
+    ar_fp: `Artículo 18.- DESAHUCIO POR FALTA DE PAGO O FINALIZACIÓN DE PLAZO.
+En los Juicios de desahucio por falta de pago o por finalización de plazo, se
+devengará:
+A) Sin Oposición el 75% de la Escala.
+B) Con Oposición el 100% de la Escala.
+La cuantía vendrá determinada por el importe de una anualidad de renta,
+cantidades asimiladas a la misma, gastos e I.V.A. correspondiente si procediere.
+Si cuando se dicte sentencia o se realice el pago o el desistimiento con anterioridad
+a ella, las rentas adeudadas, cantidades asimiladas, gastos e I.V.A., fueren
+superiores a una anualidad, se tomará como base el importe total adeudado.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 500 €
+Si por cualquier causa se hubiere tramitado el procedimiento por el cauce del juicio
+ordinario, el criterio, si el resultado es inferior, será el de .................................... 2.000 €
+En los supuestos de enervación se devengará el 75% de los Honorarios
+establecidos en el apartado A).
+
+Artículo 19.- DESAHUCIO POR FALTA DE PAGO O FINALIZACION DE PLAZO
+CON RECLAMACIÓN DE RENTAS.
+Si se acumularen las acciones de desahucio por falta de pago o finalización de plazo
+con reclamación de rentas, los Honorarios resultantes de aplicar el artículo
+anterior se incrementarán en un 25%.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 600 €`,
+    ar_precario: `Artículo 14.- Juicio verbal por razón de la materia.
+1. En el Juicio Verbal sobre recuperación de la plena posesión de una finca
+rústica o urbana, cedida en precario, se devengará el 40% de la Escala,
+tomando como base de cálculo de Honorarios la cuantía del proceso determinada
+conforme a las reglas de la L.E.C.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 800 €`,
+    monitorio_sin: `Artículo 47.- PROCESO MONITORIO SIN OPOSICIÓN.
+Por la petición inicial hasta el Auto despachando ejecución, se devengará el
+50% de la Escala, tomando como base para el cálculo de Honorarios la cantidad
+por la que se le requiera de pago al deudor.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €
+Los Honorarios del proceso de ejecución subsiguiente, se regularán por el artículo
+correspondiente a la Ejecución Dineraria de Títulos Judiciales.`,
+    monitorio_con: `Artículo 48.- PROCESO MONITORIO CON OPOSICIÓN.
+1. Si se formulase oposición, se devengará por el monitorio el 10% de la Escala, y
+por el juicio declarativo lo que resulte de aplicación de sus normas.
+Si es Letrado distinto, el que hubiere formulado la petición inicial, en el caso de
+que por cuantía correspondiera juicio verbal, devengará el 60% de la Escala. Y si
+por la cuantía correspondiera juicio ordinario, devengará el 30% de la Escala.
+2. Si por la cuantía correspondiese la tramitación de juicio ordinario, y la parte
+actora no interpone demanda en plazo, el Abogado del demandado opositor en el
+procedimiento monitorio devengará el 30% de la Escala por la oposición al mismo.
+3. En todos los casos se tomará como base de cálculo la cantidad objeto de
+requerimiento de pago.
+Se establece como criterio, si el resultado es inferior, la cantidad de ...................... 150 €
+4. Los Honorarios del proceso de ejecución subsiguiente se regularán por el
+artículo correspondiente a la Ejecución Dineraria de Títulos Judiciales.`,
+    monitorio_lph: `Artículo 47.- PROCESO MONITORIO SIN OPOSICIÓN.
+Por la petición inicial hasta el Auto despachando ejecución, se devengará el
+50% de la Escala, tomando como base para el cálculo de Honorarios la cantidad
+por la que se le requiera de pago al deudor.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €
+Los Honorarios del proceso de ejecución subsiguiente, se regularán por el artículo
+correspondiente a la Ejecución Dineraria de Títulos Judiciales.`,
+    ejecucion: `Artículo 27.- EJECUCIÓN DINERARIA DE TÍTULOS JUDICIALES.
+Se regularán por este artículo los Honorarios Profesionales devengados por la
+intervención profesional en Procesos de Ejecución amparados en los títulos
+judiciales descritos en los n° 1°, 2° y 3°, y cualquier otra resolución judicial que
+tenga cabida en el n° 9° del apartado 2 del Art. 517.
+Servirá de base de cálculo de Honorarios la cantidad que resulte de sumar todos los
+conceptos por los que se haya despachado ejecución, o por la que se pida la
+ejecución, con el límite del 30% a que se refiere el artículo 575 de la L.E.C.,
+cuando el ejecutado pague antes de haberse dictado el Auto despachando
+ejecución. Si con posterioridad se dictase resolución determinando una cantidad
+inferior por principal, bien por estimar la oposición por cualquier motivo, bien por otra causa, esta cantidad menor será la que deba tomarse como base cuantitativa
+de cálculo, reduciéndose los demás conceptos por lo que se hubiese despachado
+ejecución en la misma proporción. Si como consecuencia de la oposición se
+determinase no haber lugar al procedimiento de ejecución, se tomará como cuantía
+la suma de las cantidades por la que se pretendía iniciar el proceso de ejecución.
+1. En los procesos de ejecución de Sentencias de condena, de resoluciones
+arbitrales firmes, de resoluciones judiciales que aprueben u homologuen
+transacciones judiciales y acuerdos y de resoluciones judiciales y otros
+documentos que tengan aparejada ejecución se devengará por la intervención
+profesional en las diligencias de ejecución que se practiquen hasta el inicio del
+procedimiento de apremio el 20 % de la Escala.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €
+2. Además de lo establecido en el apartado precedente, en el incidente de
+oposición de los procesos anteriores se devengará el 20% de la Escala, tomando
+como base la cuantía discutida con intereses y costas, de conformidad con lo
+dispuesto en el párrafo segundo del presente artículo.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 300 €
+3. En el procedimiento de apremio se devengará:
+a) Por las diligencias practicadas desde inicio de procedimiento de apremio
+hasta la petición de la realización de bienes embargados incluida (Subasta,
+Convenio de realización o Realización a través de personas especializadas) se
+devengará el 10% de la Escala
+b) Por la intervención profesional en las restantes diligencias del procedimiento de
+apremio (Celebración de Subasta incluida) se devengará el 10% de la Escala
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €`,
+    recurso_apelacion: `Artículo 50.- RECURSO DE APELACIÓN.
+1.- Por la tramitación del recurso de apelación se devengará el 50% de los
+Honorarios correspondientes a la primera instancia.
+2.- Si se celebra Vista en la Audiencia Provincial se devengará otro 10% de los
+Honorarios correspondientes a la primera instancia.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €
+Por cada sesión más se devengarán .................................................................................... 150 €
+3.- Si se practica prueba en esta segunda instancia se devengará otro 10% de los
+Honorarios correspondientes a la primera instancia, incluida la vista de la prueba
+si se celebra.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €
+Por cada sesión más se devengrán 150 €
+4.- Si el recurso se limita a la impugnación parcial de la Sentencia de la primera
+instancia, la base de cálculo de Honorarios de la apelación será la que haya sido
+objeto de la alzada.
+En todo caso, se establece como criterio, si el resultado es inferior, la cantidad de ........
+300 €
+Se establece como criterio, para las apelaciones de los juicios verbales especiales, si
+el resultado es inferior, la cantidad de .................................................................................... 500 €
+Se establece como criterio, para las apelaciones de los juicios ordinarios, si el
+resultado es inferior, la cantidad de ...................................................................................... 1.000 €`,
+    recurso_apelacion_parcial: `Artículo 50.- RECURSO DE APELACIÓN.
+1.- Por la tramitación del recurso de apelación se devengará el 50% de los
+Honorarios correspondientes a la primera instancia.
+2.- Si se celebra Vista en la Audiencia Provincial se devengará otro 10% de los
+Honorarios correspondientes a la primera instancia.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €
+Por cada sesión más se devengarán .................................................................................... 150 €
+3.- Si se practica prueba en esta segunda instancia se devengará otro 10% de los
+Honorarios correspondientes a la primera instancia, incluida la vista de la prueba
+si se celebra.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 150 €
+Por cada sesión más se devengrán 150 €
+4.- Si el recurso se limita a la impugnación parcial de la Sentencia de la primera
+instancia, la base de cálculo de Honorarios de la apelación será la que haya sido
+objeto de la alzada.
+En todo caso, se establece como criterio, si el resultado es inferior, la cantidad de ........
+300 €
+Se establece como criterio, para las apelaciones de los juicios verbales especiales, si
+el resultado es inferior, la cantidad de .................................................................................... 500 €
+Se establece como criterio, para las apelaciones de los juicios ordinarios, si el
+resultado es inferior, la cantidad de ...................................................................................... 1.000 €`
+  };
+
+  var PROC={
+    ordinario:{minimo:2000,normaPct:1},
+    verbal:{minimo:500,normaPct:1},
+    monitorio_lph:{minimo:150,normaPct:0.50},
+    monitorio_sin:{minimo:150,normaPct:0.50},
+    monitorio_con:{minimo:150,normaPct:0.10},
+    ar_fp:{minimo:500,normaPct:null},
+    ar_precario:{minimo:800,normaPct:0.40},
+    ejecucion:{minimo:0,normaPct:0},
+    recurso_apelacion:{minimo:150,normaPct:null},
+    recurso_apelacion_parcial:{minimo:300,normaPct:0.50}
+  };
+
+  function pintarSubtipos(grupo){
+    var sel=q('subtipo'); if(!sel) return;
+    sel.innerHTML='';
+    var list=SUBTIPOS[grupo]||[];
+    list.forEach(function(o,i){
+      var opt=document.createElement('option'); opt.value=o.value; opt.textContent=o.text; if(i===0) opt.selected=true; sel.appendChild(opt);
+    });
+    sel.dispatchEvent(new Event('change'));
+  }
+
+  function toggleOtrosBotonesForSubtipo(st){
+    var btn=q('legEspecialBtn');
+    if(btn){ btn.style.display = (st==='verbal' || st==='ordinario') ? 'inline-flex' : 'none'; }
+  }
+
+  function renderSesionesFor(st){
+    var tit=q('dgSes_titulo'), cont=q('dgSes_contenido'), sep=q('sepSes');
+    if(!tit||!cont||!sep) return;
+    cont.innerHTML=''; cont.style.display='none'; tit.style.display='none'; sep.style.display='none';
+    if(st==='verbal' || st==='ar_fp' || st==='ar_precario'){
+      tit.style.display='block'; cont.style.display='block'; sep.style.display='block';
+      var div=document.createElement('div'); div.className='field';
+      div.innerHTML='<input id="sesVista" type="number" min="0" step="1" placeholder="0" style="width:14%;flex:0 0 14%;min-width:72px"/><label for="sesVista">Sesión adicional de vista (+150 €)</label>';
+      cont.appendChild(div);
+    } else if(st==='ordinario'){
+      tit.style.display='block'; cont.style.display='grid'; sep.style.display='block';
+      cont.style.gridTemplateColumns='1fr 1fr'; cont.style.gap='12px';
+      var d1=document.createElement('div'); d1.className='field';
+      d1.innerHTML='<input id="sesAP" type="number" min="0" step="1" placeholder="0" style="width:14%;flex:0 0 14%;min-width:72px"/><label for="sesAP">Sesión adicional audiencia previa (+150 €)</label>';
+      var d2=document.createElement('div'); d2.className='field';
+      d2.innerHTML='<input id="sesVista" type="number" min="0" step="1" placeholder="0" style="width:14%;flex:0 0 14%;min-width:72px"/><label for="sesVista">Sesión adicional de vista (+150 €)</label>';
+      cont.appendChild(d1); cont.appendChild(d2);
+    }
+  }
+
+  function fasesLayoutFor(st){
+    var disp=q('dispBox'); if(!disp) return;
+    var showFases = (st==='verbal' || st==='ordinario' || st==='ar_fp' || st==='ar_precario');
+    var showFin   = !(st==='ejecucion' || st.indexOf('recurso_')===0 || st.indexOf('monitorio')===0);
+    function s(el, on){ if(el) el.style.display = on? (el.classList.contains('sep')?'block': (el.classList.contains('inline-buttons')?'flex':'block')) : 'none'; }
+    s(q('dg1_titulo'), showFases); s(q('chipsFases'),showFases); s(q('fasesNote'),showFases);
+    
+    // FIX: ocultar el separador inmediatamente posterior al bloque de fases cuando no se muestran
+    (function(){
+      try{
+        var chips = q('chipsFases');
+        if (chips) {
+          var sepAfter = chips.nextElementSibling;
+          if (sepAfter && sepAfter.classList && sepAfter.classList.contains('sep')) {
+            sepAfter.style.display = showFases ? 'block' : 'none';
+          }
+        }
+      }catch(e){}
+    })();
+s(q('dg2_titulo'), showFin); s(q('finalizacionButtons'),showFin);
+    var sepPre=q('sepPrePlur'); if(sepPre) sepPre.style.display = (showFin && st!=='ejecucion' && st.indexOf('monitorio')!==0)?'block':'none';
+
+    var num=1; function setH(id,t){ var e=q(id); if(e) e.textContent=(num++)+'. '+t; }
+    if(showFases) setH('dg1_titulo','Distribución por fases');
+    if(q('dgSes_titulo') && q('dgSes_titulo').style.display==='block') setH('dgSes_titulo','Sesiones adicionales');
+    if(showFin) setH('dg2_titulo','Finalización anticipada del procedimiento');
+    setH('dg3_titulo','Pluralidad de partes'); setH('dg4_titulo','Gastos'); setH('dg5_titulo','Otros'); setH('dg6_titulo','Recursos');
+
+    var box=q('chipsFases'); if(!box) return; box.innerHTML='';
+    function addChip(key,text){ var b=document.createElement('button'); b.type='button'; b.className='chip'; b.setAttribute('data-key',key); b.textContent=text; box.appendChild(b); }
+    if(!showFases) return;
+    if(st==='ordinario'){ addChip('aleg','Alegaciones (60%)'); addChip('ap','Audiencia previa (10%)'); addChip('vista','Vista oral (30%)'); }
+    else if(st==='verbal' || st==='ar_fp' || st==='ar_precario'){ addChip('aleg','Alegaciones (60%)'); addChip('vista','Vista oral (40%)'); }
+  }
+
+  function pintarCamposExtra(st){
+    var box=q('camposExtra'); if(!box) return; box.innerHTML='';
+    var slot=q('slotCalcCuantia'); if(slot) slot.style.display = (st==='ar_fp') ? 'flex' : 'none';
+    toggleOtrosBotonesForSubtipo(st);
+    renderSesionesFor(st);
+
+    if(st==='verbal' || st==='ordinario'){
+      var wrap=document.createElement('div');
+      wrap.innerHTML = '<div class="inline-buttons">        <button type="button" id="chipDerivaMonit" class="chip" data-flag="derivaMonit">Deriva oposición monitorio (+10%)</button>        <button type="button" id="reconvBtn_inline" class="chip" data-flag="reconvBtn">Reconvención (indet.)</button>        <button type="button" id="medCautelarBtn_inline" class="chip" data-flag="medCautelar">Medida cautelar (indet.)</button>      </div>';
+      box.appendChild(wrap);
+    }
+
+    if(st==='ar_fp'){
+      var d=document.createElement('div');
+      d.innerHTML = '<div id="calcCuantiaBox" style="display:none; margin-top:8px">        <div style="display:grid;grid-template-columns:1fr 1fr; gap:12px">          <div class="field"><input type="number" id="rentaMensual" min="0" step="0.01" placeholder="0,00"/><label for="rentaMensual">Renta mensual (€)</label></div>          <div class="field"><input type="number" id="cantAsimiladas" min="0" step="0.01" placeholder="0,00"/><label for="cantAsimiladas">Cantidades asimiladas (€)</label></div>        </div>        <div style="display:grid;grid-template-columns:1fr 1fr; gap:12px">          <div class="field"><input type="number" id="sumaAnual" min="0" step="0.01" placeholder="0,00" disabled/><label for="sumaAnual">Suma anteriores (12×renta + asimiladas)</label></div>          <div class="field"><input type="number" id="cuantiaAdeudada" min="0" step="0.01" placeholder="0,00"/><label for="cuantiaAdeudada">Cantidad total debida (€)</label></div>        </div>      </div>';
+      box.appendChild(d);
+    }
+
+    if(st==='ejecucion'){
+      var ej=document.createElement('div');
+      ej.innerHTML = '<div class="inline-buttons nowrap">        <button type="button" id="chipEjPre" class="chip" data-flag="ejPre">Pre-apremio (20%)</button>        <button type="button" id="chipEjOpo" class="chip" data-flag="ejOpo">Oposición (20%)</button>        <button type="button" id="chipEjEmb" class="chip" data-flag="ejEmb">Embargos (10%)</button>        <button type="button" id="chipEjSub" class="chip" data-flag="ejSub">Subasta (10%)</button>      </div>';
+      box.appendChild(ej);
+    }
+  }
+
+  function fasePct(st,fases){
+    if(st==='ordinario'){ var t=0; if(fases.aleg) t+=.60; if(fases.ap) t+=.10; if(fases.vista) t+=.30; return t||1; }
+    if(st==='verbal' || st==='ar_fp' || st==='ar_precario'){ var t2=0; if(fases.aleg) t2+=.60; if(fases.vista) t2+=.40; return t2||1; }
+    return 1;
+  }
+
+  function limiteUnTercio(cuantia,inestimable){ var base=inestimable?24000:cuantia; return (base||0)/3; }
+
+  function checkPreceptividad(ctx){
+    if(ctx.subtipo==='monitorio_lph') return {preceptiva:true,texto:'Intervención preceptiva'};
+    if(ctx.subtipo==='monitorio_sin' || ctx.subtipo==='monitorio_con'){ return (ctx.cuantia>2000) ? {preceptiva:true,texto:'Intervención preceptiva'} : {preceptiva:false,texto:'No procede tasación'}; }
+    if((ctx.subtipo==='verbal' || ctx.subtipo==='ordinario' || ctx.subtipo==='ejecucion' || ctx.subtipo==='ar_fp' || ctx.subtipo==='ar_precario') && ctx.cuantia<=2000){
+      return {preceptiva:false,texto:'No procede tasación'};
+    }
+    return {preceptiva:true,texto:'Intervención preceptiva'};
+  }
+
+  function aplicarPluralidades(total){
+    var res=total, det=[];
+    var v = Math.max(1, parseInt((q('plurVencedores')&&q('plurVencedores').value)||'1',10));
+    if(v>1){ var inc=Math.min(0.20*(v-1),0.80); res = res*(1+inc)/v; det.push('Pluralidad vencedores +'+Math.round(inc*100)+'% → /'+v); }
+    var c = Math.max(1, parseInt((q('plurContrarios')&&q('plurContrarios').value)||'1',10));
+    if(c>1){ var incC=Math.min(0.10*(c-1),0.40); res = res*(1+incC); det.push('Pluralidad contrarios +'+Math.round(incC*100)+'%'); }
+    var n = Math.max(1, parseInt((q('numClientes')&&q('numClientes').value)||'1',10)||1);
+    if(n>1){ var incJ=0.20*(n-1); res=res*(1+incJ)/n; det.push('Jura múltiples +'+Math.round(incJ*100)+'% → /'+n); }
+    return {total:res,detalle:det};
+  }
+
+  function leer(){
+    var st=(q('subtipo')&&q('subtipo').value)||'monitorio_lph';
+    var cuantiaInput=parseFloat((q('cuantia')&&q('cuantia').value)||'0')||0;
+    var fases={}; var chips=(q('chipsFases')||document.createElement('div')).querySelectorAll('.chip.active');
+    for(var i=0;i<chips.length;i++){ fases[chips[i].getAttribute('data-key')] = true; }
+
+    var allanBtn=q('btnAllan'); var allanActive=!!(allanBtn && allanBtn.classList.contains('active'));
+    var allanRol=null; var roles=(document.querySelectorAll('#allanRoles .chip.active')||[]); if(roles.length){ allanRol=roles[0].getAttribute('data-role'); }
+
+    function has(id){ var el=document.getElementById(id); return !!(el && el.classList && el.classList.contains('active')); }
+    var desOposicion=has('chipDesOpo'), reclRentas=has('reclRentasChip'), enerv=has('enervacionBtn');
+    var apelVista=has('chipApelVista'), apelPrueba=has('chipApelPrueba');
+    var ejPre=has('chipEjPre'), ejOpo=has('chipEjOpo'), ejEmb=has('chipEjEmb'), ejSub=has('chipEjSub');
+    var derivaMonit=has('chipDerivaMonit'), reconvBtn=has('reconvBtn_inline'), medCaut=has('medCautelarBtn_inline');
+
+    var numSalidasMedio=parseInt((q('numSalidasMedio')&&q('numSalidasMedio').value)||'0',10)||0;
+    var numSalidasDia=parseInt((q('numSalidasDia')&&q('numSalidasDia').value)||'0',10)||0;
+    var gastosExtras=parseFloat((q('gastosExtras')&&q('gastosExtras').value)||'0')||0;
+    var numClientes=parseInt((q('numClientes')&&q('numClientes').value)||'1',10)||1;
+    var plurVencedores=parseInt((q('plurVencedores')&&q('plurVencedores').value)||'1',10)||1;
+    var plurContrarios=parseInt((q('plurContrarios')&&q('plurContrarios').value)||'1',10)||1;
+
+    var rentaMensual=parseFloat((q('rentaMensual')&&q('rentaMensual').value)||'0')||0;
+    var cantAsimiladas=parseFloat((q('cantAsimiladas')&&q('cantAsimiladas').value)||'0')||0;
+    var sumaAnual=(rentaMensual||0)*12 + (cantAsimiladas||0);
+    var cuantiaAdeudada=parseFloat((q('cuantiaAdeudada')&&q('cuantiaAdeudada').value)||'0')||0;
+
+    var sesVista=parseInt((q('sesVista')&&q('sesVista').value)||'0',10)||0;
+    var sesAP=parseInt((q('sesAP')&&q('sesAP').value)||'0',10)||0;
+
+    var aplicarIPC = !!(q('aplicarIPC') && q('aplicarIPC').checked);
+    var ipcManualRaw = (q('ipcManual')&&q('ipcManual').value)||'';
+    var ipcManual = parseFloat((ipcManualRaw+'').replace(',','.'));
+
+    var cuantia=cuantiaInput;
+    if(st==='ar_fp'){
+      var candidatos=[];
+      if(isFinite(sumaAnual) && sumaAnual>0) candidatos.push(sumaAnual);
+      if(isFinite(cuantiaAdeudada) && cuantiaAdeudada>0) candidatos.push(cuantiaAdeudada);
+      if(candidatos.length){ cuantia=Math.max.apply(null,candidatos); if(q('cuantia')) q('cuantia').value=cuantia.toFixed(2); }
+      if(q('sumaAnual')) q('sumaAnual').value = isFinite(sumaAnual)? sumaAnual.toFixed(2):'';
+    }
+
+    return {subtipo:st,cuantia:cuantia,cuantiaInput:cuantiaInput,fases:fases,allanActive:allanActive,allanRol:allanRol,desOposicion:desOposicion,reclRentas:reclRentas,enerv:enerv,ejPre:ejPre,ejOpo:ejOpo,ejEmb:ejEmb,ejSub:ejSub,
+            derivaMonit:derivaMonit,reconvBtn:reconvBtn,medCaut:medCaut,apelVista:apelVista,apelPrueba:apelPrueba,numSalidasMedio:numSalidasMedio,numSalidasDia:numSalidasDia,gastosExtras:gastosExtras,numClientes:numClientes,plurVencedores:plurVencedores,plurContrarios:plurContrarios,
+            rentaMensual:rentaMensual,cantAsimiladas:cantAsimiladas,sumaAnual:sumaAnual,cuantiaAdeudada:cuantiaAdeudada,aplicarIPC:aplicarIPC,ipcManual:ipcManual,sesVista:sesVista,sesAP:sesAP,
+            recRepo: parseInt((q('recRepo')&&q('recRepo').value)||'0',10)||0,
+            recRev: parseInt((q('recRev')&&q('recRev').value)||'0',10)||0,
+            recQueja: parseInt((q('recQueja')&&q('recQueja').value)||'0',10)||0,
+            recCuantias: (function(){ var arr=[]; var nodes=document.querySelectorAll('.rec-cuantia'); for(var i=0;i<nodes.length;i++){ var v=parseFloat(nodes[i].value)||0; if(v>0) arr.push(v); } return arr; })()
+            };
+  }
+
+  function calcular(){
+    var ctx=leer();
+    var hayOtros=false;
+
+    var norma=NORMAS[ctx.subtipo]; var numero=(norma&&norma.numero)||'—'; var extracto=(norma&&norma.extracto)||'';
+    var ch=q('criterioHead');
+    if(ch){
+      if(/^Art\.?\s*\d+/i.test(numero)){
+        var artTxt=numero.replace(/^Art\.?\s*/i,'Artículo ');
+        ch.innerHTML='<strong>'+artTxt+'</strong>'+(extracto ? ' — '+extracto : '');
+      }else{
+        ch.textContent=extracto ? (numero+' — '+extracto) : numero;
+      }
+    }
+
+    var esc=computeEscalaBreakdown(ctx.cuantia);
+    var restoInicio=(esc.prevTop||0) + (esc.tramoBase>0 ? 0.01 : 0);
+    q('vhEscalaPrev').textContent = eur(esc.prevTop||0)+' = '+eur(esc.prev);
+    q('vhEscalaMarg').textContent = esc.tramoPct>0 ? ( eur(esc.tramoBase) + ' al ' + esc.tramoPct.toFixed(2) + '% = ' + eur(esc.marginal) ) : '—';
+    q('vhEscala').textContent = eur(esc.total);
+
+    var cfg=PROC[ctx.subtipo]||{minimo:0,normaPct:1};
+    var normaPct=cfg.normaPct, minimo=cfg.minimo||0, etiquetaNorma='—';
+    if(ctx.subtipo==='ar_fp'){
+      var basePct=0.75; var etiquetas=[];
+      if(ctx.desOposicion){ basePct+=0.25; etiquetas.push('con oposición'); }
+      if(ctx.reclRentas){ basePct+=0.25; etiquetas.push('reclamación rentas'); }
+      normaPct=basePct; etiquetaNorma = Math.round(basePct*100)+' %'+(etiquetas.length?(' ('+etiquetas.join(' y ')+')'):''); 
+    }
+    if(ctx.subtipo==='monitorio_con'){ normaPct=0.10; minimo=150; etiquetaNorma='10 % (oposición)'; }
+
+    var minimoNormaMostrar=minimo;
+    if(ctx.subtipo==='ar_fp' && ctx.reclRentas) minimoNormaMostrar=600;
+
+    var basePorNormaSinMin, aplicaMinNorma, importeNormaBase;
+    if(ctx.subtipo==='ejecucion'){
+      var sumaPct=0, lista=[];
+      if(ctx.ejPre){ sumaPct+=0.20; lista.push('Pre-apremio (20%)'); }
+      if(ctx.ejOpo){ sumaPct+=0.20; lista.push('Oposición (20%)'); }
+      if(ctx.ejEmb){ sumaPct+=0.10; lista.push('Embargos (10%)'); }
+      if(ctx.ejSub){ sumaPct+=0.10; lista.push('Subasta (10%)'); }
+      basePorNormaSinMin = esc.total * sumaPct;
+      aplicaMinNorma = false;
+      importeNormaBase = basePorNormaSinMin;
+    } else if(ctx.subtipo==='recurso_apelacion'){
+      basePorNormaSinMin = ctx.cuantia * 0.50;
+      minimoNormaMostrar = 150;
+      aplicaMinNorma = basePorNormaSinMin < minimoNormaMostrar;
+      importeNormaBase = aplicaMinNorma ? minimoNormaMostrar : basePorNormaSinMin;
+    } else if(ctx.subtipo==='recurso_apelacion_parcial'){
+      basePorNormaSinMin = esc.total * 0.50;
+      minimoNormaMostrar = 300;
+      aplicaMinNorma = basePorNormaSinMin < minimoNormaMostrar;
+      importeNormaBase = aplicaMinNorma ? minimoNormaMostrar : basePorNormaSinMin;
+    } else {
+      basePorNormaSinMin = esc.total*(normaPct||0);
+      aplicaMinNorma = (minimoNormaMostrar>0 && basePorNormaSinMin < minimoNormaMostrar);
+      importeNormaBase = aplicaMinNorma ? minimoNormaMostrar : basePorNormaSinMin;
+    }
+
+    /* Enervación (desahucio) */
+    var enervActiva = false;
+    if(ctx.subtipo==='ar_fp' && ctx.enerv){
+      importeNormaBase = importeNormaBase*0.75;
+      enervActiva = true;
+    }
+    if(enervActiva){ q('lineEnervNorma').style.display='grid'; q('vhEnervNorma').textContent=eur(importeNormaBase); } else { q('lineEnervNorma').style.display='none'; q('vhEnervNorma').textContent='—'; }
+
+    /* Deriva oposición monitorio */
+    var derivaAplicada=false;
+    if((ctx.subtipo==='verbal' || ctx.subtipo==='ordinario') && document.getElementById('chipDerivaMonit') && document.getElementById('chipDerivaMonit').classList.contains('active')){
+      importeNormaBase = importeNormaBase*1.10;
+      derivaAplicada=true;
+    }
+    q('lineDeriva').style.display = derivaAplicada? 'grid':'none';
+    if(derivaAplicada) q('vhDeriva').textContent = eur(importeNormaBase);
+
+    /* Reconvención */
+    var reconvOn = ((ctx.subtipo==='verbal' || ctx.subtipo==='ordinario') && document.getElementById('reconvBtn_inline') && document.getElementById('reconvBtn_inline').classList.contains('active'));
+    if(reconvOn){
+      var reconvImporte = (ctx.subtipo==='verbal') ? 500 : 2000;
+      var suma = importeNormaBase + reconvImporte;
+      q('lineReconv').style.display='grid';
+      q('vhReconv').textContent = '(+'+eur(reconvImporte)+') · '+eur(suma);
+      importeNormaBase = suma;
+    }else{ q('lineReconv').style.display='none'; q('vhReconv').textContent='—'; }
+
+    /* No materializa & Legislación especial – sobre Honorarios por norma (declarativos) */
+    var noMatBtn = document.getElementById('noMaterializaBtn');
+    var legBtn = document.getElementById('legEspecialBtn');
+    var noMatOn = !!(noMatBtn && noMatBtn.classList.contains('active'));
+    var legOn = !!(legBtn && legBtn.classList.contains('active') && (ctx.subtipo==='verbal' || ctx.subtipo==='ordinario'));
+    if(noMatOn){ importeNormaBase = importeNormaBase * 0.50; q('noMatOnLine').style.display='grid'; q('vhNoMatSobreNorma').textContent = eur(importeNormaBase); } else { q('noMatOnLine').style.display='none'; }
+    if(legOn){ importeNormaBase = importeNormaBase * 1.50; q('legOnLine').style.display='grid'; q('vhLegSobreNorma').textContent = eur(importeNormaBase); } else { q('legOnLine').style.display='none'; }
+
+    /* Honorarios por norma (texto) */
+    var pctTxt;
+    if(ctx.subtipo==='recurso_apelacion'){ pctTxt='50 % de cuantía'; }
+    else if(ctx.subtipo==='recurso_apelacion_parcial'){ pctTxt='50 % de la escala'; }
+    else if(ctx.subtipo==='ejecucion'){ pctTxt='—'; }
+    else { pctTxt = (etiquetaNorma!=='—' ? etiquetaNorma : (Math.round((normaPct||0)*100)+' %')); }
+    if(ctx.subtipo==='ejecucion'){
+      var sumaPctTxt = (ctx.ejPre?20:0)+(ctx.ejOpo?20:0)+(ctx.ejEmb?10:0)+(ctx.ejSub?10:0);
+      var partes=[]; if(ctx.ejPre) partes.push('Pre-apremio (20%)'); if(ctx.ejOpo) partes.push('Oposición (20%)'); if(ctx.ejEmb) partes.push('Embargos (10%)'); if(ctx.ejSub) partes.push('Subasta (10%)');
+      
+// Construcción del texto por fases (formato solicitado):
+// - Si supera el mínimo:  "Pre-apremio (20%) = 8,40 €"
+// - Si NO supera el mínimo: "Pre-apremio (20%) = 8,40 € → 150,00 €" (el mínimo en azul)
+(function(){
+  // Asegurar estilo para el mínimo en azul
+  var lineas = [];
+  var totalAplicado = 0;
+
+  function lineaFase(nombre, activa, pct, minimo){
+    if(!activa) return;
+    var pctAmount = esc.total * pct;
+    if(pctAmount < minimo){
+      lineas.push(nombre + ' = ' + eur(pctAmount) + ' → ' + '<span class="info-text">' + eur(minimo) + '</span>');
+      totalAplicado += minimo;
+    } else {
+      lineas.push(nombre + ' = ' + eur(pctAmount));
+      totalAplicado += pctAmount;
+    }
+  }
+
+  lineaFase('Pre-apremio (20%)', ctx.ejPre, 0.20, 150);
+  lineaFase('Oposición (20%)', ctx.ejOpo, 0.20, 300);
+  lineaFase('Embargos (10%)', ctx.ejEmb, 0.10, 150);
+  lineaFase('Subasta (10%)', ctx.ejSub, 0.10, 150);
+
+  // Mostrar líneas por fase en el bloque "Honorarios por norma"
+  var htmlNorma = lineas.length ? lineas.join('<br>') : '—';
+  q('vhNorma').innerHTML = htmlNorma;
+
+  q('vhNorma').innerHTML = htmlNorma;
+  // Mantener gestión global de la línea de mínimo aplicada en Verificaciones
+  basePorNormaSinMin = totalAplicado;
+  aplicaMinNorma = false;
+  importeNormaBase = basePorNormaSinMin;
+})();
+}else{
+      q('vhNorma').textContent = (pctTxt==='—') ? '—' : (pctTxt+' = '+eur(basePorNormaSinMin));
+    }
+    if(aplicaMinNorma){ q('minAppliedLine').style.display='grid'; q('vhMinAplicado').textContent=eur(minimoNormaMostrar); } else { q('minAppliedLine').style.display='none'; }
+
+    /* Fases */
+    var chips=(q('chipsFases')||document.createElement('div')).querySelectorAll('.chip.active');
+    var fasesSel={}; for(var i=0;i<chips.length;i++){ fasesSel[chips[i].getAttribute('data-key')]=true; }
+    var pctFase=(ctx.subtipo==='ejecucion' || ctx.subtipo.indexOf('recurso_')===0)?1:fasePct(ctx.subtipo,fasesSel);
+    var importeFases = importeNormaBase * pctFase;
+    var total=importeFases;
+
+    /* Sesiones adicionales (150€) con desglose */
+    var sesTotal=0, segsSes=[];
+    var sesAP = parseInt((q('sesAP')&&q('sesAP').value)||'0',10)||0;
+    var sesVista = parseInt((q('sesVista')&&q('sesVista').value)||'0',10)||0;
+    if(sesAP>0){ var subAP=sesAP*150; sesTotal+=subAP; segsSes.push('Audiencia previa ×'+sesAP+' · '+eur(subAP)); }
+    if(sesVista>0){ var subV=sesVista*150; sesTotal+=subV; segsSes.push('Vista ×'+sesVista+' · '+eur(subV)); }
+    if(sesTotal>0) total+=sesTotal;
+
+    /* Finalización anticipada */
+    var detFA=[], importeTrasFA=null;
+    if(ctx.allanActive && ctx.allanRol){
+      if(ctx.allanRol==='actor'){ total*=0.70; detFA.push('Allanamiento actor (70%) · '+eur(total)); }
+      if(ctx.allanRol==='allanado'){ var pctAleg=0.60; total=(importeFases/(pctFase||1))*(pctAleg*0.50) + (sesTotal||0); detFA.push('Allanamiento allanado (50%) · '+eur(total)); }
+    }
+    var renBtn=document.querySelector('[data-end="renuncia"]'); if(renBtn && renBtn.classList.contains('active')){ total*=0.60; detFA.push('Renuncia/Desistimiento (60%) · '+eur(total)); }
+    var trBtn=document.querySelector('[data-end="transaccion"]'); if(trBtn && trBtn.classList.contains('active')){ total*=1.25; detFA.push('Transacción (+25%) · '+eur(total)); }
+    if(detFA.length) importeTrasFA=total;
+
+    /* Recursos (fijos + cuantías 15% escala) con desglose */
+    var recFixedCount = (ctx.recRepo||0) + (ctx.recRev||0) + (ctx.recQueja||0);
+    var recFixedTotal = recFixedCount * 300;
+    var recEscalaTotal = 0;
+    var segR=[];
+    if((ctx.recRev||0)>0){ segR.push('Revisión ×'+ctx.recRev+' · '+eur((ctx.recRev||0)*300)); }
+    if((ctx.recRepo||0)>0){ segR.push('Reposición ×'+ctx.recRepo+' · '+eur((ctx.recRepo||0)*300)); }
+    if((ctx.recQueja||0)>0){ segR.push('Queja ×'+ctx.recQueja+' · '+eur((ctx.recQueja||0)*300)); }
+    if(ctx.recCuantias && ctx.recCuantias.length){
+      for(var i=0;i<ctx.recCuantias.length;i++){
+        var ci = ctx.recCuantias[i];
+        var escRes = computeEscalaBreakdown(ci);
+        var val = escRes.total * 0.15;
+        recEscalaTotal += val;
+        segR.push('Cuantía #'+(i+1)+' (15% escala) · '+eur(val));
+      }
+    }
+    var recTotal = recFixedTotal + recEscalaTotal;
+    if(recTotal>0){ total += recTotal; q('lineRecursos').style.display='grid'; q('vhRecursos').textContent = (segR.length? segR.join(' / ')+' → ' : '') + eur(recTotal); hayOtros=true; } else { q('lineRecursos').style.display='none'; q('vhRecursos').textContent='—'; }
+
+    /* Pluralidad */
+    var pl=aplicarPluralidades(total); total=pl.total; var detPlur=pl.detalle;
+
+    /* Gastos */
+    var numMed = Math.max(0, parseInt((q('numSalidasMedio')&&q('numSalidasMedio').value)||'0',10)||0);
+    var numDia = Math.max(0, parseInt((q('numSalidasDia')&&q('numSalidasDia').value)||'0',10)||0);
+    var otros  = Math.max(0, parseFloat((q('gastosExtras')&&q('gastosExtras').value)||'0')||0);
+    var subMed=numMed*150, subDia=numDia*250, subOtros=otros, totalGastos=subMed+subDia+subOtros;
+    if(totalGastos>0){ total+=totalGastos; q('lineGastos').style.display='grid'; 
+      var segs=[]; if(numMed>0) segs.push('1/2 día ×'+numMed+' · '+eur(subMed)); if(numDia>0) segs.push('día completo ×'+numDia+' · '+eur(subDia)); if(otros>0) segs.push('otros · '+eur(subOtros));
+      q('vhGastos').textContent=segs.join(' / ')+' → '+eur(totalGastos); hayOtros=true;
+    } else { q('lineGastos').style.display='none'; }
+
+    /* Medida cautelar (indet.) */
+    var medCautLinea=null;
+    if((ctx.subtipo==='verbal' || ctx.subtipo==='ordinario') && document.getElementById('medCautelarBtn_inline') && document.getElementById('medCautelarBtn_inline').classList.contains('active')){
+      total+=400; medCautLinea=eur(400);
+    }
+    if(medCautLinea){ q('lineMedCaut').style.display='grid'; q('vhMedCaut').textContent=medCautLinea; hayOtros=true; } else { q('lineMedCaut').style.display='none'; }
+
+    /* Detalles otros */
+    if((ctx.subtipo==='verbal'||ctx.subtipo==='ordinario'||ctx.subtipo==='ar_fp'||ctx.subtipo==='ar_precario')){
+      var parts=[];
+      if(ctx.subtipo==='verbal' || ctx.subtipo==='ar_fp' || ctx.subtipo==='ar_precario'){ if(fasesSel.aleg) parts.push('Alegaciones (60%)'); if(fasesSel.vista) parts.push('Vista oral (40%)'); }
+      else if(ctx.subtipo==='ordinario'){ if(fasesSel.aleg) parts.push('Alegaciones (60%)'); if(fasesSel.ap) parts.push('Audiencia previa (10%)'); if(fasesSel.vista) parts.push('Vista oral (30%)'); }
+      var label=parts.length? parts.join(' / ') : 'Total (100%)';
+      q('lineFases').style.display='grid'; q('vhTrasFase').textContent=label+' · '+eur(importeFases); hayOtros=true;
+    }else{ q('lineFases').style.display='none';}
+
+    if(sesTotal>0){ q('lineSes').style.display='grid'; q('vhSesiones').textContent=(segsSes.length? segsSes.join(' / ')+' → ' : '')+eur(sesTotal); hayOtros=true; } else { q('lineSes').style.display='none'; }
+
+    if(detFA.length){ q('lineFA').style.display='grid'; q('vhAjustesFA').textContent=detFA.join(' / '); hayOtros=true; } else { q('lineFA').style.display='none'; }
+
+    if(detPlur.length){ q('linePlur').style.display='grid'; q('vhAjustesPlur').textContent=detPlur.join(' / '); hayOtros=true; } else { q('linePlur').style.display='none'; }
+
+    q('otrosBloque').style.display = hayOtros? 'block':'none';
+    q('sepAntesTotal').style.display = hayOtros? 'block':'none';
+
+    /* Adecuación tipo juicio (solo declarativos y solo si improcedente) */
+    var rowAde=q('rowAdecuacion'); if(rowAde) rowAde.style.display='none';
+    if(ctx.subtipo==='ordinario' && ctx.cuantia>0 && ctx.cuantia<15000){ q('vhAdecuacion').innerHTML='<span class="warn-text">Improcedente por cuantía (ex art. 249.2 LEC)</span>'; rowAde.style.display='grid'; }
+    else if(ctx.subtipo==='verbal' && ctx.cuantia>15000){ q('vhAdecuacion').innerHTML='<span class="warn-text">Improcedente por cuantía (ex art. 250.2 LEC)</span>'; rowAde.style.display='grid'; }
+    else{ if(rowAde) rowAde.style.display='none'; }
+
+    /* Preceptividad */
+    var precInfo=(function(){ if(ctx.subtipo==='monitorio_lph') return {p:true}; if(ctx.subtipo==='monitorio_sin' || ctx.subtipo==='monitorio_con'){ return (ctx.cuantia>2000)?{p:true}:{p:false}; } if((ctx.subtipo==='verbal'||ctx.subtipo==='ordinario'||ctx.subtipo==='ejecucion'||ctx.subtipo==='ar_fp'||ctx.subtipo==='ar_precario') && ctx.cuantia<=2000){ return {p:false}; } return {p:true}; })();
+    q('vhPrecLine').innerHTML = precInfo.p ? 'Intervención preceptiva' : '<span class="info-text">No procede tasación</span>';
+
+    /* Límite 1/3 */
+    var lim=limiteUnTercio(ctx.cuantia,false);
+    var excede= total>lim;
+    q('vhLimite').textContent=eur(lim);
+    q('vhLimiteLabel').innerHTML = excede ? '<span class="warn-text">Supera el 1/3</span>' : 'Por debajo del 1/3';
+
+    /* IPC y Totales */
+    q('vhTotalBaremo').textContent=eur(total);
+    var totalIPC=total;
+    var aplicar = !!(q('aplicarIPC') && q('aplicarIPC').checked);
+    var varIPC = isFinite(parseFloat((q('ipcManual')&&q('ipcManual').value||'').toString().replace(',','.'))) ? parseFloat(q('ipcManual').value.toString().replace(',','.')) : 25.30;
+    if(aplicar && isFinite(varIPC)) totalIPC = total*(1+varIPC/100);
+    q('vhTotalIPC').textContent=eur(totalIPC);
+    var iva=totalIPC*0.21; q('vhIVA').textContent=eur(iva); q('vhTotalIVA').textContent=eur(totalIPC+iva);
+  }
+
+  function getCriterioTexto(ctx){
+    try{ if(typeof CRITERIO_TEXTOS==='undefined' || !ctx) return ''; }catch(e){ return ''; }
+    var st=ctx.subtipo||''; var txt=CRITERIO_TEXTOS[st]||'';
+    if(st==='ar_fp' && ctx.reclRentas){ txt = CRITERIO_TEXTOS['ar_fp']; }
+    return txt;
+  }
+
+  function updateCriterioTexto(){
+    var box=document.getElementById('criterioTexto'); if(!box) return;
+    if(!criterioOpen){ box.style.display='none'; return; }
+    var ctx=leer(); var txt=getCriterioTexto(ctx);
+    if(txt){ box.textContent=txt; box.style.display='block'; }
+    else { box.textContent='—'; box.style.display='none'; criterioOpen=false; }
+  }
+
+  function bind(){
+    var btnCT=q('btnCriterioTexto');
+    if(btnCT){ btnCT.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopPropagation(); var box=q('criterioTexto'); if(!box) return; criterioOpen=!criterioOpen; if(criterioOpen){ var ctx=leer(); var txt=getCriterioTexto(ctx); box.textContent = txt || '—'; box.style.display='block'; } else { box.style.display='none'; } }); }
+
+    var grupo=q('grupoBtns');
+    if(grupo){
+      grupo.addEventListener('click', function(e){
+        var b=e.target; while(b && !b.classList.contains('btn-switch')){ b=b.parentNode; }
+        if(!b) return;
+        var all=grupo.querySelectorAll('.btn-switch'); for(var i=0;i<all.length;i++){ all[i].classList.remove('active'); }
+        b.classList.add('active');
+        pintarSubtipos(b.getAttribute('data-grupo'));
+      });
+    }
+
+    var sel=q('subtipo');
+    if(sel){
+      sel.addEventListener('change', function(){
+        var st=q('subtipo').value;
+        pintarCamposExtra(st); fasesLayoutFor(st);
+        var spp=q('sepPrePlur'); if(spp && (st.indexOf('monitorio')===0 || st==='ejecucion')){spp.style.display='none';}
+        updateCriterioTexto();
+        calcular();
+      });
+    }
+
+    document.addEventListener('click', function(e){
+      var chip=e.target; while(chip && !chip.classList.contains('chip')){ chip=chip.parentNode; }
+      if(!chip) return;
+      if(chip.id==='btnAllan'){
+        chip.classList.toggle('active');
+        var roles=q('allanRoles'); if(roles){ roles.style.display = chip.classList.contains('active')? 'inline-flex':'none'; }
+        calcular(); return;
+      }
+      if(chip.getAttribute('data-role')){
+        var chs=document.querySelectorAll('#allanRoles .chip'); for(var i=0;i<chs.length;i++){ chs[i].classList.remove('active'); }
+        chip.classList.add('active'); calcular(); return;
+      }
+      if(chip.id==='calcCuantiaBtn'){
+        var box=q('calcCuantiaBox'); if(box){ box.style.display = (box.style.display==='none'||box.style.display==='')? 'block':'none'; }
+        calcular(); return;
+      }
+      chip.classList.toggle('active'); updateCriterioTexto(); calcular();
+    });
+
+    var inputs=['cuantia','rentaMensual','cantAsimiladas','cuantiaAdeudada','numSalidasMedio','numSalidasDia','gastosExtras','numClientes','plurVencedores','plurContrarios','ipcManual','sesVista','sesAP','recRepo','recRev','recQueja'];
+    document.addEventListener('input', function(e){
+      var id=e && e.target && e.target.id; if(inputs.indexOf(id)>-1) calcular();
+      if(e && e.target && e.target.classList && e.target.classList.contains('rec-cuantia')) calcular();
+    });
+
+    var chk=q('aplicarIPC'); if(chk){ chk.addEventListener('change', calcular); }
+    var clr=q('btnLimpiar'); if(clr){ clr.addEventListener('click', function(){ location.reload(); }); }
+  }
+
+  function init(){
+    bind();
+    pintarSubtipos('monitorio');
+    fasesLayoutFor('monitorio_lph');
+    calcular();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+
+  // --- FIX Recursos: botón "Con cuantía (15% escala)" ---
+  (function(){
+    function q(id){ return document.getElementById(id); }
+    function bindRecursosOnce(){
+      var btn = q('addCuantiaRecurso');
+      if (!btn || btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function(){
+        var cont = q('recursosCuantiasList');
+        if (!cont) return;
+        var div = document.createElement('div');
+        div.className = 'field';
+        div.innerHTML = '<input type="number" class="rec-cuantia" min="0" step="0.01" placeholder="0,00"/> ' +
+                        '<label>Cuantía recurso (€)</label>';
+        cont.appendChild(div);
+        try{ if (typeof calcular === 'function') calcular(); }catch(e){}
+      });
+      var cont = q('recursosCuantiasList');
+      if (cont && cont.dataset.bound !== '1'){
+        cont.dataset.bound = '1';
+        cont.addEventListener('input', function(ev){
+          if (ev.target && ev.target.classList && ev.target.classList.contains('rec-cuantia')){
+            try{ if (typeof calcular === 'function') calcular(); }catch(e){}
+          }
+        });
+      }
+    }
+    if (document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', bindRecursosOnce);
+    } else {
+      bindRecursosOnce();
+    }
+  })();
+
+
+// --- SUPER HARD FIX: ocultar la línea previa al título "1. Pluralidad de partes" en ciertos grupos ---
+(function(){
+  function grupoActivo(){
+    var a = document.querySelector('.btn-switch.active');
+    return a ? (a.getAttribute('data-grupo')||'').toLowerCase() : '';
+  }
+  function hideNearestSepBeforePluralidad(){
+    try{
+      var g = grupoActivo();
+      if (g!=='monitorio' && g!=='ejecuciones' && g!=='recursos') return;
+      var t = document.getElementById('dg3_titulo');
+      if (!t) return;
+      // Recorre hasta 10 hermanos previos y oculta el primer .sep que encuentre
+      var prev = t.previousElementSibling;
+      var steps = 0, hidden = false;
+      while(prev && steps < 10){
+        if (prev.classList && prev.classList.contains('sep')){
+          prev.style.display = 'none';
+          hidden = true;
+          break;
+        }
+        prev = prev.previousElementSibling;
+        steps++;
+      }
+      // Como refuerzo, si existe #sepSes (de sesiones) y está antes, ocúltalo también
+      var sepSes = document.getElementById('sepSes');
+      if (sepSes) sepSes.style.display = 'none';
+    }catch(e){}
+  }
+  // Ejecuta al cargar
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', hideNearestSepBeforePluralidad);
+  } else {
+    hideNearestSepBeforePluralidad();
+  }
+  // Reaplicar tras cambios de grupo y subtipo
+  try{
+    var grupo = document.getElementById('grupoBtns');
+    if (grupo) grupo.addEventListener('click', function(){ setTimeout(hideNearestSepBeforePluralidad, 0); });
+    var subt = document.getElementById('subtipo');
+    if (subt) subt.addEventListener('change', function(){ setTimeout(hideNearestSepBeforePluralidad, 0); });
+  }catch(e){}
+  // Reaplicar tras calcular()
+  try{
+    var _calcular = window.calcular;
+    if (typeof _calcular === 'function'){
+      window.calcular = function(){
+        var r = _calcular.apply(this, arguments);
+        hideNearestSepBeforePluralidad();
+        return r;
+      };
+    }
+  }catch(e){}
+})();
+
+})();
+</script>
+<script>
+(function(){
+  function repositionEnervacion(){
+    try{
+      var minLine = document.getElementById('minAppliedLine');
+      var enervLine = document.getElementById('lineEnervNorma');
+      if(!minLine || !enervLine) return;
+      var minVisible = window.getComputedStyle(minLine).display !== 'none';
+      var enervVisible = window.getComputedStyle(enervLine).display !== 'none';
+      if(minVisible && enervVisible){
+        // Insertar enervación justo después de la línea de mínimo si no está ya ahí
+        if(enervLine.previousElementSibling !== minLine){
+          minLine.parentNode.insertBefore(enervLine, minLine.nextElementSibling);
+        }
+      }
+    }catch(e){ console.warn('repositionEnervacion:', e); }
+  }
+
+  // Ejecutar ahora
+  repositionEnervacion();
+
+  // Observar cambios en visibilidad/estilo de ambas líneas
+  ['minAppliedLine','lineEnervNorma'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    try{
+      new MutationObserver(repositionEnervacion).observe(el, { attributes:true, attributeFilter:['style','class'] });
+    }catch(e){}
+  });
+
+  // Observar cambios generales en el bloque para recolocar cuando cambie el cálculo
+  try{
+    var wrap = document.querySelector('#vhNorma') ? document.querySelector('#vhNorma').closest('.kvs').parentNode : document.body;
+    new MutationObserver(repositionEnervacion).observe(wrap, { childList:true, subtree:true });
+  }catch(e){}
+})();
+</script>
+<style id="auto-dark-mode-override">
+@media (prefers-color-scheme: dark) {
+  /* Chips/botones blancos a oscuro */
+  .inline-buttons .chip,
+  button.chip,
+  .chip,
+  .chip.green {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--border) !important;
+  }
+  .inline-buttons .chip:hover,
+  button.chip:hover,
+  .chip:hover { background: #0b1220 !important; }
+
+  /* Botón Ver norma completa a oscuro */
+  #btnCriterioTexto.btn,
+  #btnCriterioTexto.btn.ok {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--border) !important;
+  }
+  #btnCriterioTexto.btn:hover { background: #0b1220 !important; }
+
+  /* Cuadro con la norma completa forzado a oscuro */
+  #criterioTexto {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--border) !important;
+  }
+}
+</style>
+<style id="auto-dark-mode-override-2">
+@media (prefers-color-scheme: dark) {
+  /* Forzar verde en oscuro para los botones solicitados */
+  #btnCriterioTexto.btn,
+  #btnCriterioTexto.btn.ok {
+    background: var(--ok) !important;
+    color: #fff !important;
+    border-color: #15803d !important;
+  }
+  #btnCriterioTexto.btn:hover {
+    filter: brightness(0.95);
+  }
+
+  /* "Cálculo cuantía" (chip green) en oscuro también verde */
+  #calcCuantiaBtn,
+  #calcCuantiaBtn.chip,
+  #calcCuantiaBtn.chip.green {
+    background: var(--ok) !important;
+    color: #fff !important;
+    border-color: #15803d !important;
+  }
+  #calcCuantiaBtn:hover {
+    filter: brightness(0.95);
+  }
+
+  /* Resaltado de chips activos en modo oscuro */
+  .chip.active,
+  #chipDesOpo.chip.active,
+  #reclRentasChip.chip.active,
+  #enervacionBtn.chip.active {
+    background: var(--brand-600) !important;
+    color: #fff !important;
+    border-color: var(--brand-600) !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .35) inset;
+  }
+
+  /* Resaltado de chips activos/pulsados en modo oscuro — translúcido */
+  .chip.active,
+  .chip:active,
+  #chipDesOpo.chip.active,
+  #reclRentasChip.chip.active,
+  #enervacionBtn.chip.active {
+    background: rgba(37, 99, 235, 0.18) !important; /* azul sutil derivado de --brand-600 (#2563eb) */
+    border-color: var(--brand-600) !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.30) inset;
+    color: var(--ink) !important;
+  }
+  /* Estados de interacción para mantener la sensación de selección */
+  .chip.active:hover, .chip.active:focus,
+  #chipDesOpo.chip.active:hover, #reclRentasChip.chip.active:hover, #enervacionBtn.chip.active:hover {
+    background: rgba(37, 99, 235, 0.22) !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.35) inset;
+  }
+
+  /* Criterio mínimo en modo oscuro: cuantía en azul de marca */
+  .info-text,
+  #minAppliedLine .v,
+  #vhMinAplicado {
+    color: var(--brand-600) !important;
+    font-weight: 800;
+  }
+}
+</style>
+<script id="eu-number-support">
+(function(){
+  if (!window._origParseFloat){
+    window._origParseFloat = window.parseFloat;
+    window.parseFloat = function(x){
+      try{
+        if (typeof x === 'string'){
+          var s = x.trim().replace(/\s+/g,'');
+          if (/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){ s = s.replace(/\./g,'').replace(',', '.'); }
+          else if(/^\d+,\d+$/.test(s)){ s=s.replace(',', '.'); }
+          return window._origParseFloat(s);
+        }
+        return window._origParseFloat(x);
+      }catch(e){ return NaN; }
+    };
+  }
+  var ids=['cuantia','gastosExtras','rentaMensual','cantAsimiladas','cuantiaAdeudada'];
+  function relax(el){ if(!el) return; if(el.tagName==='INPUT'){ if((el.type||'').toLowerCase()==='number'){ try{ el.type='text'; }catch(e){} } el.setAttribute('inputmode','decimal'); el.setAttribute('pattern','[0-9.,]*'); } }
+  ids.forEach(function(id){ relax(document.getElementById(id)); });
+  var mo=new MutationObserver(function(ms){ ms.forEach(function(m){ m.addedNodes && m.addedNodes.forEach(function(n){ if(n.nodeType===1){ if(n.matches && n.matches('input.rec-cuantia')) relax(n); var list=n.querySelectorAll? n.querySelectorAll('input.rec-cuantia'):[]; list.forEach(relax);} }); });});
+  try{ mo.observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
+  function fmtES(num){ if(!isFinite(num)) return ''; try{ return num.toLocaleString('es-ES',{minimumFractionDigits:2, maximumFractionDigits:2}); }catch(e){ return (Math.round(num*100)/100)+''; } }
+  function norm(v){ var s=(v||'').toString().trim().replace(/\s+/g,''); if(/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(s)){ s=s.replace(/\./g,'').replace(',', '.'); } else if(/^\d+,\d+$/.test(s)){ s=s.replace(',', '.'); } return s; }
+  document.addEventListener('blur', function(ev){ var el=ev.target; if(!(el&&el.tagName==='INPUT'))return; if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return; var original=(el.value||'').toString().trim(); var n=window._origParseFloat(norm(original)); if(isFinite(n)){ if(/^\d{1,3}(\.\d{3})*(,\d+)?$/.test(original.replace(/\s+/g,''))){ el.value=original; } else { el.value=fmtES(n); } el.dataset.num=''+n; el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true})); } }, true);
+  document.addEventListener('input', function(ev){ var el=ev.target; if(!(el&&el.tagName==='INPUT'))return; if(!el.matches('#cuantia,#gastosExtras,#rentaMensual,#cantAsimiladas,#cuantiaAdeudada,input.rec-cuantia'))return; el.dataset.num=norm(el.value); }, true);
+})();</script></body>
+</html>
