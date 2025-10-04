@@ -223,9 +223,10 @@
 #calcCuantiaBox .field input, #calcCuantiaBox .field select, #calcCuantiaBox .field textarea{ flex:1 1 100%; width:100%; min-width:0; }
 @media (max-width:768px){ #calcCuantiaBox [style*="grid-template-columns"]{ grid-template-columns:1fr !important; } #calcCuantiaBox{ padding-right:0; } }
 </style><style id="toprow-macos-fix">
+/* Escritorio: selector >= cuantía en una sola línea */
 #col-izq .top-row{
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) 260px; /* selector >= cuantía */
+  grid-template-columns: minmax(260px, 1fr) 260px;
   gap: 12px;
   align-items: end;
   width: 100%;
@@ -234,7 +235,7 @@
 #col-izq .top-row .field label[for="subtipo"],
 #col-izq .top-row .field label[for="cuantia"]{ font-weight: 800; }
 
-/* quitar resaltado */
+/* Inputs sin resaltado */
 select#subtipo, input#cuantia{
   border: 1px solid var(--border-300, #cbd5e1);
   box-shadow: none;
@@ -242,7 +243,16 @@ select#subtipo, input#cuantia{
   border-radius: 6px;
 }
 
-@media (max-width:1100px){ #col-izq .top-row{ grid-template-columns: 1fr; } }
+/* Móvil/estrecho: mantenerlos EN LA MISMA LÍNEA; labels ya se ven encima por las reglas existentes */
+@media (max-width: 1100px){
+  #col-izq .top-row{
+    grid-template-columns: 1fr clamp(160px, 45vw, 260px) !important; /* fuerza 2 columnas */
+  }
+  #subtipo{ width: 100%; min-width: clamp(160px, 45vw, 260px) !important; }
+  #cuantia{ width: clamp(160px, 45vw, 260px) !important; max-width: none !important; }
+}
+
+/* Garantías escritorio */
 #subtipo{ width: 100%; min-width: 260px; }
 #cuantia{ width: 260px !important; max-width: 260px !important; }
 </style></head>
@@ -361,7 +371,7 @@ select#subtipo, input#cuantia{
 </div>
 <div class="field">
 <input id="recRepo" min="0" placeholder="0" step="1" type="number"/>
-<label for="recRepo">Nº Reforma (300 €)</label>
+<label for="recRepo">Nº Reposición (300 €)</label>
 </div>
 <div class="field">
 <input id="recQueja" min="0" placeholder="0" step="1" type="number"/>
@@ -1042,7 +1052,7 @@ s(q('dg2_titulo'), showFin); s(q('finalizacionButtons'),showFin);
     var recEscalaTotal = 0;
     var segR=[];
     if((ctx.recRev||0)>0){ segR.push('Revisión ×'+ctx.recRev+' · '+eur((ctx.recRev||0)*300)); }
-    if((ctx.recRepo||0)>0){ segR.push('Reforma ×'+ctx.recRepo+' · '+eur((ctx.recRepo||0)*300)); }
+    if((ctx.recRepo||0)>0){ segR.push('Reposición ×'+ctx.recRepo+' · '+eur((ctx.recRepo||0)*300)); }
     if((ctx.recQueja||0)>0){ segR.push('Queja ×'+ctx.recQueja+' · '+eur((ctx.recQueja||0)*300)); }
     if(ctx.recCuantias && ctx.recCuantias.length){
       for(var i=0;i<ctx.recCuantias.length;i++){
