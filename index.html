@@ -1,3 +1,4 @@
+<!-- LOGICA DE BAREMO ICALI BLOQUEADA: NO MODIFICAR -->
 <!DOCTYPE html>
 
 <html lang="es">
@@ -458,13 +459,31 @@ select#subtipo, input#cuantia{
   function q(id){ return document.getElementById(id); }
   function eur(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(isFinite(n)?n:0); }
 
-  var ESCALA=[
-    {to:300,rate:42},{to:600,rate:36},{to:1200,rate:30},{to:3000,rate:22},{to:4000,rate:20},
-    {to:6000,rate:18},{to:12000,rate:17},{to:18000,rate:16},{to:24000,rate:15},{to:30000,rate:14},
-    {to:36000,rate:13},{to:40000,rate:12},{to:50000,rate:9},{to:60000,rate:8},{to:80000,rate:7.4},
-    {to:100000,rate:7.25},{to:120000,rate:7.10},{to:300000,rate:6.5},{to:600000,rate:5},{to:1200000,rate:4},
-    {to:3000000,rate:3},{to:Infinity,rate:2}
-  ];
+  
+var ESCALA = [
+  {to:300, rate:42},
+  {to:600, rate:36},
+  {to:1200, rate:30},
+  {to:3000, rate:22},
+  {to:4000, rate:20},
+  {to:6000, rate:18},
+  {to:12000, rate:17},
+  {to:18000, rate:16},
+  {to:24000, rate:12},
+  {to:30000, rate:11},
+  {to:40000, rate:10},
+  {to:50000, rate:9},
+  {to:60000, rate:8},
+  {to:120000, rate:7},
+  {to:300000, rate:6.5},
+  {to:600000, rate:5},
+  {to:1200000, rate:2.5},
+  {to:1800000, rate:2},
+  {to:2500000, rate:1.75},
+  {to:3500000, rate:1.5},
+  {to:Infinity, rate:1}
+];
+
   function computeEscalaBreakdown(c){
     if(!isFinite(c)||c<=0) return {total:0, prev:0, marginal:0, tramoBase:0, tramoPct:0, prevTop:0};
     var done=0,total=0,prevTotal=0,marginal=0,tramoBase=0,tramoPct=0,prevTop=0;
