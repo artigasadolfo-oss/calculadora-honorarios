@@ -251,8 +251,12 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 </style>
 <style>
 /* ===== Responsive móvil: barra lateral como cajón (añadido) ===== */
-.mnav,.mscrim{display:none}
+.mnav,.mscrim,.mcrumb{display:none}
 @media (max-width:860px){
+  .mcrumb{display:block;margin-top:10px;font-family:var(--geo);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.3}
+  .mcrumb .mc-app{color:var(--ink-400)}
+  .mcrumb .mc-sep{color:var(--ink-300);margin:0 5px}
+  .mcrumb .mc-sel{color:var(--ink-700)}
   html,body{overflow-x:hidden}
   .app{grid-template-columns:1fr !important;grid-template-rows:auto !important;height:auto !important;min-height:100dvh}
   .sidebar{position:fixed !important;top:0;left:0;bottom:0;width:84%;max-width:330px;z-index:60;
@@ -282,10 +286,37 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 </style>
 </head>
 <body>
-<div class="app">
 <button class="mnav" aria-label="Abrir menú" onclick="document.body.classList.toggle('navopen')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 <div class="mscrim" onclick="document.body.classList.remove('navopen')"></div>
+<script>
+(function(){
+  document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest(".sidebar .node-h,.sidebar .navlink,.sidebar .nitem"))
+      document.body.classList.remove("navopen");
+  });
+  function ready(fn){ if(document.readyState!="loading") fn(); else document.addEventListener("DOMContentLoaded",fn); }
+  ready(function(){
+    var title=document.querySelector(".ptitle"); if(!title) return;
+    var an=document.querySelector(".brand .an");
+    var app=(an?an.textContent:title.textContent).replace(/\s+/g," ").trim();
+    var crumb=document.createElement("div"); crumb.className="mcrumb";
+    var ul=title.parentNode.querySelector(".ul"); var anchor=ul||title;
+    anchor.parentNode.insertBefore(crumb, anchor.nextSibling);
+    function upd(){
+      var els=[].slice.call(document.querySelectorAll(".sidebar .sel"));
+      var labels=els.map(function(e){return (e.textContent||"").replace(/\s+/g," ").trim();}).filter(Boolean);
+      labels=labels.filter(function(v,i){return labels.indexOf(v)===i;});
+      crumb.innerHTML='<span class="mc-app">'+app+'</span>'+(labels.length?' <span class="mc-sep">/</span> <span class="mc-sel">'+labels.join(" · ")+'</span>':'');
+    }
+    upd();
+    var sb=document.querySelector(".sidebar");
+    if(sb&&window.MutationObserver){ new MutationObserver(upd).observe(sb,{subtree:true,attributes:true,attributeFilter:["class"]}); }
+    document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest(".sidebar")) setTimeout(upd,60); });
+  });
+})();
+</script>
 
+<div class="app">
   <aside class="sidebar">
     <div class="brand"><div class="logo"></div><div><div class="an">Honorarios ICALI</div><div class="fm">Artigas Abogados</div></div></div>
     <div class="tree">
@@ -1178,5 +1209,4 @@ resultado es inferior, la cantidad de ..........................................
 
 })();
 </script>
-<script>document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".sidebar .node-h,.sidebar .navlink"))document.body.classList.remove("navopen");});</script>
 </body></html>
