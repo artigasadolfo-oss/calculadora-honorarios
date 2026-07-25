@@ -110,7 +110,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .kpi.kpi-in:focus-within{box-shadow:0 0 0 2px rgba(201,122,30,.22)}
 .kpi-in .lab{color:var(--ocre)}
 .kpi-in .valwrap{margin-top:9px;display:flex;align-items:baseline;gap:3px}
-.kpiInput{flex:1;min-width:0;border:none;background:transparent;outline:none;padding:0;font-family:var(--sans);font-size:26px;font-weight:600;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-align:right}
+.kpiInput{flex:0 0 auto;min-width:0;width:auto;border:none;background:transparent;outline:none;padding:0;font-family:var(--sans);font-size:26px;font-weight:600;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-align:left}
 .kpiInput::placeholder{color:var(--ink-300)}
 .kpi-in .cur{font-size:15px;font-weight:500;color:var(--ink-400)}
 /* Layout dos columnas */
@@ -253,10 +253,11 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 /* ===== Responsive móvil: barra lateral como cajón (añadido) ===== */
 .mnav,.mscrim,.mcrumb{display:none}
 @media (max-width:860px){
-  .mcrumb{display:block;margin-top:10px;font-family:var(--geo);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.3}
-  .mcrumb .mc-app{color:var(--ink-400)}
-  .mcrumb .mc-sep{color:var(--ink-300);margin:0 5px}
-  .mcrumb .mc-sel{color:var(--ink-700)}
+  .psub{display:none !important}
+  .ptitle{display:inline}
+  .mcrumb{display:inline;font-family:var(--geo);font-size:12.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1.3;vertical-align:baseline;white-space:nowrap}
+  .mcrumb .mc-sep{color:var(--ink-300);margin:0 7px}
+  .mcrumb .mc-sel{color:var(--ink-500)}
   html,body{overflow-x:hidden}
   .app{grid-template-columns:1fr !important;grid-template-rows:auto !important;height:auto !important;min-height:100dvh}
   .sidebar{position:fixed !important;top:0;left:0;bottom:0;width:84%;max-width:330px;z-index:60;
@@ -296,22 +297,37 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
   });
   function ready(fn){ if(document.readyState!="loading") fn(); else document.addEventListener("DOMContentLoaded",fn); }
   ready(function(){
-    var title=document.querySelector(".ptitle"); if(!title) return;
-    var an=document.querySelector(".brand .an");
-    var app=(an?an.textContent:title.textContent).replace(/\s+/g," ").trim();
-    var crumb=document.createElement("div"); crumb.className="mcrumb";
-    var ul=title.parentNode.querySelector(".ul"); var anchor=ul||title;
-    anchor.parentNode.insertBefore(crumb, anchor.nextSibling);
-    function upd(){
-      var els=[].slice.call(document.querySelectorAll(".sidebar .sel"));
-      var labels=els.map(function(e){return (e.textContent||"").replace(/\s+/g," ").trim();}).filter(Boolean);
-      labels=labels.filter(function(v,i){return labels.indexOf(v)===i;});
-      crumb.innerHTML='<span class="mc-app">'+app+'</span>'+(labels.length?' <span class="mc-sep">/</span> <span class="mc-sel">'+labels.join(" · ")+'</span>':'');
+    // Migas de pan: opción activa del menú, inline tras el nombre de la app
+    var title=document.querySelector(".ptitle");
+    if(title){
+      var crumb=document.createElement("span"); crumb.className="mcrumb";
+      title.parentNode.insertBefore(crumb, title.nextSibling);
+      var upd=function(){
+        var els=[].slice.call(document.querySelectorAll(".sidebar .sel"));
+        var labels=els.map(function(e){return (e.textContent||"").replace(/\s+/g," ").trim();}).filter(Boolean);
+        labels=labels.filter(function(v,i){return labels.indexOf(v)===i;});
+        crumb.innerHTML=labels.length?'<span class="mc-sep">/</span> <span class="mc-sel">'+labels.join(" · ")+'</span>':'';
+      };
+      upd();
+      var sb=document.querySelector(".sidebar");
+      if(sb&&window.MutationObserver){ new MutationObserver(upd).observe(sb,{subtree:true,attributes:true,attributeFilter:["class"]}); }
+      document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest(".sidebar")) setTimeout(upd,60); });
     }
-    upd();
-    var sb=document.querySelector(".sidebar");
-    if(sb&&window.MutationObserver){ new MutationObserver(upd).observe(sb,{subtree:true,attributes:true,attributeFilter:["class"]}); }
-    document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest(".sidebar")) setTimeout(upd,60); });
+    // Gesto: deslizar desde el borde izquierdo abre el cajón (y deslizar a la izquierda lo cierra)
+    var sx=0,sy=0,mode=null;
+    window.addEventListener("touchstart",function(e){
+      if(window.innerWidth>860){mode=null;return;}
+      var t=e.touches[0]; sx=t.clientX; sy=t.clientY;
+      var open=document.body.classList.contains("navopen");
+      mode = (!open && sx<=26) ? "open" : (open ? "close" : null);
+    },{passive:true});
+    window.addEventListener("touchmove",function(e){
+      if(!mode)return; var t=e.touches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+      if(Math.abs(dy)>Math.abs(dx)+8){mode=null;return;}
+      if(mode==="open"&&dx>45){document.body.classList.add("navopen");mode=null;}
+      else if(mode==="close"&&dx<-45){document.body.classList.remove("navopen");mode=null;}
+    },{passive:true});
+    window.addEventListener("touchend",function(){mode=null;},{passive:true});
   });
 })();
 </script>
@@ -347,13 +363,13 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
     <div class="phead">
       <div><div class="eyebrow">Herramientas internas</div><div class="ptitle">Honorarios</div><div class="ul"></div><div class="psub">Escala ICALI (Colegio de Alicante) &middot; revisi&oacute;n IPC +31,60&nbsp;% &mdash; minuta y tasaci&oacute;n de costas.</div></div>
       <div class="pr">
-        <button class="ghost" id="btnLimpiar" type="button">Limpiar</button>
+        <button class="ghost" id="btnLimpiar" type="button" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex:0 0 15px"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar</button>
         <button class="btnp" id="btnCopiar" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar desglose para minuta</button>
       </div>
     </div>
 
     <div class="kpis">
-      <div class="kpi kpi-in" id="kpiCuantia"><div class="lab">Cuantía</div><div class="valwrap"><input id="cuantia" type="text" inputmode="decimal" class="kpiInput" placeholder="0,00"><span class="cur">&euro;</span></div></div>
+      <div class="kpi kpi-in" id="kpiCuantia"><div class="lab">Cuantía</div><div class="valwrap"><input id="cuantia" type="text" inputmode="decimal" class="kpiInput" placeholder="0,00" size="9"><span class="cur">&euro;</span></div></div>
       <div class="kpi"><div class="lab">Total baremo</div><div class="val" id="kpiBaremo">&mdash;</div></div>
       <div class="kpi"><div class="lab">Resultado IPC</div><div class="val" id="kpiIPC">&mdash;</div></div>
       <div class="kpi"><div class="lab">Redondeo 1/3</div><div class="val" id="kpiRedondeo">&mdash;</div></div>
