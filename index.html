@@ -101,7 +101,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .ghost:hover{background:var(--ink-50);border-color:var(--ink-300)}
 .btnp.ok{background:var(--sage)}
 /* KPIs */
-.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
 .kpi{background:#fff;border:1px solid var(--ink-200);border-radius:12px;padding:15px 16px;box-shadow:var(--sombra)}
 .kpi .lab{font-family:var(--geo);text-transform:uppercase;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--ink-400)}
 .kpi .val{margin-top:9px;font-size:26px;font-weight:600;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
@@ -163,6 +163,19 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .finaltot{display:flex;align-items:baseline;justify-content:space-between;margin-top:12px;padding-top:14px;border-top:1px solid var(--ink-100)}
 .finaltot .k{font-family:var(--geo);text-transform:uppercase;font-size:10.5px;font-weight:600;letter-spacing:.1em;color:var(--ink-500)}
 .finaltot .v{font-size:30px;font-weight:700;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+/* Doble resultado final: Cliente / Costas */
+.dualwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dualcard{border:1px solid var(--ink-200);border-radius:12px;padding:13px 14px;background:#fff}
+.dualcard#dualCostas{border-left:3px solid var(--ocre)}
+.dualhd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+.duallab{font-family:var(--geo);text-transform:uppercase;font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--ink-500)}
+.dualcopy{font-family:var(--geo);text-transform:uppercase;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--ink-500);background:transparent;border:1px solid var(--ink-200);border-radius:7px;padding:4px 9px;min-height:24px;cursor:pointer}
+.dualcopy:hover{background:var(--ink-50);border-color:var(--ink-300);color:var(--ink-700)}
+.dualcopy.ok{color:var(--sage);border-color:#cfe0d4;background:#F3F8F4}
+.dualtot{font-size:27px;font-weight:700;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.1}
+.dualsub{font-size:11px;color:var(--ink-400);margin-top:6px;line-height:1.35}
+.dualsub.bite{color:var(--brick)}
+@media(max-width:520px){.dualwrap{grid-template-columns:1fr}}
 .hidden{display:none!important}
 @media(max-width:1080px){.kpis{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr}}
 
@@ -347,13 +360,12 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
       <div class="nsec" style="margin-top:6px">Actualización IPC</div>
       <div class="critipc">
         <label class="ajck"><input type="checkbox" id="aplicarIPC" checked> Aplicar IPC</label>
-        <div class="ajrow"><span class="ajlbl">Variación&nbsp;% (IPC)</span><input id="ipcManual" type="text" inputmode="decimal" value="31,60" class="ajnum"></div>
+        <div class="ajrow"><span class="ajlbl">Variación&nbsp;% (IPC)</span><input id="ipcManual" type="text" inputmode="decimal" value="32,03" class="ajnum"></div>
         <div class="ipcconf hidden" id="ipcConfirm">
           <span class="ipcconftxt">¿Guardar <b id="ipcConfVal"></b>&nbsp;% como IPC vigente?</span>
           <span class="ipcconfbtns"><button type="button" id="ipcGuardar" class="ipcbtn ok">Guardar</button><button type="button" id="ipcDescartar" class="ipcbtn">Descartar</button></span>
         </div>
         <label class="ajck"><input type="checkbox" id="aplicarRedondeo" checked> Redondeo a cifra natural</label>
-        <label class="ajck"><input type="checkbox" id="aplicarLimite" checked> Límite del tercio (solo costas)</label>
       </div>
     </div>
     <div class="user"><div class="av">AA</div><div><div class="un">Adolfo Artigas</div><div class="ur">Despacho</div></div></div>
@@ -361,7 +373,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 
   <main class="main">
     <div class="phead">
-      <div><div class="eyebrow">Herramientas internas</div><div class="ptitle">Honorarios</div><div class="ul"></div><div class="psub">Escala ICALI (Colegio de Alicante) &middot; revisi&oacute;n IPC +31,60&nbsp;% &mdash; minuta y tasaci&oacute;n de costas.</div></div>
+      <div><div class="eyebrow">Herramientas internas</div><div class="ptitle">Honorarios</div><div class="ul"></div><div class="psub">Escala ICALI (Colegio de Alicante) &middot; revisi&oacute;n IPC +32,03&nbsp;% &mdash; minuta y tasaci&oacute;n de costas.</div></div>
       <div class="pr">
         <button class="ghost" id="btnLimpiar" type="button" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex:0 0 15px"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar</button>
         <button class="btnp" id="btnCopiar" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar desglose para minuta</button>
@@ -372,8 +384,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
       <div class="kpi kpi-in" id="kpiCuantia"><div class="lab">Cuantía</div><div class="valwrap"><input id="cuantia" type="text" inputmode="decimal" class="kpiInput" placeholder="0,00"><span class="cur">&euro;</span></div></div>
       <div class="kpi"><div class="lab">Total baremo</div><div class="val" id="kpiBaremo">&mdash;</div></div>
       <div class="kpi"><div class="lab">Resultado IPC</div><div class="val" id="kpiIPC">&mdash;</div></div>
-      <div class="kpi"><div class="lab">Redondeo 1/3</div><div class="val" id="kpiRedondeo">&mdash;</div></div>
-      <div class="kpi"><div class="lab">Total con IVA</div><div class="val" id="kpiTotalIVA">&mdash;</div></div>
+      <div class="kpi"><div class="lab">Base + redondeo</div><div class="val" id="kpiRedondeo">&mdash;</div></div>
     </div>
 
     <div class="cols">
@@ -384,6 +395,8 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
         <div class="bd">
           <div class="sublabel">Subtipo de procedimiento</div>
           <div class="selwrap"><select id="subtipo" class="bigselect"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+
+          <label class="ck" id="indetWrap" style="margin-top:12px"><input type="checkbox" id="indeterminada"> Cuantía indeterminada / inestimable (base 24.000&euro;)</label>
 
           <!-- Distribución por fases (declarativos / desahucios) -->
           <div class="grp hidden" id="boxFases">
@@ -531,9 +544,18 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
         <div class="pcard">
           <div class="hd"><div class="ht">Honorarios finales</div></div>
           <div class="bd">
-            <div class="kvs"><span class="k">Base + IPC + redondeo</span><span class="v" id="vhBaseFinal">&mdash;</span></div>
-            <div class="kvs"><span class="k">IVA (21&nbsp;%)</span><span class="v" id="vhIVA">&mdash;</span></div>
-            <div class="finaltot"><span class="k">Total con IVA</span><span class="v" id="vhTotalIVA">&mdash;</span></div>
+            <div class="dualwrap">
+              <div class="dualcard" id="dualCliente">
+                <div class="dualhd"><span class="duallab">Minuta al cliente</span><button class="dualcopy" id="copyCliente" type="button" aria-label="Copiar importe para el cliente">Copiar</button></div>
+                <div class="dualtot" id="clienteTotal">&mdash;</div>
+                <div class="dualsub" id="clienteSub">Sin tope &middot; honorarios íntegros</div>
+              </div>
+              <div class="dualcard" id="dualCostas">
+                <div class="dualhd"><span class="duallab">Tasaci&oacute;n de costas</span><button class="dualcopy" id="copyCostas" type="button" aria-label="Copiar importe para tasación de costas">Copiar</button></div>
+                <div class="dualtot" id="costasTotal">&mdash;</div>
+                <div class="dualsub" id="costasSub">L&iacute;mite del tercio (art.&nbsp;394.3 LEC)</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -849,14 +871,17 @@ resultado es inferior, la cantidad de ..........................................
     var mc=q('medidaCautelar'); tog('cautelarOpt', !!(mc&&mc.checked));
     var cm=q('cautelarModo'); tog('cautelarCuantiaWrap', !!(cm&&cm.value==='cuantia'));
     var fin=q('finalizacion'); tog('allanOpt', !!(fin&&fin.value==='allanamiento'));
+    var indet=q('indeterminada'), cuEl=q('cuantia'), kpi=q('kpiCuantia');
+    if(indet&&cuEl){ if(indet.checked){ cuEl.value=''; cuEl.placeholder='24.000,00 (indet.)'; cuEl.disabled=true; if(kpi) kpi.style.opacity='.5'; } else { cuEl.disabled=false; cuEl.placeholder='0,00'; if(kpi) kpi.style.opacity=''; } }
   }
 
   function limiteUnTercio(cuantia,inestimable){ var base=inestimable?24000:cuantia; return (base||0)/3; }
 
   function checkPreceptividad(ctx){
+    var cef = ctx.indeterminada ? 24000 : ctx.cuantia; /* base efectiva: la indeterminada (24.000 €) siempre supera el umbral */
     if(ctx.subtipo==='monitorio_lph') return {preceptiva:true,texto:'Intervención preceptiva'};
-    if(ctx.subtipo==='monitorio_sin' || ctx.subtipo==='monitorio_con'){ return (ctx.cuantia>2000) ? {preceptiva:true,texto:'Intervención preceptiva'} : {preceptiva:false,texto:'No procede tasación'}; }
-    if((ctx.subtipo==='verbal' || ctx.subtipo==='ordinario' || ctx.subtipo==='ejecucion' || ctx.subtipo==='ar_fp' || ctx.subtipo==='ar_precario') && ctx.cuantia<=2000){
+    if(ctx.subtipo==='monitorio_sin' || ctx.subtipo==='monitorio_con'){ return (cef>2000) ? {preceptiva:true,texto:'Intervención preceptiva'} : {preceptiva:false,texto:'No procede tasación'}; }
+    if((ctx.subtipo==='verbal' || ctx.subtipo==='ordinario' || ctx.subtipo==='ejecucion' || ctx.subtipo==='ar_fp' || ctx.subtipo==='ar_precario') && cef<=2000){
       return {preceptiva:false,texto:'No procede tasación'};
     }
     return {preceptiva:true,texto:'Intervención preceptiva'};
@@ -926,10 +951,11 @@ resultado es inferior, la cantidad de ..........................................
     return {
       subtipo:st,
       cuantia:num('cuantia'),
+      indeterminada:chk('indeterminada'),
       numSalidasMedio:ent('numSalidasMedio',0), numSalidasDia:ent('numSalidasDia',0), gastosExtras:num('gastosExtras'),
       numClientes:ent('numClientes',1), plurVencedores:ent('plurVencedores',1), plurContrarios:ent('plurContrarios',1),
       recRev:ent('recRev',0), recRepo:ent('recRepo',0), recQueja:ent('recQueja',0),
-      aplicarIPC:chk('aplicarIPC'), ipcManual:parseFloat((ipcRaw+'').replace(',','.')), aplicarRedondeo:chk('aplicarRedondeo'), aplicarLimite:chk('aplicarLimite'),
+      aplicarIPC:chk('aplicarIPC'), ipcManual:parseFloat((ipcRaw+'').replace(',','.')), aplicarRedondeo:chk('aplicarRedondeo'),
       desOposicion:chk('desOposicion'), reclRentas:chk('reclRentas'), enerv:chk('enerv'),
       ejPre:chk('ejPre'), ejOpo:chk('ejOpo'), ejEmb:chk('ejEmb'), ejSub:chk('ejSub'),
       apelVista:chk('apelVista'), apelPrueba:chk('apelPrueba'),
@@ -964,7 +990,8 @@ resultado es inferior, la cantidad de ..........................................
     var ctx=leer();
     var isDecl2=(ctx.subtipo==='verbal'||ctx.subtipo==='ordinario');
     var reconvAdd = (ctx.reconvencion&&isDecl2) ? (ctx.reconvModo==='cuantia' ? (ctx.reconvCuantia||0) : 24000) : 0;
-    var cuantiaEf=ctx.cuantia + reconvAdd;
+    var cuantiaBase = ctx.indeterminada ? 24000 : ctx.cuantia; /* indeterminada/inestimable: base 24.000 € (LO 1/2025) */
+    var cuantiaEf=cuantiaBase + reconvAdd;
     var esc=computeEscalaBreakdown(cuantiaEf);
 
     /* Criterio + articulo (VERBATIM NORMAS) */
@@ -978,7 +1005,7 @@ resultado es inferior, la cantidad de ..........................................
     /* Honorarios por norma (VERBATIM de calcular()) */
     var cfg=PROC[ctx.subtipo]||{minimo:0,normaPct:1};
     var normaPct=cfg.normaPct, minimo=cfg.minimo||0;
-    if(ctx.subtipo==='ar_fp'){ var basePct=0.75; if(ctx.desOposicion) basePct+=0.25; if(ctx.reclRentas) basePct+=0.25; normaPct=basePct; }
+    if(ctx.subtipo==='ar_fp'){ var basePct=ctx.desOposicion?1.00:0.75; if(ctx.reclRentas) basePct*=1.25; normaPct=basePct; } /* art.18 (75/100%) y art.19: +25% MULTIPLICATIVO sobre el resultado del art.18, no aditivo al % */
     if(ctx.subtipo==='monitorio_con'){ normaPct=0.10; minimo=150; }
     var minimoNormaMostrar=minimo;
     if(ctx.subtipo==='ar_fp' && ctx.reclRentas) minimoNormaMostrar=600;
@@ -1051,12 +1078,12 @@ resultado es inferior, la cantidad de ..........................................
 
     /* Limite del tercio (VERBATIM limiteUnTercio) */
     var lim=limiteUnTercio(cuantiaEf,false);
-    if(q('vhLimite')) q('vhLimite').textContent = eur(lim) + (ctx.aplicarLimite ? '' : ' (no aplicado)');
+    if(q('vhLimite')) q('vhLimite').textContent = eur(lim);
 
     /* IPC (VERBATIM) */
     var totalIPC=total;
     var aplicar=!!ctx.aplicarIPC;
-    var varIPC = isFinite(ctx.ipcManual) ? ctx.ipcManual : 31.6;
+    var varIPC = isFinite(ctx.ipcManual) ? ctx.ipcManual : 32.03;
     if(aplicar && isFinite(varIPC)) totalIPC = total*(1+varIPC/100);
 
     /* Redondeo a cifra natural (opcional) */
@@ -1065,23 +1092,35 @@ resultado es inferior, la cantidad de ..........................................
       var paso = totalIPC<=500 ? 25 : (totalIPC<=2000 ? 50 : 100);
       totalFinal = Math.ceil(totalIPC/paso)*paso;
     }
-    /* Tope del tercio (art. 394.3 LEC) — solo en tasación de costas; con o sin redondeo */
-    if(ctx.aplicarLimite && isFinite(lim) && lim>0 && totalFinal>lim){ totalFinal = lim; }
 
-    /* IVA 21% (VERBATIM) */
-    var iva=totalFinal*0.21;
-    var conIva=totalFinal+iva;
+    /* DOBLE RESULTADO:
+       - Cliente: base redondeada SIN tope (honorarios íntegros).
+       - Costas: la misma base, topada al tercio (art. 394.3 LEC). El IVA se
+         calcula sobre el importe YA topado. */
+    var baseCliente = totalFinal;
+    var baseCostas  = (isFinite(lim) && lim>0 && baseCliente>lim) ? lim : baseCliente;
+    var muerde = (isFinite(lim) && lim>0 && baseCliente>lim);
+    var recorte = muerde ? (baseCliente - baseCostas) : 0;
 
-    /* Salidas a la interfaz */
+    var ivaCliente=baseCliente*0.21, conIvaCliente=baseCliente+ivaCliente;
+    var ivaCostas =baseCostas*0.21,  conIvaCostas =baseCostas+ivaCostas;
+
+    /* KPIs superiores (4): la cifra de referencia es la base redondeada sin tope */
     if(q('kpiBaremo'))   q('kpiBaremo').innerHTML   = eurKpi(total);
     if(q('kpiIPC'))      q('kpiIPC').innerHTML      = eurKpi(totalIPC);
-    if(q('kpiRedondeo')) q('kpiRedondeo').innerHTML = eurKpi(totalFinal);
-    if(q('kpiTotalIVA')) q('kpiTotalIVA').innerHTML = eurKpi(conIva);
-    if(q('vhBaseFinal')) q('vhBaseFinal').textContent = eur(totalFinal);
-    if(q('vhIVA'))       q('vhIVA').textContent       = eur(iva);
-    if(q('vhTotalIVA'))  q('vhTotalIVA').textContent  = eur(conIva);
+    if(q('kpiRedondeo')) q('kpiRedondeo').innerHTML = eurKpi(baseCliente);
 
-    LAST={ctx:ctx, total:total, totalIPC:totalIPC, totalFinal:totalFinal, iva:iva, conIva:conIva, varIPC:varIPC, aplicar:aplicar, redondeo:ctx.aplicarRedondeo, numero:numero, extracto:extracto, prec:prec, lim:lim};
+    /* Doble bloque final */
+    if(q('clienteTotal')) q('clienteTotal').textContent = eur(conIvaCliente);
+    if(q('clienteSub'))   q('clienteSub').textContent   = 'Sin tope · '+eur(baseCliente)+' + IVA';
+    if(q('costasTotal'))  q('costasTotal').textContent  = eur(conIvaCostas);
+    var costasSub=q('costasSub');
+    if(costasSub){
+      if(muerde){ costasSub.classList.add('bite'); costasSub.textContent = 'Topado a 1/3 (art. 394.3 LEC): −'+eur(recorte)+' · '+eur(baseCostas)+' + IVA'; }
+      else { costasSub.classList.remove('bite'); costasSub.textContent = 'Sin recorte · coincide con la minuta (límite '+eur(lim)+')'; }
+    }
+
+    LAST={ctx:ctx, total:total, totalIPC:totalIPC, baseCliente:baseCliente, baseCostas:baseCostas, muerde:muerde, recorte:recorte, conIvaCliente:conIvaCliente, conIvaCostas:conIvaCostas, ivaCliente:ivaCliente, ivaCostas:ivaCostas, varIPC:varIPC, aplicar:aplicar, redondeo:ctx.aplicarRedondeo, numero:numero, extracto:extracto, prec:prec, lim:lim};
     updateGenSummary(ctx);
     updateCriterioTexto();
   }
@@ -1103,23 +1142,46 @@ resultado es inferior, la cantidad de ..........................................
     var grupo=(document.querySelector('.navlink.sel')&&document.querySelector('.navlink.sel').getAttribute('data-grupo'))||'monitorio';
     var L=[];
     L.push('CALCULADORA DE HONORARIOS ICALI — Artigas Abogados');
-    L.push('Escala ICALI (Colegio de Abogados de Alicante) · revisión IPC +'+ (isFinite(c.varIPC)?c.varIPC.toString().replace('.',','):'31,60') +' %');
+    L.push('Escala ICALI (Colegio de Abogados de Alicante) · revisión IPC +'+ (isFinite(c.varIPC)?c.varIPC.toString().replace('.',','):'32,03') +' %');
     L.push('');
     L.push('Procedimiento: '+(GRUPO_LABEL[grupo]||grupo));
     L.push('Subtipo: '+subtipoText(ctx.subtipo));
     L.push('Cuantía del procedimiento: '+eur(ctx.cuantia));
     L.push('');
     L.push('Base baremo (criterio ICALI): '+eur(c.total));
-    L.push('IPC ('+(c.aplicar?('+'+(isFinite(c.varIPC)?c.varIPC.toString().replace('.',','):'31,60')+' %'):'no aplicado')+'): '+eur(c.totalIPC));
-    L.push('Redondeo a cifra natural: '+(c.redondeo?eur(c.totalFinal):'no aplicado'));
-    L.push('IVA (21 %): '+eur(c.iva));
-    L.push('TOTAL CON IVA: '+eur(c.conIva));
+    L.push('IPC ('+(c.aplicar?('+'+(isFinite(c.varIPC)?c.varIPC.toString().replace('.',','):'32,03')+' %'):'no aplicado')+'): '+eur(c.totalIPC));
+    L.push('Redondeo a cifra natural: '+(c.redondeo?eur(c.baseCliente):'no aplicado'));
     L.push('');
-    L.push('Límite del tercio (art. 394.3 LEC): '+eur(c.lim));
+    L.push('— MINUTA AL CLIENTE (sin tope) —');
+    L.push('Base: '+eur(c.baseCliente)+'  ·  IVA (21 %): '+eur(c.ivaCliente)+'  ·  TOTAL: '+eur(c.conIvaCliente));
+    L.push('');
+    L.push('— TASACIÓN DE COSTAS (límite del tercio, art. 394.3 LEC) —');
+    L.push('Límite del tercio (cuantía/3): '+eur(c.lim));
+    if(c.muerde) L.push('Recorte por el tope: −'+eur(c.recorte));
+    L.push('Base: '+eur(c.baseCostas)+'  ·  IVA (21 %): '+eur(c.ivaCostas)+'  ·  TOTAL: '+eur(c.conIvaCostas));
+    L.push('');
     L.push('Preceptividad: '+(c.prec.preceptiva?'intervención preceptiva':'no procede tasación'));
     L.push('Criterio aplicable — '+c.numero.replace(/^Art\.?\s*/i,'Art. ')+': '+c.extracto);
     var txt=L.join('\n');
     var done=function(){ var b=q('btnCopiar'); if(!b) return; var old=b.innerHTML; b.classList.add('ok'); b.innerHTML='Copiado ✓'; setTimeout(function(){ b.classList.remove('ok'); b.innerHTML=old; },1600); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, function(){ fallbackCopy(txt); done(); }); }
+    else { fallbackCopy(txt); done(); }
+  }
+
+  /* Copia una sola cifra CON su rótulo de destino (evita pegar el número equivocado) */
+  function copiarImporte(destino){
+    if(!LAST) calcular();
+    var c=LAST;
+    var txt, btnId;
+    if(destino==='costas'){
+      txt='Honorarios (tasación de costas): '+eur(c.conIvaCostas)+' (IVA incluido)'+(c.muerde?' — topado al tercio, art. 394.3 LEC':'');
+      btnId='copyCostas';
+    } else {
+      txt='Honorarios (minuta al cliente): '+eur(c.conIvaCliente)+' (IVA incluido)';
+      btnId='copyCliente';
+    }
+    var b=q(btnId);
+    var done=function(){ if(!b) return; var old=b.textContent; b.classList.add('ok'); b.textContent='Copiado ✓'; setTimeout(function(){ b.classList.remove('ok'); b.textContent=old; },1600); };
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, function(){ fallbackCopy(txt); done(); }); }
     else { fallbackCopy(txt); done(); }
   }
@@ -1151,6 +1213,8 @@ resultado es inferior, la cantidad de ..........................................
 
     var gt=q('genToggle'); if(gt){ gt.addEventListener('click', function(){ var body=q('genBody'); var box=q('boxGenerales'); if(body) body.classList.toggle('hidden'); if(box) box.classList.toggle('open'); }); }
     var btnCopiar=q('btnCopiar'); if(btnCopiar) btnCopiar.addEventListener('click', copiarDesglose);
+    var cc=q('copyCliente'); if(cc) cc.addEventListener('click', function(){ copiarImporte('cliente'); });
+    var ck=q('copyCostas'); if(ck) ck.addEventListener('click', function(){ copiarImporte('costas'); });
     var btnLimpiar=q('btnLimpiar'); if(btnLimpiar) btnLimpiar.addEventListener('click', function(){ location.reload(); });
   }
 
@@ -1210,7 +1274,7 @@ resultado es inferior, la cantidad de ..........................................
   function refreshIpcConfirm(){
     var el=q('ipcManual'), row=q('ipcConfirm'); if(!el||!row) return;
     var cur=(el.value||'').trim();
-    var sv=ipcSaved(); var savedEff=(sv!==null && sv!=='') ? sv : '31,60';
+    var sv=ipcSaved(); var savedEff=(sv!==null && sv!=='') ? sv : '32,03';
     if(cur!=='' && cur!==savedEff){ if(q('ipcConfVal')) q('ipcConfVal').textContent=cur; row.classList.remove('hidden'); }
     else { row.classList.add('hidden'); }
   }
@@ -1219,7 +1283,7 @@ resultado es inferior, la cantidad de ..........................................
     initEscala();
     var ipcEl=q('ipcManual'); if(ipcEl){ ipcEl.addEventListener('input', refreshIpcConfirm); }
     var g=q('ipcGuardar'); if(g){ g.addEventListener('click', function(){ try{ localStorage.setItem(IPC_KEY, (q('ipcManual').value||'').trim()); }catch(e){} refreshIpcConfirm(); }); }
-    var d=q('ipcDescartar'); if(d){ d.addEventListener('click', function(){ var sv=ipcSaved(); q('ipcManual').value=(sv!==null && sv!=='')?sv:'31,60'; refreshIpcConfirm(); calcular(); }); }
+    var d=q('ipcDescartar'); if(d){ d.addEventListener('click', function(){ var sv=ipcSaved(); q('ipcManual').value=(sv!==null && sv!=='')?sv:'32,03'; refreshIpcConfirm(); calcular(); }); }
   }
   document.addEventListener('DOMContentLoaded', init);
 
