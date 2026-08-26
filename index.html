@@ -111,6 +111,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .kpi-in .lab{color:var(--ocre)}
 .kpi-in .valwrap{margin-top:9px;display:flex;align-items:baseline;gap:3px}
 .kpiInput{flex:0 0 auto;field-sizing:content;width:5.5ch;min-width:0;max-width:calc(100% - 1.3em);border:none;background:transparent;outline:none;padding:0;font-family:var(--sans);font-size:26px;font-weight:600;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-align:left}
+/* Fallback Safari (sin field-sizing): el ancho se ajusta por JS en ch — ver ajustaAnchoCuantia() */
 .kpiInput::placeholder{color:var(--ink-300)}
 .kpi-in .cur{font-size:15px;font-weight:500;color:var(--ink-400)}
 /* Layout dos columnas */
@@ -141,6 +142,8 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .checks{display:flex;flex-flow:row wrap;gap:9px 18px;margin-top:12px}
 .checks .ck{flex:0 1 auto}
+/* Fases de ejecución: rejilla fija 2×2 (27.1-27.2 arriba, 27.3 a-b abajo) */
+#boxEjecucion .checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 18px}
 .ck{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-700);cursor:pointer}
 .ck input{width:16px;height:16px;accent-color:var(--grafito);cursor:pointer}
 .ipcbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -878,6 +881,16 @@ resultado es inferior, la cantidad de ..........................................
 
   function limiteUnTercio(cuantia,inestimable){ var base=inestimable?24000:cuantia; return (base||0)/3; }
 
+  /* Fallback para navegadores sin field-sizing:content (Safari): ajusta el
+     ancho del input de cuantía en ch según lo tecleado, para que importes
+     largos (1.000,47 / 1.234.567,89) no queden cortados. */
+  function ajustaAnchoCuantia(){
+    var el=q('cuantia'); if(!el) return;
+    if(window.CSS && CSS.supports && CSS.supports('field-sizing','content')) return;
+    var len=Math.max((el.value||el.placeholder||'').length, 4);
+    el.style.width=(len+0.75)+'ch';
+  }
+
   function checkPreceptividad(ctx){
     var cef = ctx.indeterminada ? 24000 : ctx.cuantia; /* base efectiva: la indeterminada (24.000 €) siempre supera el umbral */
     if(ctx.subtipo==='monitorio_lph') return {preceptiva:true,texto:'Intervención preceptiva'};
@@ -1221,7 +1234,8 @@ resultado es inferior, la cantidad de ..........................................
     var btnCT=q('btnCriterioTexto');
     if(btnCT){ btnCT.addEventListener('click', function(ev){ ev.preventDefault(); criterioOpen=!criterioOpen; updateCriterioTexto(); }); }
 
-    document.addEventListener('input', function(){ calcular(); });
+    /* Fallback Safari: ver ajustaAnchoCuantia() definida a nivel de módulo. */
+  document.addEventListener('input', function(){ calcular(); ajustaAnchoCuantia(); });
     document.addEventListener('change', function(){ calcular(); });
 
     var gt=q('genToggle'); if(gt){ gt.addEventListener('click', function(){ var body=q('genBody'); var box=q('boxGenerales'); if(body) body.classList.toggle('hidden'); if(box) box.classList.toggle('open'); }); }
@@ -1291,7 +1305,7 @@ resultado es inferior, la cantidad de ..........................................
     if(cur!=='' && cur!==savedEff){ if(q('ipcConfVal')) q('ipcConfVal').textContent=cur; row.classList.remove('hidden'); }
     else { row.classList.add('hidden'); }
   }
-  function init(){ bind(); restoreIPC(); pintarSubtipos('monitorio'); calcular();
+  function init(){ bind(); restoreIPC(); pintarSubtipos('monitorio'); calcular(); ajustaAnchoCuantia();
     bindMoney('cuantia'); bindMoney('gastosExtras'); bindMoney('reconvCuantia'); bindMoney('cautelarCuantia'); bindMoney('recCuantiaImporte');
     initEscala();
     var ipcEl=q('ipcManual'); if(ipcEl){ ipcEl.addEventListener('input', refreshIpcConfirm); }
