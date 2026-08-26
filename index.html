@@ -106,6 +106,11 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .kpi .lab{font-family:var(--geo);text-transform:uppercase;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--ink-400)}
 .kpi .val{margin-top:9px;font-size:26px;font-weight:600;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 .kpi .val .cur{font-size:15px;font-weight:500;color:var(--ink-400);margin-left:2px}
+/* Derivación por mínimo del baremo bajo el KPI: "122,33 € → 150,00 € (mínimo)" */
+.minderiv{margin-top:5px;font-size:11.5px;color:var(--ink-400);font-variant-numeric:tabular-nums}
+.minderiv .tach{text-decoration:line-through;opacity:.7}
+.minderiv .arrow{margin:0 4px;color:var(--ocre)}
+.minderiv .minlab{color:var(--ocre);font-weight:600}
 .kpi.kpi-in{border-color:var(--ocre);box-shadow:0 1px 2px rgba(201,122,30,.14)}
 .kpi.kpi-in:focus-within{box-shadow:0 0 0 2px rgba(201,122,30,.22)}
 .kpi-in .lab{color:var(--ocre)}
@@ -385,7 +390,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 
     <div class="kpis">
       <div class="kpi kpi-in" id="kpiCuantia"><div class="lab">Cuantía</div><div class="valwrap"><input id="cuantia" type="text" inputmode="decimal" class="kpiInput" placeholder="0,00"><span class="cur">&euro;</span></div></div>
-      <div class="kpi"><div class="lab">Total baremo</div><div class="val" id="kpiBaremo">&mdash;</div></div>
+      <div class="kpi"><div class="lab">Total baremo</div><div class="val" id="kpiBaremo">&mdash;</div><div class="minderiv hidden" id="kpiBaremoMin"></div></div>
       <div class="kpi"><div class="lab">Resultado IPC</div><div class="val" id="kpiIPC">&mdash;</div></div>
       <div class="kpi"><div class="lab">Base + redondeo</div><div class="val" id="kpiRedondeo">&mdash;</div></div>
     </div>
@@ -465,12 +470,11 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
           <div class="grp hidden" id="boxEjecucion">
             <div class="gt">Fases de ejecución</div>
             <div class="checks">
-              <label class="ck"><input type="checkbox" id="ejPre"> Pre-apremio (20&nbsp;%, mín. 150&euro;)</label>
-              <label class="ck"><input type="checkbox" id="ejOpo"> Oposición (20&nbsp;%, mín. 300&euro;)</label>
-              <label class="ck"><input type="checkbox" id="ejEmb"> Embargos (10&nbsp;%)*</label>
-              <label class="ck"><input type="checkbox" id="ejSub"> Subasta (10&nbsp;%)*</label>
+              <label class="ck"><input type="checkbox" id="ejPre"> Pre-apremio (20&nbsp;%)</label>
+              <label class="ck"><input type="checkbox" id="ejOpo"> Oposición (20&nbsp;%)</label>
+              <label class="ck"><input type="checkbox" id="ejEmb"> Embargos (10&nbsp;%)</label>
+              <label class="ck"><input type="checkbox" id="ejSub"> Subasta (10&nbsp;%)</label>
             </div>
-            <div class="hint" style="margin-top:6px">* Embargos y subasta (art. 27.3): mínimo conjunto de 150&nbsp;&euro; sobre la suma de ambas.</div>
           </div>
 
           <!-- Recurso de apelación (vista / prueba) -->
@@ -1049,6 +1053,10 @@ resultado es inferior, la cantidad de ..........................................
       basePorNormaSinMin = esc.total*(normaPct||0); aplicaMinNorma = (minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar); importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
     }
 
+    /* Captura para la derivación por mínimo del KPI (antes de enervación
+       y demás modificadores, que alterarían las cifras mostradas) */
+    var minDerivFrom=basePorNormaSinMin, minDerivTo=importeNormaBase, minDerivAplica=aplicaMinNorma;
+
     /* Enervacion (desahucio) */
     if(ctx.subtipo==='ar_fp' && ctx.enerv){ importeNormaBase = importeNormaBase*0.75; }
 
@@ -1133,6 +1141,18 @@ resultado es inferior, la cantidad de ..........................................
 
     /* KPIs superiores (4): la cifra de referencia es la base redondeada sin tope */
     if(q('kpiBaremo'))   q('kpiBaremo').innerHTML   = eurKpi(total);
+    /* Derivación por mínimo del baremo (universal, todos los subtipos):
+       si el cálculo por tabla no llega al mínimo del criterio, se muestra
+       el resultado tachado → el mínimo aplicado. */
+    var md=q('kpiBaremoMin');
+    if(md){
+      if(minDerivAplica && minDerivFrom<minDerivTo){
+        md.innerHTML='<span class="tach">'+eur(minDerivFrom)+'</span><span class="arrow">&rarr;</span>'+eur(minDerivTo)+' <span class="minlab">mínimo baremo</span>';
+        md.classList.remove('hidden');
+      } else {
+        md.innerHTML=''; md.classList.add('hidden');
+      }
+    }
     if(q('kpiIPC'))      q('kpiIPC').innerHTML      = eurKpi(totalIPC);
     if(q('kpiRedondeo')) q('kpiRedondeo').innerHTML = eurKpi(baseCliente);
 
