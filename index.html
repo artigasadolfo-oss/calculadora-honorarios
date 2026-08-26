@@ -462,11 +462,12 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
           <div class="grp hidden" id="boxEjecucion">
             <div class="gt">Fases de ejecución</div>
             <div class="checks">
-              <label class="ck"><input type="checkbox" id="ejPre"> Pre-apremio (20&nbsp;%)</label>
-              <label class="ck"><input type="checkbox" id="ejOpo"> Oposición (20&nbsp;%)</label>
-              <label class="ck"><input type="checkbox" id="ejEmb"> Embargos (10&nbsp;%)</label>
-              <label class="ck"><input type="checkbox" id="ejSub"> Subasta (10&nbsp;%)</label>
+              <label class="ck"><input type="checkbox" id="ejPre"> Pre-apremio (20&nbsp;%, mín. 150&euro;)</label>
+              <label class="ck"><input type="checkbox" id="ejOpo"> Oposición (20&nbsp;%, mín. 300&euro;)</label>
+              <label class="ck"><input type="checkbox" id="ejEmb"> Embargos (10&nbsp;%)*</label>
+              <label class="ck"><input type="checkbox" id="ejSub"> Subasta (10&nbsp;%)*</label>
             </div>
+            <div class="hint" style="margin-top:6px">* Embargos y subasta (art. 27.3): mínimo conjunto de 150&nbsp;&euro; sobre la suma de ambas.</div>
           </div>
 
           <!-- Recurso de apelación (vista / prueba) -->
@@ -659,7 +660,7 @@ var ESCALA = [
     ordinario:{numero:'Art. 15',extracto:'Ordinario: Escala íntegra; mín. 2.000 €. Sesión AP/juicio extra: 150 €.'},
     ar_fp:{numero:'Art. 18',extracto:'Desahucio: 75% sin oposición / 100% con oposición. Mín. 500 € (600 € con reclamación de rentas).'},
     ar_precario:{numero:'Art. 14',extracto:'Precario: 40% de la Escala; mín. 800 €.'},
-    ejecucion:{numero:'Art. 27',extracto:'Pre-apremio 20%, Oposición 20%, Embargos 10%, Subasta 10%.'},
+    ejecucion:{numero:'Art. 27',extracto:'Pre-apremio 20% (mín. 150 €), Oposición 20% (mín. 300 €), Apremio: Embargos 10% + Subasta 10% (mín. conjunto 150 €).'},
     recurso_apelacion:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia (mín. 150 €). Vista +10% y Prueba +10% (mín. 150 € cada una).'},
     recurso_apelacion_parcial:{numero:'Art. 50',extracto:'Base 50% de la escala (mín. 300 €). Vista +10% y Prueba +10% (mín. 150 € cada una).'}
   };
@@ -1012,9 +1013,21 @@ resultado es inferior, la cantidad de ..........................................
 
     var basePorNormaSinMin, aplicaMinNorma, importeNormaBase;
     if(ctx.subtipo==='ejecucion'){
-      var sumaPct=0;
-      if(ctx.ejPre){ sumaPct+=0.20; } if(ctx.ejOpo){ sumaPct+=0.20; } if(ctx.ejEmb){ sumaPct+=0.10; } if(ctx.ejSub){ sumaPct+=0.10; }
-      basePorNormaSinMin = esc.total * sumaPct; aplicaMinNorma=false; importeNormaBase=basePorNormaSinMin;
+      /* Art. 27: mínimos POR APARTADO del texto literal ICALI (corregido 26/08/2026):
+         27.1 pre-apremio 20% mín 150 · 27.2 oposición 20% mín 300 ·
+         27.3 apremio a) embargos 10% + b) subasta 10% con UN único mínimo de 150 sobre la suma a+b.
+         Si el resultado por tabla es inferior al mínimo, aplica el mínimo. */
+      var sumaPct=0, sumaEj=0, minEj=0, aplicaMinEj=false;
+      if(ctx.ejPre){ sumaPct+=0.20; var t1=esc.total*0.20; if(t1<150){ t1=150; aplicaMinEj=true; } sumaEj+=t1; minEj+=150; }
+      if(ctx.ejOpo){ sumaPct+=0.20; var t2=esc.total*0.20; if(t2<300){ t2=300; aplicaMinEj=true; } sumaEj+=t2; minEj+=300; }
+      if(ctx.ejEmb || ctx.ejSub){
+        var t3=0;
+        if(ctx.ejEmb){ sumaPct+=0.10; t3+=esc.total*0.10; }
+        if(ctx.ejSub){ sumaPct+=0.10; t3+=esc.total*0.10; }
+        if(t3<150){ t3=150; aplicaMinEj=true; }
+        sumaEj+=t3; minEj+=150;
+      }
+      basePorNormaSinMin = esc.total * sumaPct; minimoNormaMostrar=minEj; aplicaMinNorma=aplicaMinEj; importeNormaBase=sumaEj;
     } else if(ctx.subtipo==='recurso_apelacion'){
       basePorNormaSinMin = esc.total * 0.50; minimoNormaMostrar=150; aplicaMinNorma = basePorNormaSinMin<minimoNormaMostrar; importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
     } else if(ctx.subtipo==='recurso_apelacion_parcial'){
