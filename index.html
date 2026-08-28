@@ -477,17 +477,23 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
             </div>
           </div>
 
-          <!-- Recurso de apelación (1ª instancia / vista / prueba) -->
-          <div class="grp hidden" id="boxRecursoApel">
-            <div class="gt">Recurso de apelación</div>
+          <!-- Recurso: procedimiento de 1ª instancia (art. 50 y art. 51.3/.4/.5) -->
+          <div class="grp hidden" id="boxRecursoInstancia">
+            <div class="gt">Procedimiento de primera instancia</div>
+            <div class="subnote" id="recInstNota">Base de cálculo: los honorarios que devengó (o habría devengado) la primera instancia.</div>
             <div class="selwrap mini" style="margin-bottom:8px">
-              <select class="bigselect" id="apelInstancia" title="Procedimiento de primera instancia sobre cuyos honorarios se calcula el 50 % del art. 50.1">
+              <select class="bigselect" id="apelInstancia" title="Procedimiento de primera instancia sobre cuyos honorarios se calcula el porcentaje del recurso">
                 <option value="ordinario">1.ª instancia: Juicio ordinario (art. 15)</option>
                 <option value="verbal">1.ª instancia: Juicio verbal por cuantía (art. 13)</option>
                 <option value="ar_fp">1.ª instancia: Desahucio falta de pago (arts. 18-19)</option>
                 <option value="ar_precario">1.ª instancia: Precario (art. 14.1)</option>
               </select>
             </div>
+          </div>
+
+          <!-- Recurso de apelación (vista / prueba / sesiones) -->
+          <div class="grp hidden" id="boxRecursoApel">
+            <div class="gt">Recurso de apelación</div>
             <div class="checks">
               <label class="ck"><input type="checkbox" id="apelVista"> Vista en la Audiencia (+10&nbsp;%, mín. 150&euro;)</label>
               <label class="ck"><input type="checkbox" id="apelPrueba"> Práctica de prueba (+10&nbsp;%, mín. 150&euro;)</label>
@@ -667,7 +673,11 @@ var ESCALA = [
     ],
     recursos:[
       {value:'recurso_apelacion',text:'Recurso de apelación'},
-      {value:'recurso_apelacion_parcial',text:'Recurso de apelación (impugnación parcial)'}
+      {value:'recurso_apelacion_parcial',text:'Recurso de apelación (impugnación parcial)'},
+      {value:'recurso_esp_audiencia',text:'Proceso especial en la Audiencia en 1.ª instancia (art. 51.2)'},
+      {value:'recurso_rescision',text:'Rescisión de sentencia firme / audiencia al rebelde (art. 51.3)'},
+      {value:'recurso_revision_firmes',text:'Revisión de sentencias firmes (art. 51.4)'},
+      {value:'recurso_casacion_inadm',text:'Casación: tramitación con inadmisión (art. 51.5)'}
     ]
   };
 
@@ -681,7 +691,11 @@ var ESCALA = [
     ar_precario:{numero:'Art. 14',extracto:'Precario: 40% de la Escala; mín. 800 €.'},
     ejecucion:{numero:'Art. 27',extracto:'Pre-apremio 20% (mín. 150 €), Oposición 20% (mín. 300 €), Apremio: Embargos 10% + Subasta 10% (mín. conjunto 150 €).'},
     recurso_apelacion:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia (con su mínimo). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final: 1.000 € ordinario · 500 € verbal especial · 300 € general.'},
-    recurso_apelacion_parcial:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia sobre lo que sea objeto de alzada (art. 50.4). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final 300 €.'}
+    recurso_apelacion_parcial:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia sobre lo que sea objeto de alzada (art. 50.4). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final 300 €.'},
+    recurso_esp_audiencia:{numero:'Art. 51.2',extracto:'Procesos especiales que conozca la Audiencia en primera instancia: la Escala en su integridad. Mín. 2.000 €.'},
+    recurso_rescision:{numero:'Art. 51.3',extracto:'Rescisión de sentencias firmes y nueva audiencia al demandado rebelde: 50% de lo que corresponda a la primera instancia del juicio que se pretende anular. Mín. 500 €.'},
+    recurso_revision_firmes:{numero:'Art. 51.4',extracto:'Procesos de revisión de sentencias firmes: 75% de los honorarios de la primera instancia. Sin mínimo propio en el baremo.'},
+    recurso_casacion_inadm:{numero:'Art. 51.5',extracto:'Tramitación del recurso de casación ante el órgano que dictó la resolución, en el supuesto de inadmisión: 75% de los honorarios de primera instancia. Sin mínimo propio en el baremo.'}
   };
 
   var CRITERIO_TEXTOS = {
@@ -849,7 +863,23 @@ En todo caso, se establece como criterio, si el resultado es inferior, la cantid
 Se establece como criterio, para las apelaciones de los juicios verbales especiales, si
 el resultado es inferior, la cantidad de .................................................................................... 500 €
 Se establece como criterio, para las apelaciones de los juicios ordinarios, si el
-resultado es inferior, la cantidad de ...................................................................................... 1.000 €`
+resultado es inferior, la cantidad de ...................................................................................... 1.000 €`,
+    recurso_esp_audiencia: `Artículo 51.- OTROS RECURSOS.
+2.- En los procesos especiales que conociese la Audiencia en primera instancia se
+aplicará la Escala en su integridad.
+Se establece como criterio, si el resultado es inferior, la cantidad de .................... 2.000 €`,
+    recurso_rescision: `Artículo 51.- OTROS RECURSOS.
+3.- En los recursos de rescisión de sentencias firmes y nueva audiencia al
+demandado rebelde, se devengará el 50% de lo que corresponda a la
+primera instancia del juicio que se pretende anular.
+Se establece como criterio, si el resultado es inferior, la cantidad de ........................ 500 €`,
+    recurso_revision_firmes: `Artículo 51.- OTROS RECURSOS.
+4.- Por los procesos de revisión de sentencias firmes se devengará el 75% de los
+honorarios de la primera instancia.`,
+    recurso_casacion_inadm: `Artículo 51.- OTROS RECURSOS.
+5.- Por la tramitación del recurso de casación ante el órgano que haya dictado la
+resolución, en el supuesto de inadmisión del recurso, se devengará el 75% de los
+Honorarios de primera instancia.`
   };
 
   var PROC={
@@ -862,8 +892,38 @@ resultado es inferior, la cantidad de ..........................................
     ar_precario:{minimo:800,normaPct:0.40},
     ejecucion:{minimo:0,normaPct:0},
     recurso_apelacion:{minimo:150,normaPct:null},
-    recurso_apelacion_parcial:{minimo:300,normaPct:0.50}
+    recurso_apelacion_parcial:{minimo:300,normaPct:0.50},
+    /* Art. 51 — otros recursos. El % se aplica sobre los HONORARIOS DE 1ª
+       INSTANCIA (51.3/.4/.5), salvo el 51.2 que va sobre la Escala íntegra. */
+    recurso_esp_audiencia:{minimo:2000,normaPct:1},
+    recurso_rescision:{minimo:500,normaPct:null},
+    recurso_revision_firmes:{minimo:0,normaPct:null},
+    recurso_casacion_inadm:{minimo:0,normaPct:null}
   };
+
+  /* Art. 51 ICALI — otros recursos. Verificado contra el PDF oficial
+     (Cap. Decimocuarto, pág. 37) el 28/08/2026.
+       51.1  revisión, reposición y queja: 300 € c/u; si el acto recurrido tiene
+             cuantía propia, 15% de la Escala «con el mismo criterio anterior»
+             (es decir, con ese mismo mínimo de 300 €). Se liquidan como recursos
+             ACCESORIOS dentro del procedimiento, no como subtipo.
+       51.2  procesos especiales que conozca la Audiencia en 1ª instancia:
+             Escala íntegra, mín. 2.000 €.
+       51.3  rescisión de firmes / audiencia al rebelde: 50% de lo que
+             corresponda a la 1ª instancia del juicio que se pretende anular,
+             mín. 500 €.
+       51.4  revisión de sentencias firmes: 75% de los honorarios de 1ª instancia.
+       51.5  casación ante el órgano a quo con inadmisión: 75% de los honorarios
+             de 1ª instancia.
+     Los apartados 4 y 5 NO fijan mínimo propio: el baremo no lo establece y no
+     se inventa (quedaría el general del art. 3 si el dictamen lo aplicara). */
+  var ART51={PCT_RESCISION:0.50, PCT_REVISION:0.75, PCT_CASACION_INADM:0.75,
+             MIN_51_1:300, PCT_51_1_CUANTIA:0.15,
+             MIN_ESP_AUDIENCIA:2000, MIN_RESCISION:500};
+  /* Subtipos del art. 51 cuya base son los honorarios de 1ª instancia. */
+  var ART51_SOBRE_1I={recurso_rescision:ART51.PCT_RESCISION,
+                      recurso_revision_firmes:ART51.PCT_REVISION,
+                      recurso_casacion_inadm:ART51.PCT_CASACION_INADM};
 
   /* ── Art. 50 ICALI — recurso de apelación ──────────────────────────────
      Criterio unificado con calc_icali.py (skill honorarios-icali) el 28/08/2026.
@@ -998,7 +1058,10 @@ resultado es inferior, la cantidad de ..........................................
     var isDecl=(st==='verbal'||st==='ordinario');
     var isDesah=(st==='ar_fp'||st==='ar_precario');
     var isEjec=(st==='ejecucion');
-    var isRec=(st.indexOf('recurso_')===0);
+    var isApel=(st==='recurso_apelacion'||st==='recurso_apelacion_parcial');
+    /* El selector de 1ª instancia lo necesitan la apelación (art. 50) y los
+       apartados 3, 4 y 5 del art. 51; NO el 51.2, que va sobre la Escala. */
+    var necesita1i=isApel||(st==='recurso_rescision')||(st==='recurso_revision_firmes')||(st==='recurso_casacion_inadm');
     var isMon=(st.indexOf('monitorio')===0);
     show('boxFases', isDecl||isDesah);
     show('faseAPwrap', st==='ordinario');
@@ -1007,8 +1070,17 @@ resultado es inferior, la cantidad de ..........................................
     show('boxDecl', isDecl);
     show('boxDesahucio', st==='ar_fp');
     show('boxEjecucion', isEjec);
-    show('boxRecursoApel', isRec);
+    show('boxRecursoInstancia', necesita1i);
+    show('boxRecursoApel', isApel);
     show('legEspWrap', isDecl);
+    var nota=q('recInstNota');
+    if(nota){
+      nota.textContent = isApel
+        ? 'Art. 50.1: el 50 % se calcula sobre los honorarios que devengó la primera instancia (incluido su mínimo), no sobre la Escala.'
+        : (st==='recurso_rescision'
+            ? 'Art. 51.3: el 50 % se calcula sobre lo que corresponda a la primera instancia del juicio que se pretende anular.'
+            : 'Art. 51.4 y 51.5: el 75 % se calcula sobre los honorarios de la primera instancia.');
+    }
   }
 
   function parseMoney(str){
@@ -1126,6 +1198,15 @@ resultado es inferior, la cantidad de ..........................................
          tras sumar vista y prueba. Aquí solo se arrastra la base. */
       aplicaMinNorma = false;
       importeNormaBase = basePorNormaSinMin;
+    } else if(ART51_SOBRE_1I[ctx.subtipo]){
+      /* Art. 51.3/.4/.5: porcentaje sobre los HONORARIOS DE 1ª INSTANCIA del
+         juicio que se pretende anular o revisar (misma base que el art. 50). */
+      var _i51 = ctx.apelInstancia||'ordinario';
+      var _h51 = honorariosPrimeraInstancia(_i51, esc.total, ctx).importe;
+      basePorNormaSinMin = _h51 * ART51_SOBRE_1I[ctx.subtipo];
+      minimoNormaMostrar = PROC[ctx.subtipo].minimo||0;
+      aplicaMinNorma = (minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar);
+      importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
     } else {
       basePorNormaSinMin = esc.total*(normaPct||0); aplicaMinNorma = (minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar); importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
     }
@@ -1186,8 +1267,14 @@ resultado es inferior, la cantidad de ..........................................
     total += Math.max(0, ctx.sesionesExtra||0)*150;
 
     /* Recursos: fijos 300 € c/u + con cuantía (15% de la escala de SU propia cuantía) */
-    var recConCuantiaImporte = Math.max(0, ctx.recConCuantia||0) * (computeEscalaBreakdown(ctx.recCuantiaImporte||0).total * 0.15);
-    var recFixedTotal = ((ctx.recRepo||0)+(ctx.recRev||0)+(ctx.recQueja||0)) * 300 + recConCuantiaImporte;
+    /* Recursos accesorios del art. 51.1: revisión, reposición y queja, 300 € cada
+       uno. Si el acto recurrido tiene cuantía propia, el 15% de la Escala de ESA
+       cuantía «con el mismo criterio anterior», es decir, con el mismo mínimo de
+       300 € por recurso (corregido 28/08/2026: antes se liquidaba el 15% pelado,
+       sin mínimo, y minutaba de menos en actos de cuantía baja). */
+    var recUnitConCuantia = Math.max(computeEscalaBreakdown(ctx.recCuantiaImporte||0).total * ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1);
+    var recConCuantiaImporte = Math.max(0, ctx.recConCuantia||0) * recUnitConCuantia;
+    var recFixedTotal = ((ctx.recRepo||0)+(ctx.recRev||0)+(ctx.recQueja||0)) * ART51.MIN_51_1 + recConCuantiaImporte;
     total += recFixedTotal;
 
     /* Pluralidad (VERBATIM aplicarPluralidades: lee DOM) */
