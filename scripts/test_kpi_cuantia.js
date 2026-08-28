@@ -95,6 +95,37 @@ const IMPORTES = [
   console.log('─'.repeat(92));
   console.log(`  ${IMPORTES.length - fallos}/${IMPORTES.length} importes se muestran correctamente`);
 
+  /* ── Superficie de escritura ──────────────────────────────────────────────
+     Con la casilla vacía tiene que haber sitio cómodo donde pinchar: si el
+     input midiera solo lo que ocupa el placeholder («0,00», ~54 px) queda una
+     franja finísima y es incómodo empezar a escribir (aviso del letrado,
+     28/08/2026). Y pinchar en cualquier punto de la tarjeta debe enfocar. */
+  const MIN_SUPERFICIE = 100;
+  const zona = await page.evaluate((minW) => {
+    const el = document.getElementById('cuantia');
+    el.value = '';
+    el.dispatchEvent(new Event('input', {bubbles: true}));
+    el.blur();
+    const ancho = el.getBoundingClientRect().width;
+
+    // Pinchar en la franja vacía de la derecha de la tarjeta
+    const card = document.getElementById('kpiCuantia');
+    const r = card.getBoundingClientRect();
+    const ev = new MouseEvent('click', {bubbles: true, clientX: r.right - 30, clientY: r.bottom - 20});
+    (document.elementFromPoint(r.right - 30, r.bottom - 20) || card).dispatchEvent(ev);
+
+    return {ancho, enfoca: document.activeElement === el, minW};
+  }, MIN_SUPERFICIE);
+
+  const anchoOk = zona.ancho >= MIN_SUPERFICIE;
+  if (!anchoOk) fallos++;
+  if (!zona.enfoca) fallos++;
+  console.log('');
+  console.log(`  Superficie con la casilla vacía: ${zona.ancho.toFixed(0)} px ` +
+              `(mínimo ${MIN_SUPERFICIE}) ${anchoOk ? '✅' : '❌'}`);
+  console.log(`  Pinchar en zona vacía de la tarjeta enfoca la casilla: ` +
+              `${zona.enfoca ? '✅' : '❌'}`);
+
   await browser.close();
   process.exit(fallos ? 1 : 0);
 })();

@@ -111,7 +111,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .minderiv .tach{text-decoration:line-through;opacity:.7}
 .minderiv .arrow{margin:0 4px;color:var(--ocre)}
 .minderiv .minlab{color:var(--ocre);font-weight:600}
-.kpi.kpi-in{border-color:var(--ocre);box-shadow:0 1px 2px rgba(201,122,30,.14)}
+.kpi.kpi-in{border-color:var(--ocre);box-shadow:0 1px 2px rgba(201,122,30,.14);cursor:text}
 .kpi.kpi-in:focus-within{box-shadow:0 0 0 2px rgba(201,122,30,.22)}
 .kpi-in .lab{color:var(--ocre)}
 .kpi-in .valwrap{margin-top:9px;display:flex;align-items:baseline;gap:3px;max-width:100%;overflow:hidden}
@@ -1047,11 +1047,19 @@ Honorarios de primera instancia.`
      Si el conjunto número + € no cabe en la tarjeta, se reduce el cuerpo de
      letra hasta un mínimo legible: preferible letra algo menor a una cifra
      oculta, que en una minuta es un error de lectura.
+
+     ANCHO MÍNIMO (28/08/2026, a petición del letrado): con la casilla vacía el
+     input medía lo que el placeholder («0,00», unos 54 px) y quedaba una franja
+     finísima donde pinchar para escribir. Ahora nunca baja de MIN_W px, así que
+     el € arranca desplazado a la derecha y hay superficie cómoda desde el
+     primer dígito, sin que el símbolo quede flotando a media tarjeta. A partir
+     de ahí el € sigue acompañando al número conforme crece. Además, pinchar en
+     cualquier punto de la tarjeta enfoca el input (ver más abajo).
      Corregido 28/08/2026 tras aviso del letrado. */
   function ajustaAnchoCuantia(){
     var el=q('cuantia'); if(!el) return;
     var wrap=el.parentNode, cur=wrap?wrap.querySelector('.cur'):null;
-    var FONT_MAX=26, FONT_MIN=15;
+    var FONT_MAX=26, FONT_MIN=15, MIN_W=104;
 
     /* Hueco disponible = ancho útil de la tarjeta menos el € y su separación. */
     var dispon=wrap.clientWidth;
@@ -1067,10 +1075,22 @@ Honorarios de primera instancia.`
       px-=1;
     }
     el.style.fontSize=px+'px';
-    /* +2px de holgura para el cursor; nunca por encima del hueco. */
-    el.style.width=Math.min(Math.ceil(w)+2, Math.floor(dispon))+'px';
+    /* +2px de holgura para el cursor; suelo de superficie clicable; y nunca
+       por encima del hueco disponible. */
+    var ancho=Math.min(Math.max(Math.ceil(w)+2, MIN_W), Math.floor(dispon));
+    el.style.width=ancho+'px';
   }
   window.addEventListener('resize', ajustaAnchoCuantia);
+  /* Toda la tarjeta «Cuantía» es zona de escritura: pinchar en cualquier punto
+     (incluida la franja vacía bajo el número) lleva el foco al input y coloca
+     el cursor al final. Sin esto había que acertar en la línea del texto. */
+  document.addEventListener('click', function(ev){
+    var card=ev.target.closest && ev.target.closest('#kpiCuantia');
+    if(!card) return;
+    var el=q('cuantia'); if(!el || ev.target===el) return;
+    el.focus();
+    try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){}
+  });
 
   function checkPreceptividad(ctx){
     var cef = ctx.indeterminada ? 24000 : ctx.cuantia; /* base efectiva: la indeterminada (24.000 €) siempre supera el umbral */
