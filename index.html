@@ -477,6 +477,18 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
             </div>
           </div>
 
+          <!-- Art. 51.1 como procedimiento propio -->
+          <div class="grp hidden" id="boxRec511">
+            <div class="gt">Revisión, reposición o queja (art. 51.1)</div>
+            <div class="subnote">300 &euro; por recurso. Si el acto recurrido tiene cuant&iacute;a propia, el 15&nbsp;% de la Escala de <b>esa</b> cuant&iacute;a &laquo;con el mismo criterio anterior&raquo;, es decir, con el mismo m&iacute;nimo de 300 &euro;.</div>
+            <div class="checks">
+              <label class="ck"><input type="checkbox" id="rec511Cuantia"> El acto recurrido tiene cuant&iacute;a propia (15&nbsp;% de la Escala)</label>
+            </div>
+            <div class="checks" style="margin-top:6px">
+              <label class="ck">N&ordm; de recursos <input type="number" id="rec511Num" min="1" step="1" value="1" style="width:56px"></label>
+            </div>
+          </div>
+
           <!-- Recurso: procedimiento de 1ª instancia (art. 50 y art. 51.3/.4/.5) -->
           <div class="grp hidden" id="boxRecursoInstancia">
             <div class="gt">Procedimiento de primera instancia</div>
@@ -674,6 +686,7 @@ var ESCALA = [
     recursos:[
       {value:'recurso_apelacion',text:'Recurso de apelación'},
       {value:'recurso_apelacion_parcial',text:'Recurso de apelación (impugnación parcial)'},
+      {value:'recurso_51_1',text:'Revisión, reposición o queja (art. 51.1)'},
       {value:'recurso_esp_audiencia',text:'Proceso especial en la Audiencia en 1.ª instancia (art. 51.2)'},
       {value:'recurso_rescision',text:'Rescisión de sentencia firme / audiencia al rebelde (art. 51.3)'},
       {value:'recurso_revision_firmes',text:'Revisión de sentencias firmes (art. 51.4)'},
@@ -692,6 +705,7 @@ var ESCALA = [
     ejecucion:{numero:'Art. 27',extracto:'Pre-apremio 20% (mín. 150 €), Oposición 20% (mín. 300 €), Apremio: Embargos 10% + Subasta 10% (mín. conjunto 150 €).'},
     recurso_apelacion:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia (con su mínimo). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final: 1.000 € ordinario · 500 € verbal especial · 300 € general.'},
     recurso_apelacion_parcial:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia sobre lo que sea objeto de alzada (art. 50.4). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final 300 €.'},
+    recurso_51_1:{numero:'Art. 51.1',extracto:'Revisión, reposición y queja: 300 € por recurso. Si el acto recurrido tiene cuantía propia, 15 % de la Escala de esa cuantía, con el mismo mínimo de 300 €.'},
     recurso_esp_audiencia:{numero:'Art. 51.2',extracto:'Procesos especiales que conozca la Audiencia en primera instancia: la Escala en su integridad. Mín. 2.000 €.'},
     recurso_rescision:{numero:'Art. 51.3',extracto:'Rescisión de sentencias firmes y nueva audiencia al demandado rebelde: 50% de lo que corresponda a la primera instancia del juicio que se pretende anular. Mín. 500 €.'},
     recurso_revision_firmes:{numero:'Art. 51.4',extracto:'Procesos de revisión de sentencias firmes: 75% de los honorarios de la primera instancia. Sin mínimo propio en el baremo.'},
@@ -864,6 +878,11 @@ Se establece como criterio, para las apelaciones de los juicios verbales especia
 el resultado es inferior, la cantidad de .................................................................................... 500 €
 Se establece como criterio, para las apelaciones de los juicios ordinarios, si el
 resultado es inferior, la cantidad de ...................................................................................... 1.000 €`,
+    recurso_51_1: `Artículo 51.- OTROS RECURSOS.
+1.- Por los recursos de revisión, reposición y queja, se establece como criterio ...........
+300 €
+Si el acto recurrido tiene cuantía propia se devengará el 15% de la Escala con el
+mismo criterio anterior.`,
     recurso_esp_audiencia: `Artículo 51.- OTROS RECURSOS.
 2.- En los procesos especiales que conociese la Audiencia en primera instancia se
 aplicará la Escala en su integridad.
@@ -893,6 +912,7 @@ Honorarios de primera instancia.`
     ejecucion:{minimo:0,normaPct:0},
     recurso_apelacion:{minimo:150,normaPct:null},
     recurso_apelacion_parcial:{minimo:300,normaPct:0.50},
+    recurso_51_1:{minimo:300,normaPct:null},
     /* Art. 51 — otros recursos. El % se aplica sobre los HONORARIOS DE 1ª
        INSTANCIA (51.3/.4/.5), salvo el 51.2 que va sobre la Escala íntegra. */
     recurso_esp_audiencia:{minimo:2000,normaPct:1},
@@ -1072,6 +1092,7 @@ Honorarios de primera instancia.`
     show('boxEjecucion', isEjec);
     show('boxRecursoInstancia', necesita1i);
     show('boxRecursoApel', isApel);
+    show('boxRec511', st==='recurso_51_1');
     show('legEspWrap', isDecl);
     var nota=q('recInstNota');
     if(nota){
@@ -1115,6 +1136,7 @@ Honorarios de primera instancia.`
       ejPre:chk('ejPre'), ejOpo:chk('ejOpo'), ejEmb:chk('ejEmb'), ejSub:chk('ejSub'),
       apelVista:chk('apelVista'), apelPrueba:chk('apelPrueba'),
       apelInstancia:(q('apelInstancia')&&q('apelInstancia').value)||'ordinario',
+      rec511Cuantia:chk('rec511Cuantia'), rec511Num:ent('rec511Num',1),
       apelSesVista:ent('apelSesVista',0), apelSesPrueba:ent('apelSesPrueba',0),
       faseAleg:chk('faseAleg'), faseAP:chk('faseAP'), faseVista:chk('faseVista'),
       sesionesExtra:ent('sesionesExtra',0),
@@ -1198,6 +1220,18 @@ Honorarios de primera instancia.`
          tras sumar vista y prueba. Aquí solo se arrastra la base. */
       aplicaMinNorma = false;
       importeNormaBase = basePorNormaSinMin;
+    } else if(ctx.subtipo==='recurso_51_1'){
+      /* Art. 51.1 como procedimiento propio: 300 € por recurso, o el 15% de la
+         Escala de la cuantía propia del acto recurrido «con el mismo criterio
+         anterior» (mismo mínimo de 300 € por recurso). */
+      var _n511 = Math.max(1, ctx.rec511Num||1);
+      var _u511 = ctx.rec511Cuantia
+        ? Math.max(esc.total * ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1)
+        : ART51.MIN_51_1;
+      basePorNormaSinMin = _n511 * (ctx.rec511Cuantia ? esc.total * ART51.PCT_51_1_CUANTIA : ART51.MIN_51_1);
+      minimoNormaMostrar = _n511 * ART51.MIN_51_1;
+      aplicaMinNorma = (_u511 === ART51.MIN_51_1 && ctx.rec511Cuantia);
+      importeNormaBase = _n511 * _u511;
     } else if(ART51_SOBRE_1I[ctx.subtipo]){
       /* Art. 51.3/.4/.5: porcentaje sobre los HONORARIOS DE 1ª INSTANCIA del
          juicio que se pretende anular o revisar (misma base que el art. 50). */

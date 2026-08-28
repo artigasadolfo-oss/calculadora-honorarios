@@ -153,6 +153,37 @@ def comparar_art51_1():
     return div
 
 
+def comparar_art51_1_subtipo():
+    """El subtipo rec_51_1 (art. 51.1 como procedimiento) debe dar en el script
+    lo mismo que en la app. Valores esperados derivados del texto del baremo."""
+    # (cuantia, con_cuantia_propia, n, esperado)
+    casos = [
+        (0,      False, 1, 300.0),
+        (0,      False, 3, 900.0),
+        (1000,   True,  1, 300.0),      # 15% de 354 = 53,10 -> mínimo 300
+        (3000,   True,  1, 300.0),      # 15% de 810 = 121,50 -> mínimo 300
+        (30000,  True,  1, 709.50),     # 15% de 4.730
+        (60000,  True,  1, 1114.50),    # 15% de 7.430
+        (60000,  True,  2, 2229.00),
+    ]
+    div = []
+    for cuantia, propia, n, esperado in casos:
+        args = [sys.executable, CALC, "--subtipo", "rec_51_1",
+                "--cuantia", str(cuantia), "--rec-num", str(n)]
+        if propia:
+            args.append("--rec-cuantia-propia")
+        r = subprocess.run(args, capture_output=True, text=True, cwd=os.path.dirname(CALC))
+        m = re.search(r"Importe base:\s+([\d.,]+)", r.stdout)
+        if not m:
+            div.append(f"cuantia={cuantia} propia={propia} n={n}: ERROR {r.stderr[:80]}")
+            continue
+        got = float(m.group(1).replace(".", "").replace(",", "."))
+        if abs(got - esperado) > 0.01:
+            div.append(f"cuantia={cuantia} propia={propia} n={n}: "
+                       f"script {got:.2f} vs esperado {esperado:.2f}")
+    return div, len(casos)
+
+
 def main():
     casos = json.load(open(CASOS, encoding="utf-8"))
     div, err, ok = [], [], 0
@@ -195,7 +226,16 @@ def main():
         for msg in div511:
             print(f"  {msg}")
 
-    return 1 if (div or err or div51 or div511) else 0
+    # ── Art. 51.1 como SUBTIPO propio (rec_51_1) ───────────────────────────
+    div511s, n511s = comparar_art51_1_subtipo()
+    print(f"\nArt. 51.1 subtipo — casos comparados: {n511s}  ·  "
+          f"coinciden: {n511s - len(div511s)}  ·  divergen: {len(div511s)}")
+    if div511s:
+        print("DIVERGENCIAS art. 51.1 (subtipo):")
+        for msg in div511s:
+            print(f"  {msg}")
+
+    return 1 if (div or err or div51 or div511 or div511s) else 0
 
 
 if __name__ == "__main__":
