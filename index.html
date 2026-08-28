@@ -114,11 +114,13 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .kpi.kpi-in{border-color:var(--ocre);box-shadow:0 1px 2px rgba(201,122,30,.14)}
 .kpi.kpi-in:focus-within{box-shadow:0 0 0 2px rgba(201,122,30,.22)}
 .kpi-in .lab{color:var(--ocre)}
-.kpi-in .valwrap{margin-top:9px;display:flex;align-items:baseline;gap:3px}
-.kpiInput{flex:0 0 auto;field-sizing:content;width:5.5ch;min-width:0;max-width:calc(100% - 1.3em);border:none;background:transparent;outline:none;padding:0;font-family:var(--sans);font-size:26px;font-weight:600;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-align:left}
-/* Fallback Safari (sin field-sizing): el ancho se ajusta por JS en ch — ver ajustaAnchoCuantia() */
+.kpi-in .valwrap{margin-top:9px;display:flex;align-items:baseline;gap:3px;max-width:100%;overflow:hidden}
+.kpiInput{flex:0 1 auto;field-sizing:content;width:5.5ch;min-width:0;max-width:100%;border:none;background:transparent;outline:none;padding:0;font-family:var(--sans);font-size:26px;font-weight:600;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-align:left}
+/* El ancho y el cuerpo de letra los ajusta ajustaAnchoCuantia() en todos los
+   navegadores: el € va pegado al número y se desplaza a la derecha al teclear;
+   si el conjunto no cabe, encoge la letra en vez de ocultar cifras. */
 .kpiInput::placeholder{color:var(--ink-300)}
-.kpi-in .cur{font-size:15px;font-weight:500;color:var(--ink-400)}
+.kpi-in .cur{flex:0 0 auto;font-size:15px;font-weight:500;color:var(--ink-400)}
 /* Layout dos columnas */
 .cols{display:grid;grid-template-columns:1.45fr 1fr;gap:16px;align-items:start}
 .colr{display:flex;flex-direction:column;gap:16px}
@@ -1030,15 +1032,45 @@ Honorarios de primera instancia.`
 
   function limiteUnTercio(cuantia,inestimable){ var base=inestimable?24000:cuantia; return (base||0)/3; }
 
-  /* Fallback para navegadores sin field-sizing:content (Safari): ajusta el
-     ancho del input de cuantía en ch según lo tecleado, para que importes
-     largos (1.000,47 / 1.234.567,89) no queden cortados. */
+  /* Ancho del input de cuantía del KPI.
+     El € (.cur) va INMEDIATAMENTE detrás del número y se desplaza a la derecha
+     conforme se teclea, en lugar de estar clavado al borde tapando cifras.
+
+     Método: se mide el ancho REAL del contenido con el propio scrollWidth del
+     input, poniéndolo antes a width:0. Es exacto por construcción, a diferencia
+     de estimar con canvas measureText, que ignora letter-spacing y kerning y se
+     quedaba corto: con 1.234.567,89 medía 154 px cuando el navegador pintaba
+     160 y recortaba. OJO: hay que medir con width:0, porque si la caja es más
+     ancha que el texto, scrollWidth devuelve el ancho de la CAJA y no el del
+     contenido (el bucle creía que nunca cabía y encogía la letra siempre).
+
+     Si el conjunto número + € no cabe en la tarjeta, se reduce el cuerpo de
+     letra hasta un mínimo legible: preferible letra algo menor a una cifra
+     oculta, que en una minuta es un error de lectura.
+     Corregido 28/08/2026 tras aviso del letrado. */
   function ajustaAnchoCuantia(){
     var el=q('cuantia'); if(!el) return;
-    if(window.CSS && CSS.supports && CSS.supports('field-sizing','content')) return;
-    var len=Math.max((el.value||el.placeholder||'').length, 4);
-    el.style.width=(len+0.75)+'ch';
+    var wrap=el.parentNode, cur=wrap?wrap.querySelector('.cur'):null;
+    var FONT_MAX=26, FONT_MIN=15;
+
+    /* Hueco disponible = ancho útil de la tarjeta menos el € y su separación. */
+    var dispon=wrap.clientWidth;
+    if(cur) dispon-=cur.getBoundingClientRect().width+4;
+    if(dispon<40) dispon=40;
+
+    var px=FONT_MAX, w=0;
+    while(px>=FONT_MIN){
+      el.style.fontSize=px+'px';
+      el.style.width='0px';      /* medir el CONTENIDO, no la caja */
+      w=el.scrollWidth;
+      if(w<=dispon) break;
+      px-=1;
+    }
+    el.style.fontSize=px+'px';
+    /* +2px de holgura para el cursor; nunca por encima del hueco. */
+    el.style.width=Math.min(Math.ceil(w)+2, Math.floor(dispon))+'px';
   }
+  window.addEventListener('resize', ajustaAnchoCuantia);
 
   function checkPreceptividad(ctx){
     var cef = ctx.indeterminada ? 24000 : ctx.cuantia; /* base efectiva: la indeterminada (24.000 €) siempre supera el umbral */
@@ -1114,8 +1146,10 @@ Honorarios de primera instancia.`
   }
   function fmtMoneyStr(n){ var neg=n<0; n=Math.abs(n); var s=n.toFixed(2).split('.'); s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return (neg?'-':'')+s[0]+','+s[1]; }
   function bindMoney(id){ var el=q(id); if(!el) return;
-    el.addEventListener('focus', function(){ var r=el.value.trim(); if(r==='') return; var n=parseMoney(r); el.value = Number.isInteger(n)? (''+n) : (''+n).replace('.',','); });
-    el.addEventListener('blur',  function(){ if(el.value.trim()==='') return; el.value=fmtMoneyStr(parseMoney(el.value)); });
+    /* focus/blur reformatean el valor (quitan y ponen los puntos de millar), y
+       eso cambia el ancho del texto: hay que recalcular o el € queda descolocado. */
+    el.addEventListener('focus', function(){ var r=el.value.trim(); if(r==='') return; var n=parseMoney(r); el.value = Number.isInteger(n)? (''+n) : (''+n).replace('.',','); ajustaAnchoCuantia(); });
+    el.addEventListener('blur',  function(){ if(el.value.trim()==='') return; el.value=fmtMoneyStr(parseMoney(el.value)); ajustaAnchoCuantia(); });
   }
 
   function leer(){

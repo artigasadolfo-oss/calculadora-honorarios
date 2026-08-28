@@ -1,2 +1,4 @@
 .DS_Store
 scripts/casos_app.json
+node_modules
+scripts/__pycache__/
