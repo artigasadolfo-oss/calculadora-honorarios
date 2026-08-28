@@ -477,12 +477,24 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
             </div>
           </div>
 
-          <!-- Recurso de apelación (vista / prueba) -->
+          <!-- Recurso de apelación (1ª instancia / vista / prueba) -->
           <div class="grp hidden" id="boxRecursoApel">
             <div class="gt">Recurso de apelación</div>
+            <div class="selwrap mini" style="margin-bottom:8px">
+              <select class="bigselect" id="apelInstancia" title="Procedimiento de primera instancia sobre cuyos honorarios se calcula el 50 % del art. 50.1">
+                <option value="ordinario">1.ª instancia: Juicio ordinario (art. 15)</option>
+                <option value="verbal">1.ª instancia: Juicio verbal por cuantía (art. 13)</option>
+                <option value="ar_fp">1.ª instancia: Desahucio falta de pago (arts. 18-19)</option>
+                <option value="ar_precario">1.ª instancia: Precario (art. 14.1)</option>
+              </select>
+            </div>
             <div class="checks">
               <label class="ck"><input type="checkbox" id="apelVista"> Vista en la Audiencia (+10&nbsp;%, mín. 150&euro;)</label>
               <label class="ck"><input type="checkbox" id="apelPrueba"> Práctica de prueba (+10&nbsp;%, mín. 150&euro;)</label>
+            </div>
+            <div class="checks" style="margin-top:6px">
+              <label class="ck">Sesiones más de vista <input type="number" id="apelSesVista" min="0" step="1" value="0" style="width:56px"></label>
+              <label class="ck">Sesiones más de prueba <input type="number" id="apelSesPrueba" min="0" step="1" value="0" style="width:56px"></label>
             </div>
           </div>
 
@@ -668,8 +680,8 @@ var ESCALA = [
     ar_fp:{numero:'Art. 18',extracto:'Desahucio: 75% sin oposición / 100% con oposición. Mín. 500 € (600 € con reclamación de rentas).'},
     ar_precario:{numero:'Art. 14',extracto:'Precario: 40% de la Escala; mín. 800 €.'},
     ejecucion:{numero:'Art. 27',extracto:'Pre-apremio 20% (mín. 150 €), Oposición 20% (mín. 300 €), Apremio: Embargos 10% + Subasta 10% (mín. conjunto 150 €).'},
-    recurso_apelacion:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia (mín. 150 €). Vista +10% y Prueba +10% (mín. 150 € cada una).'},
-    recurso_apelacion_parcial:{numero:'Art. 50',extracto:'Base 50% de la escala (mín. 300 €). Vista +10% y Prueba +10% (mín. 150 € cada una).'}
+    recurso_apelacion:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia (con su mínimo). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final: 1.000 € ordinario · 500 € verbal especial · 300 € general.'},
+    recurso_apelacion_parcial:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia sobre lo que sea objeto de alzada (art. 50.4). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final 300 €.'}
   };
 
   var CRITERIO_TEXTOS = {
@@ -853,6 +865,59 @@ resultado es inferior, la cantidad de ..........................................
     recurso_apelacion_parcial:{minimo:300,normaPct:0.50}
   };
 
+  /* ── Art. 50 ICALI — recurso de apelación ──────────────────────────────
+     Criterio unificado con calc_icali.py (skill honorarios-icali) el 28/08/2026.
+
+     El art. 50.1 dice «el 50% de los Honorarios correspondientes a la PRIMERA
+     INSTANCIA», no «el 50% de la Escala». No es lo mismo: los honorarios de 1ª
+     instancia son los que resultan de aplicar SU propio artículo (13 verbal,
+     14.1 precario, 15 ordinario, 18-19 desahucio) INCLUIDO SU MÍNIMO. El baremo
+     distingue deliberadamente ambas expresiones: usa «de la Escala» 112 veces y
+     «Honorarios correspondientes a la primera instancia» solo 7, todas ellas en
+     recursos (arts. 50, 152, 153 y 154).
+
+     Ejemplo: ordinario de 3.000 € → escala 810 €, pero la 1ª instancia devenga
+     2.000 € (mínimo del art. 15), luego la apelación parte de 1.000 €.
+
+     Además el art. 50 cierra con TRES mínimos sobre el total de la 2ª instancia
+     (300 € general / 500 € verbal especial / 1.000 € ordinario) que esta app no
+     aplicaba: minutaba de menos en todas las apelaciones de cuantía baja. */
+  var APEL={PCT_TRAM:0.50, PCT_VISTA:0.10, PCT_PRUEBA:0.10,
+            MIN_INCREMENTO:150, SESION:150,
+            MIN_GENERAL:300, MIN_VERBAL_ESP:500, MIN_ORDINARIO:1000};
+  /* «Juicio verbal especial» aparece UNA sola vez en todo el baremo y no está
+     definido. Lectura sistemática (misma que el script): verbales por razón de
+     la MATERIA (art. 14) y arrendaticios (arts. 18-25), por contraposición al
+     verbal por razón de la CUANTÍA del art. 13. [verificar con el ICALI] */
+  var APEL_VERBALES_ESPECIALES={ar_fp:1, ar_precario:1};
+
+  /* Honorarios de la PRIMERA INSTANCIA conforme a su propio artículo, sin IPC,
+     sin redondeo y sin fases: la magnitud sobre la que opera el art. 50. */
+  function honorariosPrimeraInstancia(inst, escTotal, ctx){
+    var pct, minimo;
+    if(inst==='ar_fp'){
+      pct = ctx.desOposicion ? 1.00 : 0.75;          /* art. 18 */
+      if(ctx.reclRentas) pct *= 1.25;                 /* art. 19 */
+      minimo = ctx.reclRentas ? 600 : 500;
+    } else {
+      var cfg = PROC[inst] || PROC.ordinario;
+      pct = (cfg.normaPct==null?1:cfg.normaPct); minimo = cfg.minimo||0;
+    }
+    var base = escTotal * pct;
+    var aplicaMin = base < minimo;
+    var imp = aplicaMin ? minimo : base;
+    if(inst==='ar_fp' && ctx.enerv) imp *= 0.75;      /* enervación */
+    return {importe:imp, pct:pct, minimo:minimo, aplicaMin:aplicaMin};
+  }
+
+  /* Mínimo del art. 50 aplicable al TOTAL de la segunda instancia. */
+  function apelacionMinimo(inst, parcial){
+    if(parcial) return {valor:APEL.MIN_GENERAL, etiqueta:'art. 50.4 in fine (impugnación parcial): 300 €'};
+    if(inst==='ordinario') return {valor:APEL.MIN_ORDINARIO, etiqueta:'art. 50 in fine (apelación de juicio ordinario): 1.000 €'};
+    if(APEL_VERBALES_ESPECIALES[inst]) return {valor:APEL.MIN_VERBAL_ESP, etiqueta:'art. 50 in fine (apelación de juicio verbal especial): 500 €'};
+    return {valor:APEL.MIN_GENERAL, etiqueta:'art. 50.4 in fine (mínimo general): 300 €'};
+  }
+
   function fasePct(st,fases){
     if(st==='ordinario'){ var t=0; if(fases.aleg) t+=.60; if(fases.ap) t+=.10; if(fases.vista) t+=.30; return t||1; }
     if(st==='verbal' || st==='ar_fp' || st==='ar_precario'){ var t2=0; if(fases.aleg) t2+=.60; if(fases.vista) t2+=.40; return t2||1; }
@@ -977,6 +1042,8 @@ resultado es inferior, la cantidad de ..........................................
       desOposicion:chk('desOposicion'), reclRentas:chk('reclRentas'), enerv:chk('enerv'),
       ejPre:chk('ejPre'), ejOpo:chk('ejOpo'), ejEmb:chk('ejEmb'), ejSub:chk('ejSub'),
       apelVista:chk('apelVista'), apelPrueba:chk('apelPrueba'),
+      apelInstancia:(q('apelInstancia')&&q('apelInstancia').value)||'ordinario',
+      apelSesVista:ent('apelSesVista',0), apelSesPrueba:ent('apelSesPrueba',0),
       faseAleg:chk('faseAleg'), faseAP:chk('faseAP'), faseVista:chk('faseVista'),
       sesionesExtra:ent('sesionesExtra',0),
       finalizacion:(q('finalizacion')&&q('finalizacion').value)||'',
@@ -1045,10 +1112,20 @@ resultado es inferior, la cantidad de ..........................................
         sumaEj+=t3; minEj+=150;
       }
       basePorNormaSinMin = esc.total * sumaPct; minimoNormaMostrar=minEj; aplicaMinNorma=aplicaMinEj; importeNormaBase=sumaEj;
-    } else if(ctx.subtipo==='recurso_apelacion'){
-      basePorNormaSinMin = esc.total * 0.50; minimoNormaMostrar=150; aplicaMinNorma = basePorNormaSinMin<minimoNormaMostrar; importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
-    } else if(ctx.subtipo==='recurso_apelacion_parcial'){
-      basePorNormaSinMin = esc.total * 0.50; minimoNormaMostrar=300; aplicaMinNorma = basePorNormaSinMin<minimoNormaMostrar; importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
+    } else if(ctx.subtipo==='recurso_apelacion' || ctx.subtipo==='recurso_apelacion_parcial'){
+      /* Art. 50.1: 50% de los HONORARIOS DE 1ª INSTANCIA (no de la escala).
+         En la impugnación parcial (50.4) la base de cálculo es la parte objeto
+         de alzada, que el usuario introduce como cuantía. */
+      var _inst = ctx.apelInstancia||'ordinario';
+      var _h1i = honorariosPrimeraInstancia(_inst, esc.total, ctx);
+      basePorNormaSinMin = _h1i.importe * APEL.PCT_TRAM;
+      var _min50 = apelacionMinimo(_inst, ctx.subtipo==='recurso_apelacion_parcial');
+      minimoNormaMostrar = _min50.valor;
+      /* El mínimo del art. 50 se comprueba sobre el TOTAL de la 2ª instancia
+         (50.1 + 50.2 + 50.3), no solo sobre la tramitación: se aplica más abajo,
+         tras sumar vista y prueba. Aquí solo se arrastra la base. */
+      aplicaMinNorma = false;
+      importeNormaBase = basePorNormaSinMin;
     } else {
       basePorNormaSinMin = esc.total*(normaPct||0); aplicaMinNorma = (minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar); importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
     }
@@ -1077,10 +1154,26 @@ resultado es inferior, la cantidad de ..........................................
     if(isDecl2 && ctx.legislacionEspecial) total*=1.50;     /* legislación especial +50% */
     if(ctx.noMaterializa) total*=0.50;                      /* asuntos no materializados -50% */
 
-    /* Vista (art. 50.2) y Prueba (art. 50.3) del recurso de apelacion (VERBATIM) */
+    /* Vista (art. 50.2), Prueba (art. 50.3) y sesiones adicionales.
+       Los incrementos son el 10% de los HONORARIOS DE 1ª INSTANCIA (no de la
+       escala), cada uno con su mínimo propio de 150 €. Después se comprueba el
+       mínimo final del art. 50 sobre el TOTAL de la segunda instancia. */
     if(ctx.subtipo==='recurso_apelacion' || ctx.subtipo==='recurso_apelacion_parcial'){
-      if(ctx.apelVista){ total += Math.max(esc.total*0.10, 150); }
-      if(ctx.apelPrueba){ total += Math.max(esc.total*0.10, 150); }
+      var _i2 = ctx.apelInstancia||'ordinario';
+      var _b2 = honorariosPrimeraInstancia(_i2, esc.total, ctx).importe;
+      if(ctx.apelVista){
+        total += Math.max(_b2*APEL.PCT_VISTA, APEL.MIN_INCREMENTO);
+        total += Math.max(0, ctx.apelSesVista||0) * APEL.SESION;
+      }
+      if(ctx.apelPrueba){
+        total += Math.max(_b2*APEL.PCT_PRUEBA, APEL.MIN_INCREMENTO);
+        total += Math.max(0, ctx.apelSesPrueba||0) * APEL.SESION;
+      }
+      var _m50 = apelacionMinimo(_i2, ctx.subtipo==='recurso_apelacion_parcial');
+      if(total < _m50.valor){
+        minDerivFrom = total; minDerivTo = _m50.valor; minDerivAplica = true;
+        total = _m50.valor;
+      }
     }
 
     /* Medida cautelar (50% de la escala de su cuantía; indet. = 24.000 €) */
