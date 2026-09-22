@@ -37,9 +37,9 @@ const ctxFns = new Function(src + `
 
 // ── Réplica del flujo de cálculo de la app para apelación ───────────────────
 function appApelacion({cuantia, instancia, parcial, vista, prueba, sesVista = 0, sesPrueba = 0,
-                       desOposicion = false, reclRentas = false, enerv = false}) {
+                       desOposicion = false, reclRentas = false, enerv = false, desOrdinario = false}) {
   const esc = ctxFns.computeEscalaBreakdown(cuantia);
-  const ctx = {desOposicion, reclRentas, enerv};
+  const ctx = {desOposicion, reclRentas, enerv, desOrdinario};
   const h1i = ctxFns.honorariosPrimeraInstancia(instancia, esc.total, ctx).importe;
   let total = h1i * ctxFns.APEL.PCT_TRAM;
   if (vista) {
@@ -93,6 +93,11 @@ CASOS.push({cuantia: 20000, instancia: 'ordinario', parcial: true,  vista: false
 CASOS.push({cuantia: 12000, instancia: 'ar_fp', parcial: false, vista: false, prueba: false, desOposicion: true});
 CASOS.push({cuantia: 12000, instancia: 'ar_fp', parcial: false, vista: false, prueba: false, reclRentas: true});
 CASOS.push({cuantia: 12000, instancia: 'ar_fp', parcial: false, vista: false, prueba: false, enerv: true});
+// H4 y H5 (23/09/2026): enervación con oposición (va sobre el apartado A) y desahucio por el ordinario
+CASOS.push({cuantia: 12000, instancia: 'ar_fp', parcial: false, vista: false, prueba: false, desOposicion: true, enerv: true});
+CASOS.push({cuantia: 9600,  instancia: 'ar_fp', parcial: false, vista: true,  prueba: false, desOposicion: true, enerv: true, reclRentas: true});
+CASOS.push({cuantia: 3000,  instancia: 'ar_fp', parcial: false, vista: false, prueba: false, desOrdinario: true});
+CASOS.push({cuantia: 3000,  instancia: 'ar_fp', parcial: false, vista: true,  prueba: true,  desOrdinario: true, reclRentas: true});
 
 const out = CASOS.map(c => ({...c, app: +appApelacion(c).toFixed(2)}));
 fs.writeFileSync(path.join(__dirname, 'casos_app.json'), JSON.stringify(out, null, 1));

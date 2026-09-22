@@ -375,7 +375,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
           <span class="ipcconftxt">¿Guardar <b id="ipcConfVal"></b>&nbsp;% como IPC vigente?</span>
           <span class="ipcconfbtns"><button type="button" id="ipcGuardar" class="ipcbtn ok">Guardar</button><button type="button" id="ipcDescartar" class="ipcbtn">Descartar</button></span>
         </div>
-        <label class="ajck"><input type="checkbox" id="aplicarRedondeo" checked> Redondeo a cifra natural</label>
+        <label class="ajck"><input type="checkbox" id="aplicarRedondeo" checked> Redondeo a cifra natural (criterio del despacho)</label>
       </div>
     </div>
     <div class="user"><div class="av">AA</div><div><div class="un">Adolfo Artigas</div><div class="ur">Despacho</div></div></div>
@@ -406,7 +406,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
           <div class="sublabel">Subtipo de procedimiento</div>
           <div class="selwrap"><select id="subtipo" class="bigselect"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
 
-          <label class="ck" id="indetWrap" style="margin-top:12px"><input type="checkbox" id="indeterminada"> Cuantía indeterminada / inestimable (base 24.000&euro;)</label>
+          <label class="ck" id="indetWrap" style="margin-top:12px"><input type="checkbox" id="indeterminada"> Cuantía indeterminada / inestimable (criterio del artículo; 24.000&nbsp;&euro; solo para el tope del tercio)</label>
 
           <!-- Distribución por fases (declarativos / desahucios) -->
           <div class="grp hidden" id="boxFases">
@@ -423,29 +423,33 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
           <div class="grp hidden" id="boxDecl">
             <div class="gt">Incidencias del declarativo</div>
             <div class="checks">
-              <label class="ck"><input type="checkbox" id="derivaMonitorio"> Deriva de oposición a monitorio (+10&nbsp;%)</label>
+              <label class="ck"><input type="checkbox" id="derivaMonitorio"> Viene de monitorio con oposición (art. 48: +10&nbsp;% de la Escala, mín. 150&euro;)</label>
               <label class="ck"><input type="checkbox" id="reconvencion"> Reconvención (+&nbsp;base)</label>
               <label class="ck"><input type="checkbox" id="medidaCautelar"> Medida cautelar</label>
             </div>
             <div class="subopt hidden" id="reconvOpt">
               <span class="sublbl2">Reconvención</span>
-              <div class="selwrap mini"><select id="reconvModo" class="bigselect"><option value="indet">Indeterminada (+24.000&euro;)</option><option value="cuantia">Cuantía determinada</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+              <div class="selwrap mini"><select id="reconvModo" class="bigselect"><option value="indet">Indeterminada (+500&euro; verbal / +2.000&euro; ordinario)</option><option value="cuantia">Cuantía determinada</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
               <div class="moneywrap mininum hidden" id="reconvCuantiaWrap"><input id="reconvCuantia" type="text" inputmode="decimal" placeholder="Cuantía"><span class="eurotag">&euro;</span></div>
             </div>
             <div class="subopt hidden" id="cautelarOpt">
-              <span class="sublbl2">Medida cautelar</span>
-              <div class="selwrap mini"><select id="cautelarModo" class="bigselect"><option value="indet">Indeterminada (+24.000&euro;)</option><option value="cuantia">Cuantía determinada</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
-              <div class="moneywrap mininum hidden" id="cautelarCuantiaWrap"><input id="cautelarCuantia" type="text" inputmode="decimal" placeholder="Cuantía"><span class="eurotag">&euro;</span></div>
+              <span class="sublbl2">Medida cautelar (art. 33)</span>
+              <div class="selwrap mini"><select id="cautelarTramite" class="bigselect"><option value="733">Art. 733.2 LEC, sin vista (20&nbsp;%)</option><option value="734" selected>Art. 734 LEC, con vista (30&nbsp;%)</option><option value="739">Arts. 739-741 LEC (40&nbsp;%)</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+              <div class="selwrap mini"><select id="cautelarModo" class="bigselect"><option value="cuantia">Determinada: sobre la caución</option><option value="indet">Indeterminada (400&euro;)</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+              <div class="moneywrap mininum hidden" id="cautelarCuantiaWrap"><input id="cautelarCuantia" type="text" inputmode="decimal" placeholder="Caución"><span class="eurotag">&euro;</span></div>
+              <div class="hint" id="cautelarHint"></div>
             </div>
+            <div class="fld" style="margin-top:12px"><label for="sentenciaCuantia">Condena por menos de lo pedido: cuantía de la sentencia (solo tasación de costas; arts. 13 y 15.B)</label><div class="moneywrap"><input id="sentenciaCuantia" type="text" inputmode="decimal" placeholder="Vacío si condena a todo lo pedido"><span class="eurotag">&euro;</span></div></div>
           </div>
 
           <!-- Opciones de desahucio -->
           <div class="grp hidden" id="boxDesahucio">
             <div class="gt">Opciones de desahucio</div>
             <div class="checks">
-              <label class="ck"><input type="checkbox" id="desOposicion"> Con oposición (+25&nbsp;%)</label>
+              <label class="ck"><input type="checkbox" id="desOposicion"> Con oposición (100&nbsp;% de la Escala en vez del 75&nbsp;%)</label>
               <label class="ck"><input type="checkbox" id="reclRentas"> Con reclamación de rentas (+25&nbsp;%, mín. 600&euro;)</label>
-              <label class="ck"><input type="checkbox" id="enerv"> Enervación (75&nbsp;%)</label>
+              <label class="ck"><input type="checkbox" id="enerv"> Enervación (75&nbsp;% de los honorarios sin oposición, apartado A)</label>
+              <label class="ck"><input type="checkbox" id="desOrdinario"> Tramitado por el cauce del juicio ordinario (mín. 2.000&euro;)</label>
             </div>
           </div>
 
@@ -458,7 +462,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
           <!-- Finalización anticipada -->
           <div class="grp hidden" id="boxFinalizacion">
             <div class="gt">Finalización anticipada del procedimiento</div>
-            <div class="selwrap"><select id="finalizacion" class="bigselect"><option value="">Ninguna (proceso completo)</option><option value="allanamiento">Allanamiento</option><option value="renuncia">Renuncia / desistimiento (60&nbsp;%)</option><option value="transaccion">Transacción (+25&nbsp;%)</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+            <div class="selwrap"><select id="finalizacion" class="bigselect"><option value="">Ninguna (proceso completo)</option><option value="allanamiento">Allanamiento</option><option value="renuncia">Renuncia / desistimiento (verbal: 60&nbsp;%; ordinario: fases alcanzadas)</option><option value="transaccion">Transacción (+25&nbsp;%)</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
             <div class="subopt col hidden" id="allanOpt">
               <div class="miniflds">
                 <div class="fld"><label for="allanParte">Parte que minutas</label><div class="selwrap"><select id="allanParte" class="bigselect"><option value="demandante">Demandante</option><option value="demandado">Demandado</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div></div>
@@ -466,6 +470,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
               </div>
               <div class="hint" id="allanHint"></div>
             </div>
+            <div class="hint hidden" id="renunciaHint"></div>
           </div>
 
           <!-- Fases de ejecución -->
@@ -477,6 +482,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
               <label class="ck"><input type="checkbox" id="ejEmb"> Embargos (10&nbsp;%)</label>
               <label class="ck"><input type="checkbox" id="ejSub"> Subasta (10&nbsp;%)</label>
             </div>
+            <div class="hint hidden" id="ejHint">Sin ninguna fase marcada no hay importe: marca las actuaciones hechas.</div>
           </div>
 
           <!-- Art. 51.1 como procedimiento propio -->
@@ -526,26 +532,29 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
         <div class="hd collap-h" id="genToggle"><div class="ht">Disposiciones generales</div><span class="gensum" id="genSummary"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
         <div class="bd hidden" id="genBody">
               <div class="gensec">
-                <div class="sublabel">Gastos</div>
+                <div class="sublabel">Salidas y suplidos</div>
                 <div class="row3">
                   <div class="fld"><label for="numSalidasMedio">Salidas 1/2 día (150&euro;)</label><input id="numSalidasMedio" type="number" min="0" step="1" placeholder="0"></div>
                   <div class="fld"><label for="numSalidasDia">Salidas día (250&euro;)</label><input id="numSalidasDia" type="number" min="0" step="1" placeholder="0"></div>
-                  <div class="fld"><label for="gastosExtras">Otros gastos (&euro;)</label><input id="gastosExtras" type="text" inputmode="decimal" placeholder="0,00"></div>
+                  <div class="fld"><label for="numSalidasExtranjero">Salidas al extranjero, por día (600&euro;)</label><input id="numSalidasExtranjero" type="number" min="0" step="1" placeholder="0"></div>
+                </div>
+                <div class="row2" style="margin-top:12px">
+                  <div class="fld"><label for="gastosExtras">Suplidos (&euro;)</label><input id="gastosExtras" type="text" inputmode="decimal" placeholder="0,00"><div class="glosa">Locomoción, hospedaje, alimentación: sin IPC ni IVA (DG 2.ª A)</div></div>
                 </div>
               </div>
               <div class="gensec">
                 <div class="sublabel">Pluralidad de partes</div>
                 <div class="row3">
-                  <div class="fld"><label for="plurVencedores">Letrados vencedores</label><input id="plurVencedores" type="number" min="1" step="1" placeholder="1"><div class="glosa">Prorratea el importe</div></div>
-                  <div class="fld"><label for="plurContrarios">Partes contrarias</label><input id="plurContrarios" type="number" min="1" step="1" placeholder="1"><div class="glosa">Incrementa por cada parte adicional</div></div>
-                  <div class="fld"><label for="numClientes">Nº de clientes</label><input id="numClientes" type="number" min="1" step="1" placeholder="1"><div class="glosa">Prorratea el importe</div></div>
+                  <div class="fld"><label for="plurVencedores">Letrados vencedores</label><input id="plurVencedores" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo tasación de costas (DG 2.ª F): +20&nbsp;% por cada uno y se divide</div></div>
+                  <div class="fld"><label for="plurContrarios">Partes contrarias</label><input id="plurContrarios" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo tasación de costas (DG 2.ª F): +10&nbsp;% por cada uno</div></div>
+                  <div class="fld"><label for="numClientes">Nº de clientes</label><input id="numClientes" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo minuta al cliente (DG 2.ª G): +20&nbsp;% por cada uno y se divide</div></div>
                 </div>
               </div>
               <div class="gensec">
                 <div class="sublabel">Incrementos y reducciones</div>
                 <div class="checks">
                   <label class="ck"><input type="checkbox" id="noMaterializa"> Asuntos que no se materializan (&minus;50&nbsp;%)</label>
-                  <label class="ck hidden" id="legEspWrap"><input type="checkbox" id="legislacionEspecial"> Legislación especial (+50&nbsp;%)</label>
+                  <label class="ck" id="legEspWrap"><input type="checkbox" id="legislacionEspecial"> Legislación histórica, de otra comunidad autónoma o extranjera (+50&nbsp;%, DG 3.ª)</label>
                 </div>
               </div>
               <div class="gensec">
@@ -697,12 +706,12 @@ var ESCALA = [
   };
 
   var NORMAS={
-    monitorio_lph:{numero:'Art. 47',extracto:'Monitorio (PH): 50% Escala (mín. 150 €) y ejecución Art. 27. Preceptivo (art. 21 LPH).'},
+    monitorio_lph:{numero:'Art. 47',extracto:'Monitorio (PH): 50% Escala (mín. 150 €) y ejecución Art. 27. Honorarios a cargo del deudor con el límite del art. 394.3 LEC (art. 21.5 LPH).'},
     monitorio_sin:{numero:'Art. 47',extracto:'Monitorio sin oposición: 50% Escala (mín. 150 €).'},
     monitorio_con:{numero:'Art. 48',extracto:'Monitorio con oposición: 10% Escala (mín. 150 €). Declarativo aparte.'},
-    verbal:{numero:'Art. 13',extracto:'Verbal: Escala íntegra; mín. 500 €. Sesión extra: 150 €.'},
-    ordinario:{numero:'Art. 15',extracto:'Ordinario: Escala íntegra; mín. 2.000 €. Sesión AP/juicio extra: 150 €.'},
-    ar_fp:{numero:'Art. 18',extracto:'Desahucio: 75% sin oposición / 100% con oposición. Mín. 500 € (600 € con reclamación de rentas).'},
+    verbal:{numero:'Art. 13',extracto:'Verbal: Escala íntegra; mín. 500 €. Cuantía indeterminada: 500 € (y 500 € por cada pretensión indeterminada de la reconvención). Sesión extra: 150 €.'},
+    ordinario:{numero:'Art. 15',extracto:'Ordinario: Escala íntegra; mín. 2.000 €. Cuantía indeterminada: 2.000 € (y 2.000 € por cada pretensión indeterminada de la reconvención). Sesión AP/juicio extra: 150 €.'},
+    ar_fp:{numero:'Art. 18',extracto:'Desahucio: 75% sin oposición / 100% con oposición. Mín. 500 € (600 € con reclamación de rentas; 2.000 € si se tramita por el ordinario). Enervación: 75% de los honorarios sin oposición.'},
     ar_precario:{numero:'Art. 14',extracto:'Precario: 40% de la Escala; mín. 800 €.'},
     ejecucion:{numero:'Art. 27',extracto:'Pre-apremio 20% (mín. 150 €), Oposición 20% (mín. 300 €), Apremio: Embargos 10% + Subasta 10% (mín. conjunto 150 €).'},
     recurso_apelacion:{numero:'Art. 50',extracto:'Base 50% de los honorarios de 1ª instancia (con su mínimo). Vista +10% y Prueba +10% (mín. 150 € c/u). Mínimo final: 1.000 € ordinario · 500 € verbal especial · 300 € general.'},
@@ -978,9 +987,9 @@ Honorarios de primera instancia.`
   function honorariosPrimeraInstancia(inst, escTotal, ctx){
     var pct, minimo;
     if(inst==='ar_fp'){
-      pct = ctx.desOposicion ? 1.00 : 0.75;          /* art. 18 */
+      pct = (ctx.enerv || !ctx.desOposicion) ? 0.75 : 1.00;  /* art. 18 (enervación: siempre el apartado A) */
       if(ctx.reclRentas) pct *= 1.25;                 /* art. 19 */
-      minimo = ctx.reclRentas ? 600 : 500;
+      minimo = ctx.desOrdinario ? 2000 : (ctx.reclRentas ? 600 : 500);   /* art. 18: 2.000 € por el ordinario */
     } else {
       var cfg = PROC[inst] || PROC.ordinario;
       pct = (cfg.normaPct==null?1:cfg.normaPct); minimo = cfg.minimo||0;
@@ -1027,10 +1036,250 @@ Honorarios de primera instancia.`
     var cm=q('cautelarModo'); tog('cautelarCuantiaWrap', !!(cm&&cm.value==='cuantia'));
     var fin=q('finalizacion'); tog('allanOpt', !!(fin&&fin.value==='allanamiento'));
     var indet=q('indeterminada'), cuEl=q('cuantia'), kpi=q('kpiCuantia');
-    if(indet&&cuEl){ if(indet.checked){ cuEl.value=''; cuEl.placeholder='24.000,00 (indet.)'; cuEl.disabled=true; if(kpi) kpi.style.opacity='.5'; } else { cuEl.disabled=false; cuEl.placeholder='0,00'; if(kpi) kpi.style.opacity=''; } }
+    if(indet&&cuEl){ if(indet.checked){ cuEl.value=''; cuEl.placeholder='Indeterminada'; cuEl.disabled=true; if(kpi) kpi.style.opacity='.5'; } else { cuEl.disabled=false; cuEl.placeholder='0,00'; if(kpi) kpi.style.opacity=''; } }
+    var st=(q('subtipo')&&q('subtipo').value)||'';
+    var desOrd=!!(q('desOrdinario')&&q('desOrdinario').checked);
+    tog('faseAPwrap', st==='ordinario' || (st==='ar_fp' && desOrd));
+    var ren=q('renunciaHint');
+    if(ren){
+      var verb=(st==='verbal'||st==='ar_precario'||(st==='ar_fp'&&!desOrd));
+      var on=!!(fin&&fin.value==='renuncia'&&(st==='verbal'||st==='ordinario'||st==='ar_fp'||st==='ar_precario'));
+      ren.textContent = verb ? 'Juicio verbal: el desistimiento o la incomparecencia del actor devenga el 60 % de los honorarios (DG 2.ª D).'
+                             : 'Juicio ordinario: se cobran las fases alcanzadas (DG 2.ª D). Marca en «Distribución por fases» las que se llegaron a iniciar.';
+      tog('renunciaHint', on);
+    }
+    var ej=q('ejHint');
+    if(ej){ var sinF=!['ejPre','ejOpo','ejEmb','ejSub'].some(function(id){ var e=q(id); return e&&e.checked; }); tog('ejHint', st==='ejecucion' && sinF); }
+    var ch=q('cautelarHint');
+    if(ch){ var cmo=q('cautelarModo'); ch.textContent = (cmo&&cmo.value==='indet') ? 'Art. 33: pretensión indeterminada o inestimable, 400 €.'
+      : 'Art. 33: base, la caución fijada (o la ofrecida si se deniega), nunca menos del 15 % de la pretensión (la cuantía del procedimiento).'; }
   }
 
   function limiteUnTercio(cuantia,inestimable){ var base=inestimable?24000:cuantia; return (base||0)/3; }
+
+  /* ═════ MOTOR PURO (sin DOM) · correcciones del 23/09/2026 contra el texto del ICALI ═════
+     Todo lo que va de aquí a /*@FIN-MOTOR@* / es cálculo puro: recibe el ctx de leer() y
+     devuelve cifras. Lo usan calcular() (que solo pinta) y los contrastes de scripts/, que lo
+     extraen del HTML y lo comparan con calc_icali.py caso a caso.
+
+     H1  Cuantía indeterminada: los honorarios son el CRITERIO del artículo (verbal 500 €,
+         art. 13; ordinario 2.000 €, art. 15.C; en los demás, el criterio de su artículo,
+         DG 2.ª H «en último lugar se aplicarán los Honorarios que como criterio se prevean en
+         los correspondientes artículos»). Los 24.000 € del art. 394.3 LEC son «a estos solos
+         efectos»: solo el tope del tercio. Reconvención indeterminada: «por cada una de las
+         indeterminadas» 500 / 2.000 € que se SUMAN a la escala de lo determinado.
+     H2  Cautelar (art. 33): 20 / 30 / 40 % de la Escala según el trámite (733.2 / 734 /
+         739-741 LEC), sobre la caución, con suelo del 15 % de la pretensión; indeterminada, 400 €.
+     H3  Monitorio previo con oposición (art. 48.1): el 10 % de la Escala APARTE, mín. 150 €.
+     H4  Enervación: 75 % de los honorarios del apartado A (sin oposición), haya o no oposición.
+     H5  Desahucio por el cauce del ordinario: criterio de 2.000 € y fases del ordinario.
+     H6  Desistimiento: el 60 % solo en el verbal (DG 2.ª D, párrafo 2.º); en el ordinario,
+         lo que den las fases alcanzadas (DG 2.ª D, párrafo 1.º).
+     H7  Vencedores y contrarios (DG 2.ª F): solo tasación de costas. Varios clientes (DG 2.ª G):
+         solo minuta al cliente.
+     H8  Suplidos: fuera del IPC, del redondeo, del tope y del IVA. Salida al extranjero, 600 €/día.
+     H9  Legislación especial (DG 3.ª): en todos los procedimientos.
+     H10 Sentencia por menos de lo pedido (arts. 13 y 15.B): esa base, solo en costas.
+     H11 Tope del tercio «por cada uno de los litigantes» vencedores (art. 394.3 LEC). */
+  /*@MOTOR@*/
+  var CRIT_INDET={verbal:500, ordinario:2000};                         /* arts. 13 y 15.C-D */
+  var CAUTELAR={PCT:{'733':0.20,'734':0.30,'739':0.40}, INDET:400, SUELO:0.15};   /* art. 33 */
+  var MON48={PCT:0.10, MIN:150};                                        /* art. 48.1 y 48.3 */
+  var SALIDA={MEDIO:150, DIA:250, EXTRANJERO:600};                      /* DG 2.ª A */
+  var TOPE_INESTIMABLE=24000;                                           /* art. 394.3 LEC */
+  var SESION=150;
+
+  /* Juicio verbal a efectos de la DG 2.ª D: el verbal por cuantía, el precario y el desahucio,
+     salvo que este se haya tramitado por el cauce del ordinario. */
+  function esVerbalDG2D(ctx){ return ctx.subtipo==='verbal' || ctx.subtipo==='ar_precario' || (ctx.subtipo==='ar_fp' && !ctx.desOrdinario); }
+
+  function checkPreceptividad(ctx){
+    /* Arts. 31.2.1.º, 32.5, 539.1, 814.2 y 818.1 LEC y 21.5 LPH (leídos en el BOE, 23/09/2026).
+       La excepción de los 2.000 € es solo del verbal «por razón de la cuantía»: el ordinario y el
+       desahucio (también el precario) la exigen siempre. */
+    var st=ctx.subtipo, cef=ctx.indeterminada ? TOPE_INESTIMABLE : (ctx.cuantia||0);
+    if(st==='monitorio_lph') return {preceptiva:true, texto:'A cargo del deudor (art. 21.5 LPH)',
+      desglose:'no es preceptiva la petición inicial (art. 814.2 LEC), pero los honorarios son a cargo del deudor con el límite del art. 394.3 LEC (art. 21.5 LPH)'};
+    if(st==='monitorio_sin' || st==='monitorio_con') return {preceptiva:false, texto:'No preceptiva (art. 814.2 LEC)',
+      desglose:'no preceptiva: petición inicial sin abogado (art. 814.2 LEC); oposición con abogado si la cuantía lo exige (art. 818.1 LEC); ejecución posterior con abogado si pasa de 2.000 € (art. 539.1 LEC)'};
+    if(st==='verbal' && cef<=2000) return {preceptiva:false, texto:'No preceptiva (art. 31.2.1.º LEC)',
+      desglose:'no preceptiva (verbal por cuantía de hasta 2.000 €, art. 31.2.1.º LEC): honorarios fuera de las costas salvo art. 32.5 LEC'};
+    if(st==='ejecucion' && cef<=2000) return {preceptiva:false, texto:'No preceptiva si el título no la exigía (art. 539.1 LEC)',
+      desglose:'no preceptiva si se ejecuta una resolución de un proceso en que no lo era, o un monitorio sin oposición de hasta 2.000 € (art. 539.1 LEC)'};
+    return {preceptiva:true, texto:'Preceptiva', desglose:'intervención preceptiva'};
+  }
+
+  /* DG 2.ª F: solo a efectos de la tasación de costas. */
+  function pluralidadCostas(total, vencedores, contrarios){
+    var res=total, det=[];
+    var v=Math.max(1, vencedores||1);
+    if(v>1){ var inc=Math.min(0.20*(v-1),0.80); res=res*(1+inc)/v; det.push('Pluralidad de vencedores (DG 2.ª F) +'+Math.round(inc*100)+' % → /'+v); }
+    var c=Math.max(1, contrarios||1);
+    if(c>1){ var incC=Math.min(0.10*(c-1),0.40); res=res*(1+incC); det.push('Pluralidad de contrarios (DG 2.ª F) +'+Math.round(incC*100)+' %'); }
+    return {total:res, detalle:det};
+  }
+  /* DG 2.ª G: «sólo serán de aplicación con cargo a los clientes propios». El «20 % por cada
+     uno» se aplica por cada cliente sin contar el primero (lectura del despacho). */
+  function pluralidadCliente(total, clientes){
+    var res=total, det=[];
+    var n=Math.max(1, clientes||1);
+    if(n>1){ var incJ=0.20*(n-1); res=res*(1+incJ)/n; det.push('Varios clientes (DG 2.ª G) +'+Math.round(incJ*100)+' % → /'+n); }
+    return {total:res, detalle:det};
+  }
+
+  /* Honorarios del asunto para una cuantía de demanda dada (la pedida, o la de la sentencia
+     para las costas): antes de pluralidades, salidas, suplidos, IPC y redondeo. */
+  function nucleoHonorarios(ctx, cuDemanda){
+    var st=ctx.subtipo, det=[];
+    var isDecl2=(st==='verbal'||st==='ordinario'), isDesah=(st==='ar_fp'||st==='ar_precario');
+    var reconv=!!(ctx.reconvencion && isDecl2);
+    var nIndet=(ctx.indeterminada?1:0) + ((reconv && ctx.reconvModo!=='cuantia')?1:0);
+    var cuantiaEscala=(ctx.indeterminada?0:(cuDemanda||0)) + ((reconv && ctx.reconvModo==='cuantia')?(ctx.reconvCuantia||0):0);
+    var esc=computeEscalaBreakdown(cuantiaEscala);
+    var criterioIndet=isDecl2 ? nIndet*CRIT_INDET[st] : 0;
+    if(criterioIndet) det.push('Cuantía indeterminada: criterio de '+CRIT_INDET[st]+' € por cada pretensión indeterminada × '+nIndet+' (art. '+(st==='verbal'?'13':'15.C-D')+')');
+
+    var cfg=PROC[st]||{minimo:0,normaPct:1};
+    var normaPct=cfg.normaPct, minimo=cfg.minimo||0;
+    if(st==='ar_fp'){ var basePct=ctx.enerv?0.75:(ctx.desOposicion?1.00:0.75); if(ctx.reclRentas) basePct*=1.25; normaPct=basePct; } /* art.18 (75/100%; enervación siempre sobre el A) y art.19 (+25% multiplicativo) */
+    if(st==='monitorio_con'){ normaPct=0.10; minimo=150; }
+    var minimoNormaMostrar=minimo;
+    if(st==='ar_fp') minimoNormaMostrar = ctx.desOrdinario ? 2000 : (ctx.reclRentas ? 600 : 500);
+
+    var basePorNormaSinMin, aplicaMinNorma, importeNormaBase, sinFases=false;
+    if(st==='ejecucion'){
+      /* Art. 27: mínimos POR APARTADO (27.1: 150 · 27.2: 300 · 27.3 a+b: 150 único). */
+      var sumaPct=0, sumaEj=0, minEj=0, aplicaMinEj=false;
+      if(ctx.ejPre){ sumaPct+=0.20; var t1=esc.total*0.20; if(t1<150){ t1=150; aplicaMinEj=true; } sumaEj+=t1; minEj+=150; }
+      if(ctx.ejOpo){ sumaPct+=0.20; var t2=esc.total*0.20; if(t2<300){ t2=300; aplicaMinEj=true; } sumaEj+=t2; minEj+=300; }
+      if(ctx.ejEmb || ctx.ejSub){
+        var t3=0;
+        if(ctx.ejEmb){ sumaPct+=0.10; t3+=esc.total*0.10; }
+        if(ctx.ejSub){ sumaPct+=0.10; t3+=esc.total*0.10; }
+        if(t3<150){ t3=150; aplicaMinEj=true; }
+        sumaEj+=t3; minEj+=150;
+      }
+      sinFases=!(ctx.ejPre||ctx.ejOpo||ctx.ejEmb||ctx.ejSub);
+      basePorNormaSinMin=esc.total*sumaPct; minimoNormaMostrar=minEj; aplicaMinNorma=aplicaMinEj; importeNormaBase=sumaEj;
+    } else if(st==='recurso_apelacion' || st==='recurso_apelacion_parcial'){
+      /* Art. 50.1: 50% de los HONORARIOS DE 1ª INSTANCIA; el mínimo del art. 50 va más abajo, sobre el total. */
+      var _h1i=honorariosPrimeraInstancia(ctx.apelInstancia||'ordinario', esc.total, ctx);
+      basePorNormaSinMin=_h1i.importe*APEL.PCT_TRAM;
+      minimoNormaMostrar=apelacionMinimo(ctx.apelInstancia||'ordinario', st==='recurso_apelacion_parcial').valor;
+      aplicaMinNorma=false; importeNormaBase=basePorNormaSinMin;
+    } else if(st==='recurso_51_1'){
+      var _n511=Math.max(1, ctx.rec511Num||1);
+      var _u511=ctx.rec511Cuantia ? Math.max(esc.total*ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1) : ART51.MIN_51_1;
+      basePorNormaSinMin=_n511*(ctx.rec511Cuantia ? esc.total*ART51.PCT_51_1_CUANTIA : ART51.MIN_51_1);
+      minimoNormaMostrar=_n511*ART51.MIN_51_1;
+      aplicaMinNorma=(_u511===ART51.MIN_51_1 && ctx.rec511Cuantia);
+      importeNormaBase=_n511*_u511;
+    } else if(ART51_SOBRE_1I[st]){
+      var _h51=honorariosPrimeraInstancia(ctx.apelInstancia||'ordinario', esc.total, ctx).importe;
+      basePorNormaSinMin=_h51*ART51_SOBRE_1I[st];
+      minimoNormaMostrar=PROC[st].minimo||0;
+      aplicaMinNorma=(minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar);
+      importeNormaBase=aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
+    } else {
+      basePorNormaSinMin=esc.total*(normaPct||0) + criterioIndet;
+      aplicaMinNorma=(minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar);
+      importeNormaBase=aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
+    }
+    /* Derivación por mínimo del KPI. Con la cuantía indeterminada no hay «escala que no llega»:
+       el criterio del artículo ES el importe (DG 2.ª H), así que no se enseña tachado. */
+    var minDerivFrom=basePorNormaSinMin, minDerivTo=importeNormaBase, minDerivAplica=aplicaMinNorma && !(ctx.indeterminada && cuantiaEscala===0);
+
+    if(st==='ar_fp' && ctx.enerv) importeNormaBase=importeNormaBase*0.75;   /* art. 18 in fine */
+
+    var pctFase, esAllan=(ctx.finalizacion==='allanamiento' && (isDecl2||isDesah));
+    var esRenunciaVerbal=(ctx.finalizacion==='renuncia' && (isDecl2||isDesah) && esVerbalDG2D(ctx));
+    if(st==='ejecucion' || st.indexOf('recurso_')===0) pctFase=1;
+    else if(esAllan) pctFase=allanamientoPct(ctx.allanParte, ctx.allanMomento);
+    else if(esRenunciaVerbal) pctFase=0.60;                                   /* DG 2.ª D, verbal */
+    else pctFase=fasePct((st==='ar_fp' && ctx.desOrdinario)?'ordinario':st, {aleg:ctx.faseAleg, ap:ctx.faseAP, vista:ctx.faseVista});
+    var total=importeNormaBase*pctFase;
+
+    if(ctx.finalizacion==='transaccion' && (isDecl2||isDesah)) total*=1.25;  /* DG 2.ª E */
+    if(ctx.noMaterializa) total*=0.50;                                        /* DG 2.ª I */
+
+    if(st==='recurso_apelacion' || st==='recurso_apelacion_parcial'){
+      var _i2=ctx.apelInstancia||'ordinario';
+      var _b2=honorariosPrimeraInstancia(_i2, esc.total, ctx).importe;
+      if(ctx.apelVista){ total+=Math.max(_b2*APEL.PCT_VISTA, APEL.MIN_INCREMENTO); total+=Math.max(0, ctx.apelSesVista||0)*APEL.SESION; }
+      if(ctx.apelPrueba){ total+=Math.max(_b2*APEL.PCT_PRUEBA, APEL.MIN_INCREMENTO); total+=Math.max(0, ctx.apelSesPrueba||0)*APEL.SESION; }
+      var _m50=apelacionMinimo(_i2, st==='recurso_apelacion_parcial');
+      if(total<_m50.valor){ minDerivFrom=total; minDerivTo=_m50.valor; minDerivAplica=true; total=_m50.valor; }
+    }
+
+    /* Art. 48.1: por el monitorio, el 10 % de la Escala de lo requerido de pago, aparte, mín. 150 €. */
+    var m48=0;
+    if(isDecl2 && ctx.derivaMonitorio){
+      var e48=computeEscalaBreakdown(ctx.indeterminada?0:(ctx.cuantia||0)).total*MON48.PCT;
+      m48=Math.max(e48, MON48.MIN); total+=m48;
+      det.push('Monitorio previo con oposición (art. 48.1): 10 % de la Escala'+(e48<MON48.MIN?' → mínimo 150 €':'')+' = '+m48.toFixed(2));
+    }
+    if(ctx.legislacionEspecial) total*=1.50;                                  /* DG 3.ª */
+
+    /* Art. 33: medida cautelar. */
+    var cc=0;
+    if(isDecl2 && ctx.medidaCautelar){
+      if(ctx.cautelarModo==='indet'){ cc=CAUTELAR.INDET; det.push('Medida cautelar (art. 33), pretensión indeterminada: 400 €'); }
+      else {
+        var pret=ctx.indeterminada?0:(ctx.cuantia||0), suelo=pret*CAUTELAR.SUELO;
+        var baseC=Math.max(ctx.cautelarCuantia||0, suelo), pctC=CAUTELAR.PCT[ctx.cautelarTramite]||CAUTELAR.PCT['734'];
+        cc=computeEscalaBreakdown(baseC).total*pctC;
+        det.push('Medida cautelar (art. 33): '+Math.round(pctC*100)+' % de la Escala de '+baseC.toFixed(2)+((ctx.cautelarCuantia||0)<suelo?' (15 % de la pretensión, por encima de la caución)':' (la caución)')+' = '+cc.toFixed(2));
+      }
+      total+=cc;
+    }
+
+    if(isDecl2||isDesah) total+=Math.max(0, ctx.sesionesExtra||0)*SESION;
+
+    /* Art. 51.1 accesorios: 300 € cada uno; con cuantía propia, 15 % de SU escala con el mismo mínimo. */
+    var recUnitConCuantia=Math.max(computeEscalaBreakdown(ctx.recCuantiaImporte||0).total*ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1);
+    total+=((ctx.recRepo||0)+(ctx.recRev||0)+(ctx.recQueja||0))*ART51.MIN_51_1 + Math.max(0, ctx.recConCuantia||0)*recUnitConCuantia;
+
+    return {total:total, esc:esc, cuantiaEscala:cuantiaEscala, nIndet:nIndet, criterioIndet:criterioIndet,
+            minDerivFrom:minDerivFrom, minDerivTo:minDerivTo, minDerivAplica:minDerivAplica,
+            pctFase:pctFase, esAllan:esAllan, esRenunciaVerbal:esRenunciaVerbal, sinFases:sinFases,
+            monitorio48:m48, cautelar:cc, detalle:det};
+  }
+
+  function calcularHonorarios(ctx){
+    var st=ctx.subtipo, isDecl2=(st==='verbal'||st==='ordinario');
+    var N=nucleoHonorarios(ctx, ctx.cuantia);
+    var sentAplica=isDecl2 && !ctx.indeterminada && (ctx.sentenciaCuantia||0)>0 && ctx.sentenciaCuantia<(ctx.cuantia||0);
+    var NC=sentAplica ? nucleoHonorarios(ctx, ctx.sentenciaCuantia) : N;
+    var pc=pluralidadCliente(N.total, ctx.numClientes);
+    var pk=pluralidadCostas(NC.total, ctx.plurVencedores, ctx.plurContrarios);
+    var salidas=Math.max(0, ctx.numSalidasMedio||0)*SALIDA.MEDIO + Math.max(0, ctx.numSalidasDia||0)*SALIDA.DIA + Math.max(0, ctx.numSalidasExtranjero||0)*SALIDA.EXTRANJERO;
+    var totalCliente=pc.total+salidas, totalCostas=pk.total+salidas;
+    var suplidos=Math.max(0, ctx.gastosExtras||0);
+
+    var aplicar=!!ctx.aplicarIPC;
+    var varIPC=isFinite(ctx.ipcManual) ? ctx.ipcManual : 32.97;
+    var clienteIPC=totalCliente, costasIPC=totalCostas;
+    if(aplicar && isFinite(varIPC)){ clienteIPC=totalCliente*(1+varIPC/100); costasIPC=totalCostas*(1+varIPC/100); }
+    function redondea(x){ if(!ctx.aplicarRedondeo || !(x>0)) return x; var paso=x<=500?25:(x<=2000?50:100); return Math.ceil(x/paso)*paso; }
+    var baseCliente=redondea(clienteIPC), costasRed=redondea(costasIPC);
+
+    var cuantiaTope=(ctx.indeterminada?TOPE_INESTIMABLE:(ctx.cuantia||0)) + ((isDecl2 && ctx.reconvencion) ? (ctx.reconvModo==='cuantia'?(ctx.reconvCuantia||0):TOPE_INESTIMABLE) : 0);
+    var lim=limiteUnTercio(cuantiaTope,false), vencedores=Math.max(1, ctx.plurVencedores||1);
+    var muerde=(isFinite(lim) && lim>0 && costasRed>lim);
+    var baseCostas=muerde ? lim : costasRed, recorte=muerde ? (costasRed-baseCostas) : 0;
+    var ivaCliente=baseCliente*0.21, ivaCostas=baseCostas*0.21;
+    return {ctx:ctx, nucleo:N, nucleoCostas:NC, sentAplica:sentAplica, sinFases:N.sinFases,
+      totalCliente:totalCliente, totalCostas:totalCostas, salidas:salidas, suplidos:suplidos,
+      pluralCliente:pc.detalle, pluralCostas:pk.detalle,
+      aplicar:aplicar, varIPC:varIPC, redondeo:!!ctx.aplicarRedondeo,
+      clienteIPC:clienteIPC, costasIPC:costasIPC, baseCliente:baseCliente, costasRed:costasRed,
+      cuantiaTope:cuantiaTope, lim:lim, vencedores:vencedores, limTotal:lim*vencedores,
+      muerde:muerde, baseCostas:baseCostas, recorte:recorte,
+      ivaCliente:ivaCliente, conIvaCliente:baseCliente+ivaCliente+suplidos,
+      ivaCostas:ivaCostas, conIvaCostas:baseCostas+ivaCostas+suplidos,
+      prec:checkPreceptividad(ctx)};
+  }
+  /*@FIN-MOTOR@*/
 
   /* Ancho del input de cuantía del KPI.
      El € (.cur) va INMEDIATAMENTE detrás del número y se desplaza a la derecha
@@ -1092,28 +1341,6 @@ Honorarios de primera instancia.`
     try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){}
   });
 
-  function checkPreceptividad(ctx){
-    var cef = ctx.indeterminada ? 24000 : ctx.cuantia; /* base efectiva: la indeterminada (24.000 €) siempre supera el umbral */
-    if(ctx.subtipo==='monitorio_lph') return {preceptiva:true,texto:'Intervención preceptiva'};
-    if(ctx.subtipo==='monitorio_sin' || ctx.subtipo==='monitorio_con'){ return (cef>2000) ? {preceptiva:true,texto:'Intervención preceptiva'} : {preceptiva:false,texto:'No procede tasación'}; }
-    if((ctx.subtipo==='verbal' || ctx.subtipo==='ordinario' || ctx.subtipo==='ejecucion' || ctx.subtipo==='ar_fp' || ctx.subtipo==='ar_precario') && cef<=2000){
-      return {preceptiva:false,texto:'No procede tasación'};
-    }
-    return {preceptiva:true,texto:'Intervención preceptiva'};
-  }
-
-  function aplicarPluralidades(total){
-    var res=total, det=[];
-    var v = Math.max(1, parseInt((q('plurVencedores')&&q('plurVencedores').value)||'1',10));
-    if(v>1){ var inc=Math.min(0.20*(v-1),0.80); res = res*(1+inc)/v; det.push('Pluralidad vencedores +'+Math.round(inc*100)+'% → /'+v); }
-    var c = Math.max(1, parseInt((q('plurContrarios')&&q('plurContrarios').value)||'1',10));
-    if(c>1){ var incC=Math.min(0.10*(c-1),0.40); res = res*(1+incC); det.push('Pluralidad contrarios +'+Math.round(incC*100)+'%'); }
-    var n = Math.max(1, parseInt((q('numClientes')&&q('numClientes').value)||'1',10)||1);
-    if(n>1){ var incJ=0.20*(n-1); res=res*(1+incJ)/n; det.push('Jura múltiples +'+Math.round(incJ*100)+'% → /'+n); }
-    return {total:res,detalle:det};
-  }
-
-
   var GRUPO_LABEL = {monitorio:'Monitorios', declarativos:'Declarativos', desahucios:'Desahucios', ejecuciones:'Ejecuciones', recursos:'Recursos'};
   function subtipoText(st){ for(var g in SUBTIPOS){ var l=SUBTIPOS[g]; for(var i=0;i<l.length;i++){ if(l[i].value===st) return l[i].text; } } return st; }
 
@@ -1145,7 +1372,7 @@ Honorarios de primera instancia.`
     show('boxRecursoInstancia', necesita1i);
     show('boxRecursoApel', isApel);
     show('boxRec511', st==='recurso_51_1');
-    show('legEspWrap', isDecl);
+    show('legEspWrap', true);
     var nota=q('recInstNota');
     if(nota){
       nota.textContent = isApel
@@ -1182,11 +1409,11 @@ Honorarios de primera instancia.`
       subtipo:st,
       cuantia:num('cuantia'),
       indeterminada:chk('indeterminada'),
-      numSalidasMedio:ent('numSalidasMedio',0), numSalidasDia:ent('numSalidasDia',0), gastosExtras:num('gastosExtras'),
+      numSalidasMedio:ent('numSalidasMedio',0), numSalidasDia:ent('numSalidasDia',0), numSalidasExtranjero:ent('numSalidasExtranjero',0), gastosExtras:num('gastosExtras'),
       numClientes:ent('numClientes',1), plurVencedores:ent('plurVencedores',1), plurContrarios:ent('plurContrarios',1),
       recRev:ent('recRev',0), recRepo:ent('recRepo',0), recQueja:ent('recQueja',0),
       aplicarIPC:chk('aplicarIPC'), ipcManual:parseFloat((ipcRaw+'').replace(',','.')), aplicarRedondeo:chk('aplicarRedondeo'),
-      desOposicion:chk('desOposicion'), reclRentas:chk('reclRentas'), enerv:chk('enerv'),
+      desOposicion:chk('desOposicion'), reclRentas:chk('reclRentas'), enerv:chk('enerv'), desOrdinario:chk('desOrdinario'),
       ejPre:chk('ejPre'), ejOpo:chk('ejOpo'), ejEmb:chk('ejEmb'), ejSub:chk('ejSub'),
       apelVista:chk('apelVista'), apelPrueba:chk('apelPrueba'),
       apelInstancia:(q('apelInstancia')&&q('apelInstancia').value)||'ordinario',
@@ -1199,7 +1426,8 @@ Honorarios de primera instancia.`
       allanMomento:(q('allanMomento')&&q('allanMomento').value)||'antes_contestacion',
       derivaMonitorio:chk('derivaMonitorio'), reconvencion:chk('reconvencion'), medidaCautelar:chk('medidaCautelar'),
       reconvModo:(q('reconvModo')&&q('reconvModo').value)||'indet', reconvCuantia:num('reconvCuantia'),
-      cautelarModo:(q('cautelarModo')&&q('cautelarModo').value)||'indet', cautelarCuantia:num('cautelarCuantia'),
+      cautelarModo:(q('cautelarModo')&&q('cautelarModo').value)||'cuantia', cautelarCuantia:num('cautelarCuantia'), cautelarTramite:(q('cautelarTramite')&&q('cautelarTramite').value)||'734',
+      sentenciaCuantia:num('sentenciaCuantia'),
       noMaterializa:chk('noMaterializa'), legislacionEspecial:chk('legislacionEspecial'),
       recConCuantia:ent('recConCuantia',0), recCuantiaImporte:num('recCuantiaImporte')
     };
@@ -1210,7 +1438,7 @@ Honorarios de primera instancia.`
   function updateGenSummary(ctx){
     var el=q('genSummary'); if(!el) return;
     var t=[];
-    if((ctx.numSalidasMedio||0)+(ctx.numSalidasDia||0)+(ctx.gastosExtras||0)>0) t.push('Gastos');
+    if((ctx.numSalidasMedio||0)+(ctx.numSalidasDia||0)+(ctx.numSalidasExtranjero||0)+(ctx.gastosExtras||0)>0) t.push('Salidas y suplidos');
     if((ctx.numClientes>1)||(ctx.plurVencedores>1)||(ctx.plurContrarios>1)) t.push('Pluralidad');
     if(ctx.noMaterializa) t.push('−50 %');
     if(ctx.legislacionEspecial) t.push('+50 %');
@@ -1221,11 +1449,7 @@ Honorarios de primera instancia.`
   function calcular(){
     refreshSubopts();
     var ctx=leer();
-    var isDecl2=(ctx.subtipo==='verbal'||ctx.subtipo==='ordinario');
-    var reconvAdd = (ctx.reconvencion&&isDecl2) ? (ctx.reconvModo==='cuantia' ? (ctx.reconvCuantia||0) : 24000) : 0;
-    var cuantiaBase = ctx.indeterminada ? 24000 : ctx.cuantia; /* indeterminada/inestimable: base 24.000 € (LO 1/2025) */
-    var cuantiaEf=cuantiaBase + reconvAdd;
-    var esc=computeEscalaBreakdown(cuantiaEf);
+    var R=calcularHonorarios(ctx), N=R.nucleo;
 
     /* Criterio + articulo (VERBATIM NORMAS) */
     var norma=NORMAS[ctx.subtipo]; var numero=(norma&&norma.numero)||'—'; var extracto=(norma&&norma.extracto)||'';
@@ -1233,208 +1457,59 @@ Honorarios de primera instancia.`
     if(ch){
       if(/^Art\.?\s*\d+/i.test(numero)){ var artTxt=numero.replace(/^Art\.?\s*/i,'Artículo '); ch.innerHTML='<strong>'+artTxt+'</strong>'+(extracto?' — '+extracto:''); }
       else{ ch.textContent=extracto?(numero+' — '+extracto):numero; }
+      if(ctx.indeterminada){ ch.innerHTML+=' <span class="minlab">Cuantía indeterminada: el criterio del artículo (DG 2.ª H); los 24.000 € del art. 394.3 LEC solo cuentan para el tope del tercio.</span>'; }
     }
 
-    /* Honorarios por norma (VERBATIM de calcular()) */
-    var cfg=PROC[ctx.subtipo]||{minimo:0,normaPct:1};
-    var normaPct=cfg.normaPct, minimo=cfg.minimo||0;
-    if(ctx.subtipo==='ar_fp'){ var basePct=ctx.desOposicion?1.00:0.75; if(ctx.reclRentas) basePct*=1.25; normaPct=basePct; } /* art.18 (75/100%) y art.19: +25% MULTIPLICATIVO sobre el resultado del art.18, no aditivo al % */
-    if(ctx.subtipo==='monitorio_con'){ normaPct=0.10; minimo=150; }
-    var minimoNormaMostrar=minimo;
-    if(ctx.subtipo==='ar_fp' && ctx.reclRentas) minimoNormaMostrar=600;
+    if(q('allanHint')){ q('allanHint').textContent = N.esAllan ? ('Se aplica el '+Math.round(N.pctFase*100)+' % de la actuación ('+(ctx.allanParte==='demandante'?'demandante':'demandado')+').') : ''; }
 
-    var basePorNormaSinMin, aplicaMinNorma, importeNormaBase;
-    if(ctx.subtipo==='ejecucion'){
-      /* Art. 27: mínimos POR APARTADO del texto literal ICALI (corregido 26/08/2026):
-         27.1 pre-apremio 20% mín 150 · 27.2 oposición 20% mín 300 ·
-         27.3 apremio a) embargos 10% + b) subasta 10% con UN único mínimo de 150 sobre la suma a+b.
-         Si el resultado por tabla es inferior al mínimo, aplica el mínimo. */
-      var sumaPct=0, sumaEj=0, minEj=0, aplicaMinEj=false;
-      if(ctx.ejPre){ sumaPct+=0.20; var t1=esc.total*0.20; if(t1<150){ t1=150; aplicaMinEj=true; } sumaEj+=t1; minEj+=150; }
-      if(ctx.ejOpo){ sumaPct+=0.20; var t2=esc.total*0.20; if(t2<300){ t2=300; aplicaMinEj=true; } sumaEj+=t2; minEj+=300; }
-      if(ctx.ejEmb || ctx.ejSub){
-        var t3=0;
-        if(ctx.ejEmb){ sumaPct+=0.10; t3+=esc.total*0.10; }
-        if(ctx.ejSub){ sumaPct+=0.10; t3+=esc.total*0.10; }
-        if(t3<150){ t3=150; aplicaMinEj=true; }
-        sumaEj+=t3; minEj+=150;
-      }
-      basePorNormaSinMin = esc.total * sumaPct; minimoNormaMostrar=minEj; aplicaMinNorma=aplicaMinEj; importeNormaBase=sumaEj;
-    } else if(ctx.subtipo==='recurso_apelacion' || ctx.subtipo==='recurso_apelacion_parcial'){
-      /* Art. 50.1: 50% de los HONORARIOS DE 1ª INSTANCIA (no de la escala).
-         En la impugnación parcial (50.4) la base de cálculo es la parte objeto
-         de alzada, que el usuario introduce como cuantía. */
-      var _inst = ctx.apelInstancia||'ordinario';
-      var _h1i = honorariosPrimeraInstancia(_inst, esc.total, ctx);
-      basePorNormaSinMin = _h1i.importe * APEL.PCT_TRAM;
-      var _min50 = apelacionMinimo(_inst, ctx.subtipo==='recurso_apelacion_parcial');
-      minimoNormaMostrar = _min50.valor;
-      /* El mínimo del art. 50 se comprueba sobre el TOTAL de la 2ª instancia
-         (50.1 + 50.2 + 50.3), no solo sobre la tramitación: se aplica más abajo,
-         tras sumar vista y prueba. Aquí solo se arrastra la base. */
-      aplicaMinNorma = false;
-      importeNormaBase = basePorNormaSinMin;
-    } else if(ctx.subtipo==='recurso_51_1'){
-      /* Art. 51.1 como procedimiento propio: 300 € por recurso, o el 15% de la
-         Escala de la cuantía propia del acto recurrido «con el mismo criterio
-         anterior» (mismo mínimo de 300 € por recurso). */
-      var _n511 = Math.max(1, ctx.rec511Num||1);
-      var _u511 = ctx.rec511Cuantia
-        ? Math.max(esc.total * ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1)
-        : ART51.MIN_51_1;
-      basePorNormaSinMin = _n511 * (ctx.rec511Cuantia ? esc.total * ART51.PCT_51_1_CUANTIA : ART51.MIN_51_1);
-      minimoNormaMostrar = _n511 * ART51.MIN_51_1;
-      aplicaMinNorma = (_u511 === ART51.MIN_51_1 && ctx.rec511Cuantia);
-      importeNormaBase = _n511 * _u511;
-    } else if(ART51_SOBRE_1I[ctx.subtipo]){
-      /* Art. 51.3/.4/.5: porcentaje sobre los HONORARIOS DE 1ª INSTANCIA del
-         juicio que se pretende anular o revisar (misma base que el art. 50). */
-      var _i51 = ctx.apelInstancia||'ordinario';
-      var _h51 = honorariosPrimeraInstancia(_i51, esc.total, ctx).importe;
-      basePorNormaSinMin = _h51 * ART51_SOBRE_1I[ctx.subtipo];
-      minimoNormaMostrar = PROC[ctx.subtipo].minimo||0;
-      aplicaMinNorma = (minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar);
-      importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
-    } else {
-      basePorNormaSinMin = esc.total*(normaPct||0); aplicaMinNorma = (minimoNormaMostrar>0 && basePorNormaSinMin<minimoNormaMostrar); importeNormaBase = aplicaMinNorma?minimoNormaMostrar:basePorNormaSinMin;
-    }
+    /* Preceptividad */
+    var prec=R.prec, pill=q('vhPrecLine');
+    if(pill){ pill.textContent = prec.texto; pill.className = 'pill '+(prec.preceptiva?'ok':'no'); }
 
-    /* Captura para la derivación por mínimo del KPI (antes de enervación
-       y demás modificadores, que alterarían las cifras mostradas) */
-    var minDerivFrom=basePorNormaSinMin, minDerivTo=importeNormaBase, minDerivAplica=aplicaMinNorma;
+    /* Límite del tercio: por cada litigante vencedor (art. 394.3 LEC) */
+    if(q('vhLimite')) q('vhLimite').textContent = eur(R.lim) + (R.vencedores>1 ? ' por vencedor (× '+R.vencedores+' = '+eur(R.limTotal)+')' : '');
 
-    /* Enervacion (desahucio) */
-    if(ctx.subtipo==='ar_fp' && ctx.enerv){ importeNormaBase = importeNormaBase*0.75; }
-
-    /* Fases (declarativos/desahucios); ejecución y recursos van al 100%.
-       Allanamiento: el % lo fija el momento + la parte minutada (sustituye a las fases). */
-    var pctFase, esAllan=(ctx.finalizacion==='allanamiento' && (isDecl2 || ctx.subtipo==='ar_fp' || ctx.subtipo==='ar_precario'));
-    if(ctx.subtipo==='ejecucion' || ctx.subtipo.indexOf('recurso_')===0){ pctFase=1; }
-    else if(esAllan){ pctFase=allanamientoPct(ctx.allanParte, ctx.allanMomento); }
-    else { pctFase=fasePct(ctx.subtipo,{aleg:ctx.faseAleg,ap:ctx.faseAP,vista:ctx.faseVista}); }
-    if(q('allanHint')){ q('allanHint').textContent = esAllan ? ('Se aplica el '+Math.round(pctFase*100)+' % de la actuación ('+(ctx.allanParte==='demandante'?'demandante':'demandado')+').') : ''; }
-    var importeFases = importeNormaBase * pctFase;
-    var total=importeFases;
-
-    /* Modificadores sobre la actuación base */
-    if(isDecl2 && ctx.derivaMonitorio) total*=1.10;         /* deriva de oposición a monitorio +10% */
-    if(ctx.finalizacion==='renuncia') total*=0.60;          /* renuncia/desistimiento 60% */
-    else if(ctx.finalizacion==='transaccion') total*=1.25;  /* transacción +25% */
-    if(isDecl2 && ctx.legislacionEspecial) total*=1.50;     /* legislación especial +50% */
-    if(ctx.noMaterializa) total*=0.50;                      /* asuntos no materializados -50% */
-
-    /* Vista (art. 50.2), Prueba (art. 50.3) y sesiones adicionales.
-       Los incrementos son el 10% de los HONORARIOS DE 1ª INSTANCIA (no de la
-       escala), cada uno con su mínimo propio de 150 €. Después se comprueba el
-       mínimo final del art. 50 sobre el TOTAL de la segunda instancia. */
-    if(ctx.subtipo==='recurso_apelacion' || ctx.subtipo==='recurso_apelacion_parcial'){
-      var _i2 = ctx.apelInstancia||'ordinario';
-      var _b2 = honorariosPrimeraInstancia(_i2, esc.total, ctx).importe;
-      if(ctx.apelVista){
-        total += Math.max(_b2*APEL.PCT_VISTA, APEL.MIN_INCREMENTO);
-        total += Math.max(0, ctx.apelSesVista||0) * APEL.SESION;
-      }
-      if(ctx.apelPrueba){
-        total += Math.max(_b2*APEL.PCT_PRUEBA, APEL.MIN_INCREMENTO);
-        total += Math.max(0, ctx.apelSesPrueba||0) * APEL.SESION;
-      }
-      var _m50 = apelacionMinimo(_i2, ctx.subtipo==='recurso_apelacion_parcial');
-      if(total < _m50.valor){
-        minDerivFrom = total; minDerivTo = _m50.valor; minDerivAplica = true;
-        total = _m50.valor;
-      }
-    }
-
-    /* Medida cautelar (50% de la escala de su cuantía; indet. = 24.000 €) */
-    if(isDecl2 && ctx.medidaCautelar){
-      var ccBase = (ctx.cautelarModo==='cuantia') ? (ctx.cautelarCuantia||0) : 24000;
-      total += computeEscalaBreakdown(ccBase).total*0.50;
-    }
-
-    /* Sesiones adicionales de vista (+150 € c/u) */
-    total += Math.max(0, ctx.sesionesExtra||0)*150;
-
-    /* Recursos: fijos 300 € c/u + con cuantía (15% de la escala de SU propia cuantía) */
-    /* Recursos accesorios del art. 51.1: revisión, reposición y queja, 300 € cada
-       uno. Si el acto recurrido tiene cuantía propia, el 15% de la Escala de ESA
-       cuantía «con el mismo criterio anterior», es decir, con el mismo mínimo de
-       300 € por recurso (corregido 28/08/2026: antes se liquidaba el 15% pelado,
-       sin mínimo, y minutaba de menos en actos de cuantía baja). */
-    var recUnitConCuantia = Math.max(computeEscalaBreakdown(ctx.recCuantiaImporte||0).total * ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1);
-    var recConCuantiaImporte = Math.max(0, ctx.recConCuantia||0) * recUnitConCuantia;
-    var recFixedTotal = ((ctx.recRepo||0)+(ctx.recRev||0)+(ctx.recQueja||0)) * ART51.MIN_51_1 + recConCuantiaImporte;
-    total += recFixedTotal;
-
-    /* Pluralidad (VERBATIM aplicarPluralidades: lee DOM) */
-    var pl=aplicarPluralidades(total); total=pl.total;
-
-    /* Gastos (VERBATIM) */
-    var numMed=Math.max(0, ctx.numSalidasMedio), numDia=Math.max(0, ctx.numSalidasDia), otros=Math.max(0, ctx.gastosExtras);
-    var totalGastos = numMed*150 + numDia*250 + otros;
-    total += totalGastos;
-
-    /* Preceptividad (VERBATIM checkPreceptividad) */
-    var prec=checkPreceptividad(ctx);
-    var pill=q('vhPrecLine');
-    if(pill){ pill.textContent = prec.preceptiva ? 'Preceptiva' : 'No procede'; pill.className = 'pill '+(prec.preceptiva?'ok':'no'); }
-
-    /* Limite del tercio (VERBATIM limiteUnTercio) */
-    var lim=limiteUnTercio(cuantiaEf,false);
-    if(q('vhLimite')) q('vhLimite').textContent = eur(lim);
-
-    /* IPC (VERBATIM) */
-    var totalIPC=total;
-    var aplicar=!!ctx.aplicarIPC;
-    var varIPC = isFinite(ctx.ipcManual) ? ctx.ipcManual : 32.97;
-    if(aplicar && isFinite(varIPC)) totalIPC = total*(1+varIPC/100);
-
-    /* Redondeo a cifra natural (opcional) */
-    var totalFinal=totalIPC;
-    if(ctx.aplicarRedondeo && totalIPC>0){
-      var paso = totalIPC<=500 ? 25 : (totalIPC<=2000 ? 50 : 100);
-      totalFinal = Math.ceil(totalIPC/paso)*paso;
-    }
-
-    /* DOBLE RESULTADO:
-       - Cliente: base redondeada SIN tope (honorarios íntegros).
-       - Costas: la misma base, topada al tercio (art. 394.3 LEC). El IVA se
-         calcula sobre el importe YA topado. */
-    var baseCliente = totalFinal;
-    var baseCostas  = (isFinite(lim) && lim>0 && baseCliente>lim) ? lim : baseCliente;
-    var muerde = (isFinite(lim) && lim>0 && baseCliente>lim);
-    var recorte = muerde ? (baseCliente - baseCostas) : 0;
-
-    var ivaCliente=baseCliente*0.21, conIvaCliente=baseCliente+ivaCliente;
-    var ivaCostas =baseCostas*0.21,  conIvaCostas =baseCostas+ivaCostas;
-
-    /* KPIs superiores (4): la cifra de referencia es la base redondeada sin tope */
-    if(q('kpiBaremo'))   q('kpiBaremo').innerHTML   = eurKpi(total);
-    /* Derivación por mínimo del baremo (universal, todos los subtipos):
-       si el cálculo por tabla no llega al mínimo del criterio, se muestra
-       el resultado tachado → el mínimo aplicado. */
     var md=q('kpiBaremoMin');
-    if(md){
-      if(minDerivAplica && minDerivFrom<minDerivTo){
-        md.innerHTML='<span class="tach">'+eur(minDerivFrom)+'</span><span class="arrow">&rarr;</span>'+eur(minDerivTo)+' <span class="minlab">mínimo baremo</span>';
-        md.classList.remove('hidden');
-      } else {
-        md.innerHTML=''; md.classList.add('hidden');
-      }
+    if(R.sinFases){
+      /* Ejecución sin ninguna fase marcada: no hay resultado, y un 0,00 € pasaría por uno. */
+      ['kpiBaremo','kpiIPC','kpiRedondeo'].forEach(function(id){ if(q(id)) q(id).innerHTML='&mdash;'; });
+      if(md){ md.innerHTML=''; md.classList.add('hidden'); }
+      if(q('clienteTotal')) q('clienteTotal').innerHTML='&mdash;';
+      if(q('costasTotal'))  q('costasTotal').innerHTML='&mdash;';
+      if(q('clienteSub'))   q('clienteSub').textContent='Marca al menos una fase de ejecución';
+      var cs0=q('costasSub'); if(cs0){ cs0.classList.remove('bite'); cs0.textContent='Marca al menos una fase de ejecución'; }
+      LAST={R:R, ctx:ctx, numero:numero, extracto:extracto};
+      updateGenSummary(ctx); updateCriterioTexto();
+      return;
     }
-    if(q('kpiIPC'))      q('kpiIPC').innerHTML      = eurKpi(totalIPC);
-    if(q('kpiRedondeo')) q('kpiRedondeo').innerHTML = eurKpi(baseCliente);
 
-    /* Doble bloque final */
-    if(q('clienteTotal')) q('clienteTotal').textContent = eur(conIvaCliente);
-    if(q('clienteSub'))   q('clienteSub').textContent   = 'Sin tope · '+eur(baseCliente)+' + IVA';
-    if(q('costasTotal'))  q('costasTotal').textContent  = eur(conIvaCostas);
+    /* KPIs superiores: la cifra de referencia es la minuta al cliente (sin tope, sin suplidos) */
+    if(q('kpiBaremo')) q('kpiBaremo').innerHTML = eurKpi(R.totalCliente);
+    if(md){
+      if(N.minDerivAplica && N.minDerivFrom<N.minDerivTo){
+        md.innerHTML='<span class="tach">'+eur(N.minDerivFrom)+'</span><span class="arrow">&rarr;</span>'+eur(N.minDerivTo)+' <span class="minlab">mínimo baremo</span>';
+        md.classList.remove('hidden');
+      } else { md.innerHTML=''; md.classList.add('hidden'); }
+    }
+    if(q('kpiIPC'))      q('kpiIPC').innerHTML      = eurKpi(R.clienteIPC);
+    if(q('kpiRedondeo')) q('kpiRedondeo').innerHTML = eurKpi(R.baseCliente);
+
+    var sup = R.suplidos>0 ? ' + suplidos '+eur(R.suplidos)+' (sin IVA)' : '';
+    if(q('clienteTotal')) q('clienteTotal').textContent = eur(R.conIvaCliente);
+    if(q('clienteSub'))   q('clienteSub').textContent   = 'Sin tope · '+eur(R.baseCliente)+' + IVA'+sup;
+    if(q('costasTotal'))  q('costasTotal').textContent  = eur(R.conIvaCostas);
     var costasSub=q('costasSub');
     if(costasSub){
-      if(muerde){ costasSub.classList.add('bite'); costasSub.textContent = 'Topado a 1/3 (art. 394.3 LEC): −'+eur(recorte)+' · '+eur(baseCostas)+' + IVA'; }
-      else { costasSub.classList.remove('bite'); costasSub.textContent = 'Sin recorte · coincide con la minuta (límite '+eur(lim)+')'; }
+      var porV = R.vencedores>1 ? ' · por cada vencedor' : '';
+      if(R.muerde){ costasSub.classList.add('bite'); costasSub.textContent = 'Topado a 1/3 (art. 394.3 LEC): −'+eur(R.recorte)+' · '+eur(R.baseCostas)+' + IVA'+sup+porV; }
+      else {
+        costasSub.classList.remove('bite');
+        var igual = Math.abs(R.baseCostas-R.baseCliente)<0.005;
+        costasSub.textContent = 'Sin recorte · '+(igual?'coincide con la minuta':eur(R.baseCostas)+' + IVA')+sup+' (límite '+eur(R.lim)+')'+porV;
+      }
     }
 
-    LAST={ctx:ctx, total:total, totalIPC:totalIPC, baseCliente:baseCliente, baseCostas:baseCostas, muerde:muerde, recorte:recorte, conIvaCliente:conIvaCliente, conIvaCostas:conIvaCostas, ivaCliente:ivaCliente, ivaCostas:ivaCostas, varIPC:varIPC, aplicar:aplicar, redondeo:ctx.aplicarRedondeo, numero:numero, extracto:extracto, prec:prec, lim:lim};
+    LAST={R:R, ctx:ctx, numero:numero, extracto:extracto};
     updateGenSummary(ctx);
     updateCriterioTexto();
   }
@@ -1452,30 +1527,46 @@ Honorarios de primera instancia.`
 
   function copiarDesglose(){
     if(!LAST) calcular();
-    var c=LAST, ctx=c.ctx;
+    var R=LAST.R, ctx=LAST.ctx, N=R.nucleo;
     var grupo=(document.querySelector('.navlink.sel')&&document.querySelector('.navlink.sel').getAttribute('data-grupo'))||'monitorio';
+    var ipcTxt=(isFinite(R.varIPC)?R.varIPC.toString().replace('.',','):'32,97');
     var L=[];
     L.push('CALCULADORA DE HONORARIOS ICALI — Artigas Abogados');
-    L.push('Escala ICALI (Colegio de Abogados de Alicante) · revisión IPC +'+ (isFinite(c.varIPC)?c.varIPC.toString().replace('.',','):'32,97') +' %');
+    L.push('Escala ICALI (Colegio de Abogados de Alicante) · revisión IPC +'+ipcTxt+' %');
     L.push('');
     L.push('Procedimiento: '+(GRUPO_LABEL[grupo]||grupo));
     L.push('Subtipo: '+subtipoText(ctx.subtipo));
-    L.push('Cuantía del procedimiento: '+eur(ctx.cuantia));
+    L.push('Cuantía del procedimiento: '+(ctx.indeterminada?'indeterminada (criterio del artículo; 24.000 € solo para el tope del tercio)':eur(ctx.cuantia)));
+    if(R.sinFases){
+      L.push('');
+      L.push('Sin ninguna fase de ejecución marcada: no hay importe.');
+      L.push('Base: —  ·  IVA (21 %): —  ·  TOTAL: —');
+      L.push('Base: —  ·  IVA (21 %): —  ·  TOTAL: —');
+    } else {
+      N.detalle.forEach(function(d){ L.push(d); });
+      if(R.sentAplica) L.push('Costas frente al condenado sobre la cuantía de la sentencia ('+eur(ctx.sentenciaCuantia)+', arts. 13 y 15.B): '+eur(R.nucleoCostas.total));
+      R.pluralCliente.forEach(function(d){ L.push(d+' (solo minuta al cliente)'); });
+      R.pluralCostas.forEach(function(d){ L.push(d+' (solo tasación de costas)'); });
+      if(R.salidas>0) L.push('Salidas (DG 2.ª A): '+eur(R.salidas));
+      L.push('');
+      L.push('Base baremo (criterio ICALI): '+eur(R.totalCliente));
+      L.push('IPC ('+(R.aplicar?('+'+ipcTxt+' %'):'no aplicado')+'): '+eur(R.clienteIPC));
+      L.push('Redondeo a cifra natural (criterio del despacho): '+(R.redondeo?eur(R.baseCliente):'no aplicado'));
+      L.push('');
+      L.push('— MINUTA AL CLIENTE (sin tope) —');
+      L.push('Base: '+eur(R.baseCliente)+'  ·  IVA (21 %): '+eur(R.ivaCliente)+'  ·  TOTAL: '+eur(R.conIvaCliente));
+      if(R.suplidos>0) L.push('Suplidos (sin IPC ni IVA): '+eur(R.suplidos)+' — incluidos en el total');
+      L.push('');
+      L.push('— TASACIÓN DE COSTAS (límite del tercio, art. 394.3 LEC) —');
+      if(Math.abs(R.totalCostas-R.totalCliente)>0.005) L.push('Base baremo para costas: '+eur(R.totalCostas)+(R.redondeo||R.aplicar?' → con IPC y redondeo: '+eur(R.costasRed):''));
+      L.push('Límite del tercio (cuantía/3'+(R.vencedores>1?', por cada uno de los '+R.vencedores+' vencedores':'')+'): '+eur(R.lim));
+      if(R.muerde) L.push('Recorte por el tope: −'+eur(R.recorte));
+      L.push('Base: '+eur(R.baseCostas)+'  ·  IVA (21 %): '+eur(R.ivaCostas)+'  ·  TOTAL: '+eur(R.conIvaCostas));
+      if(R.suplidos>0) L.push('Suplidos (sin IPC ni IVA): '+eur(R.suplidos)+' — incluidos en el total');
+    }
     L.push('');
-    L.push('Base baremo (criterio ICALI): '+eur(c.total));
-    L.push('IPC ('+(c.aplicar?('+'+(isFinite(c.varIPC)?c.varIPC.toString().replace('.',','):'32,97')+' %'):'no aplicado')+'): '+eur(c.totalIPC));
-    L.push('Redondeo a cifra natural: '+(c.redondeo?eur(c.baseCliente):'no aplicado'));
-    L.push('');
-    L.push('— MINUTA AL CLIENTE (sin tope) —');
-    L.push('Base: '+eur(c.baseCliente)+'  ·  IVA (21 %): '+eur(c.ivaCliente)+'  ·  TOTAL: '+eur(c.conIvaCliente));
-    L.push('');
-    L.push('— TASACIÓN DE COSTAS (límite del tercio, art. 394.3 LEC) —');
-    L.push('Límite del tercio (cuantía/3): '+eur(c.lim));
-    if(c.muerde) L.push('Recorte por el tope: −'+eur(c.recorte));
-    L.push('Base: '+eur(c.baseCostas)+'  ·  IVA (21 %): '+eur(c.ivaCostas)+'  ·  TOTAL: '+eur(c.conIvaCostas));
-    L.push('');
-    L.push('Preceptividad: '+(c.prec.preceptiva?'intervención preceptiva':'no procede tasación'));
-    L.push('Criterio aplicable — '+c.numero.replace(/^Art\.?\s*/i,'Art. ')+': '+c.extracto);
+    L.push('Preceptividad: '+R.prec.desglose);
+    L.push('Criterio aplicable — '+LAST.numero.replace(/^Art\.?\s*/i,'Art. ')+': '+LAST.extracto);
     var txt=L.join('\n');
     var done=function(){ var b=q('btnCopiar'); if(!b) return; var old=b.innerHTML; b.classList.add('ok'); b.innerHTML='Copiado ✓'; setTimeout(function(){ b.classList.remove('ok'); b.innerHTML=old; },1600); };
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, function(){ fallbackCopy(txt); done(); }); }
@@ -1485,13 +1576,14 @@ Honorarios de primera instancia.`
   /* Copia una sola cifra CON su rótulo de destino (evita pegar el número equivocado) */
   function copiarImporte(destino){
     if(!LAST) calcular();
-    var c=LAST;
-    var txt, btnId;
-    if(destino==='costas'){
-      txt='Honorarios (tasación de costas): '+eur(c.conIvaCostas)+' (IVA incluido)'+(c.muerde?' — topado al tercio, art. 394.3 LEC':'');
+    var R=LAST.R;
+    var txt, btnId, sup=R.suplidos>0?', suplidos incluidos':'';
+    if(R.sinFases){ txt='Sin fases de ejecución marcadas: no hay importe'; btnId=destino==='costas'?'copyCostas':'copyCliente'; }
+    else if(destino==='costas'){
+      txt='Honorarios (tasación de costas): '+eur(R.conIvaCostas)+' (IVA incluido'+sup+')'+(R.muerde?' — topado al tercio, art. 394.3 LEC':'');
       btnId='copyCostas';
     } else {
-      txt='Honorarios (minuta al cliente): '+eur(c.conIvaCliente)+' (IVA incluido)';
+      txt='Honorarios (minuta al cliente): '+eur(R.conIvaCliente)+' (IVA incluido'+sup+')';
       btnId='copyCliente';
     }
     var b=q(btnId);
@@ -1594,7 +1686,7 @@ Honorarios de primera instancia.`
     else { row.classList.add('hidden'); }
   }
   function init(){ bind(); restoreIPC(); pintarSubtipos('monitorio'); calcular(); ajustaAnchoCuantia();
-    bindMoney('cuantia'); bindMoney('gastosExtras'); bindMoney('reconvCuantia'); bindMoney('cautelarCuantia'); bindMoney('recCuantiaImporte');
+    bindMoney('cuantia'); bindMoney('gastosExtras'); bindMoney('reconvCuantia'); bindMoney('cautelarCuantia'); bindMoney('recCuantiaImporte'); bindMoney('sentenciaCuantia');
     initEscala();
     var ipcEl=q('ipcManual'); if(ipcEl){ ipcEl.addEventListener('input', refreshIpcConfirm); }
     var g=q('ipcGuardar'); if(g){ g.addEventListener('click', function(){ try{ localStorage.setItem(IPC_KEY, (q('ipcManual').value||'').trim()); }catch(e){} refreshIpcConfirm(); }); }

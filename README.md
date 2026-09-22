@@ -12,7 +12,19 @@ Calculadora **estática** (una sola página `index.html`) optimizada para **GitH
 - **“Tipo de procedimiento” + “Cuantía”** en la misma línea (desktop); **etiquetas arriba** en pantallas estrechas.
 - **Cuantía compacta** (máx. 160px) y 100% en móvil.
 - **Botonera** *Monitorios / Declarativos / Desahucios / Ejecuciones / Recursos* distribuida **a todo el ancho** (grid 5→3→2→1).
-- Placeholder de **“Otros gastos” = 0,00**.
+- Placeholder de **“Suplidos” = 0,00**.
+
+## Correcciones contra el texto del ICALI (23/09/2026)
+Cálculo separado en un **motor puro** (`/*@MOTOR@*/` … `/*@FIN-MOTOR@*/` en `index.html`),
+contrastado caso a caso con `calc_icali.py` (skill `honorarios-icali`) mediante
+`python3 scripts/comparar_con_script.py` (usa `scripts/motor_web.js`).
+- Cuantía indeterminada: criterio del artículo (verbal 500 €, ordinario 2.000 €); 24.000 € solo para el tope del tercio.
+- Cautelar (art. 33) por trámite 20/30/40 % sobre la caución; monitorio previo (art. 48.1) aparte; enervación sobre el apartado A;
+  desahucio por el ordinario (2.000 €); desistimiento 60 % solo en el verbal.
+- Pluralidad: vencedores y contrarios solo en costas; varios clientes solo en la minuta. Tope del tercio por cada vencedor.
+- Suplidos sin IPC ni IVA; salida al extranjero 600 €/día; legislación especial en todos los procedimientos;
+  cuantía de la sentencia (solo costas); preceptividad según los arts. 31.2, 539.1, 814.2 y 818.1 LEC y 21.5 LPH.
+- Ejecución sin ninguna fase marcada: guion y aviso, no 0,00 €.
 
 ## Estructura
 ```
