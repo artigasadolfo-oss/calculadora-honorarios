@@ -415,6 +415,12 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
             <div class="hint">Abogado y procurador preceptivos a cualquier cuantía (aunque sea de 1.500&nbsp;&euro;). No cambia los importes, solo la preceptividad. Lectura literal de la LEC, sin jurisprudencia leída.</div>
           </div>
 
+          <!-- Ejecución de lo resuelto en un verbal de cuotas de la LPH (art. 250.1.15.º LEC). Solo con «Ejecución dineraria»; no cambia importes. -->
+          <div class="hidden" id="tituloVerbalPHWrap" style="margin-top:10px">
+            <label class="ck"><input type="checkbox" id="tituloVerbalPH"> El título es lo resuelto en un verbal de cuotas de la LPH (art. 250.1.15.º LEC)</label>
+            <div class="hint">Abogado y procurador preceptivos a cualquier cuantía (aunque la ejecución sea de 1.500&nbsp;&euro;; art. 539.1, párrafo 1.º LEC). No marcar si el título es un monitorio sin oposición (art. 539.1, párrafo 4.º). No cambia los importes, solo la preceptividad. Lectura literal de la LEC, sin jurisprudencia leída.</div>
+          </div>
+
           <!-- Distribución por fases (declarativos / desahucios) -->
           <div class="grp hidden" id="boxFases">
             <div class="gt">Distribución por fases</div>
@@ -1118,6 +1124,13 @@ Honorarios de primera instancia.`
       desglose:'Preceptiva (verbal por MATERIA, cuotas de la LPH, art. 250.1.15.º LEC: la dispensa de los arts. 23.2.1.º y 31.2.1.º LEC solo alcanza a los verbales por razón de la cuantía): honorarios en costas a cualquier cuantía, con el tope del art. 394.3 LEC. Lectura literal de la LEC, sin jurisprudencia leída'};
     if(st==='verbal' && cef<=2000) return {preceptiva:false, texto:'No preceptiva (art. 31.2.1.º LEC)',
       desglose:'no preceptiva (verbal por cuantía de hasta 2.000 €, art. 31.2.1.º LEC): honorarios fuera de las costas salvo art. 32.5 LEC'};
+    /* Ejecución de lo resuelto en un verbal de cuotas de la LPH (art. 250.1.15.º LEC). Art. 539.1, párrafo 1.º LEC:
+       solo se dispensa la ejecución de resoluciones dictadas en procesos en que la intervención no era preceptiva,
+       y en el verbal de cuotas sí lo era (ver arriba). NO vale para el monitorio sin oposición (539.1, párr. 4.º).
+       Lectura literal, SIN jurisprudencia leída. Misma regla y mismo texto que calc_icali.py (--titulo-verbal-ph).
+       Solo actúa con la casilla marcada; sin ella, la ejecución sigue igual. */
+    if(st==='ejecucion' && ctx.tituloVerbalPH) return {preceptiva:true, texto:'Preceptiva (ejecución de un verbal de cuotas, art. 539.1 LEC)',
+      desglose:'Preceptiva (ejecución de lo resuelto en un verbal de cuotas de la LPH, art. 250.1.15.º LEC, proceso en que la intervención era preceptiva: art. 539.1, párrafo 1.º LEC). No aplicable a la ejecución de un monitorio sin oposición (art. 539.1, párrafo 4.º). Lectura literal de la LEC, sin jurisprudencia leída'};
     if(st==='ejecucion' && cef<=2000) return {preceptiva:false, texto:'No preceptiva si el título no la exigía (art. 539.1 LEC)',
       desglose:'no preceptiva si se ejecuta una resolución de un proceso en que no lo era, o un monitorio sin oposición de hasta 2.000 € (art. 539.1 LEC)'};
     return {preceptiva:true, texto:'Preceptiva', desglose:'intervención preceptiva'};
@@ -1377,6 +1390,7 @@ Honorarios de primera instancia.`
     var necesita1i=isApel||(st==='recurso_rescision')||(st==='recurso_revision_firmes')||(st==='recurso_casacion_inadm');
     var isMon=(st.indexOf('monitorio')===0);
     show('materiaPHWrap', st==='verbal');
+    show('tituloVerbalPHWrap', st==='ejecucion');
     show('boxFases', isDecl||isDesah);
     show('faseAPwrap', st==='ordinario');
     show('boxSesiones', isDecl||isDesah);
@@ -1443,7 +1457,7 @@ Honorarios de primera instancia.`
       reconvModo:(q('reconvModo')&&q('reconvModo').value)||'indet', reconvCuantia:num('reconvCuantia'),
       cautelarModo:(q('cautelarModo')&&q('cautelarModo').value)||'cuantia', cautelarCuantia:num('cautelarCuantia'), cautelarTramite:(q('cautelarTramite')&&q('cautelarTramite').value)||'734',
       sentenciaCuantia:num('sentenciaCuantia'),
-      noMaterializa:chk('noMaterializa'), legislacionEspecial:chk('legislacionEspecial'), materiaPH:chk('materiaPH'),
+      noMaterializa:chk('noMaterializa'), legislacionEspecial:chk('legislacionEspecial'), materiaPH:chk('materiaPH'), tituloVerbalPH:chk('tituloVerbalPH'),
       recConCuantia:ent('recConCuantia',0), recCuantiaImporte:num('recCuantiaImporte')
     };
   }

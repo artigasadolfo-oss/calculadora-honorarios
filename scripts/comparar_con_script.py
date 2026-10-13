@@ -227,6 +227,7 @@ CTX_BASE = {
     "reconvModo": "indet", "reconvCuantia": 0,
     "cautelarModo": "cuantia", "cautelarCuantia": 0, "cautelarTramite": "734", "sentenciaCuantia": 0,
     "noMaterializa": False, "legislacionEspecial": False, "materiaPH": False,
+    "tituloVerbalPH": False,
 }
 
 
@@ -254,7 +255,7 @@ def a_script(c):
         allanamiento=(c["finalizacion"] == "allanamiento"), parte=c["allanParte"], momento=c["allanMomento"],
         renuncia=(c["finalizacion"] == "renuncia"), transaccion=(c["finalizacion"] == "transaccion"),
         legislacion_especial=c["legislacionEspecial"], no_materializa=c["noMaterializa"],
-        materia_ph=c.get("materiaPH", False),
+        materia_ph=c.get("materiaPH", False), titulo_verbal_ph=c.get("tituloVerbalPH", False),
         salidas_medio=c["numSalidasMedio"], salidas_dia=c["numSalidasDia"], salidas_extranjero=c["numSalidasExtranjero"],
         suplidos=float(c["gastosExtras"]),
         rec_revision=c["recRev"], rec_reposicion=c["recRepo"], rec_queja=c["recQueja"],
@@ -315,6 +316,11 @@ def casos_generales():
             caso(subtipo="verbal", cuantia=cu, indeterminada=ind, materiaPH=True)
             caso(subtipo="verbal", cuantia=cu, indeterminada=ind, materiaPH=True, aplicarIPC=True, aplicarRedondeo=True,
                  plurVencedores=2, numClientes=2, gastosExtras=100)
+    for cu in cuantias + [2001, 5000, 12000]:    # ejecución de lo resuelto en un verbal de cuotas (art. 539.1 LEC), 13/10/2026
+        for ind in (False, True):
+            caso(subtipo="ejecucion", cuantia=cu, indeterminada=ind, ejPre=True, tituloVerbalPH=True)
+            caso(subtipo="ejecucion", cuantia=cu, indeterminada=ind, ejPre=True, ejOpo=True, ejEmb=True, ejSub=True,
+                 tituloVerbalPH=True, aplicarIPC=True, aplicarRedondeo=True, plurVencedores=2, numClientes=2, gastosExtras=100)
     for cu in cuantias:
         for st in ("verbal", "ordinario"):
             for fin in ("", "allanamiento", "renuncia", "transaccion"):
@@ -542,6 +548,65 @@ def comprobar_materia_ph():
     return n, div, res
 
 
+# ── Ejecución de lo resuelto en un verbal de cuotas (art. 539.1, párr. 1.º LEC) · 13/10/2026 ─
+# Lo que se comprueba, en la web (motor_web.js) y en el script (--titulo-verbal-ph):
+#  · con la opción, la ejecución sale preceptiva a cualquier cuantía y con el MISMO texto en los dos;
+#  · sin ella, el comportamiento por defecto no cambia (ejecución ≤ 2.000 € no preceptiva; > 2.000 €, sí);
+#  · las cifras son idénticas con y sin la opción, en cada motor (solo cambia la mención de preceptividad);
+#  · la opción no afecta a otros subtipos (verbal, monitorio_sin, ordinario).
+def comprobar_titulo_verbal_ph():
+    C = _modulo_calc()
+    ipc = dict(aplicarIPC=True, aplicarRedondeo=True)
+    fases = dict(ejPre=True, ejOpo=True, ejEmb=True, ejSub=True)
+    ctxs, claves = [], []
+    for cu in CUANTIAS_PH:
+        for ind in (False, True):
+            for tv in (False, True):
+                ctxs.append(dict(CTX_BASE, subtipo="ejecucion", cuantia=cu, indeterminada=ind, tituloVerbalPH=tv, **fases, **ipc))
+                claves.append((cu, ind, tv))
+    web = _web(ctxs)
+    res = {k: (w, _script(C, c)) for k, c, w in zip(claves, ctxs, web)}
+    div, n = [], 0
+    def chk(cond, msg):
+        nonlocal n
+        n += 1
+        if not cond:
+            div.append(msg)
+    for cu in CUANTIAS_PH:
+        for ind in (False, True):
+            sin_w, sin_s = res[(cu, ind, False)]
+            con_w, con_s = res[(cu, ind, True)]
+            et = f"ejecución {cu}{' indet.' if ind else ''}"
+            for k in CAMPOS_CIFRAS:
+                chk(sin_w[k] == con_w[k], f"{et}: web cambia {k} con la opción ({sin_w[k]} → {con_w[k]})")
+                chk(sin_s[k] == con_s[k], f"{et}: script cambia {k} con la opción ({sin_s[k]} → {con_s[k]})")
+                chk(abs(con_w[k] - con_s[k]) < 0.01 if not isinstance(con_s[k], bool) else con_w[k] == con_s[k],
+                    f"{et}: con la opción {k} web {con_w[k]} / script {con_s[k]}")
+            # sin la opción: no preceptiva si cef <= 2.000 €; preceptiva si no
+            esp_sin = not ((24000 if ind else cu) <= 2000)
+            chk(sin_w["preceptiva"] is esp_sin and sin_s["preceptiva"] is esp_sin,
+                f"{et} sin opción: web {sin_w['preceptiva']} / script {sin_s['preceptiva']} / esperado {esp_sin}")
+            # con la opción: preceptiva siempre, mismo texto, con cita y aviso
+            chk(con_w["preceptiva"] is True and con_s["preceptiva"] is True,
+                f"{et} con opción: web {con_w['preceptiva']} / script {con_s['preceptiva']}")
+            chk(con_w["precDesglose"] == con_s["precTexto"], f"{et} con opción: el texto difiere")
+            chk("539.1" in con_w["precDesglose"] and "250.1.15.º" in con_w["precDesglose"]
+                and "sin jurisprudencia leída" in con_w["precDesglose"] and "párrafo 4.º" in con_w["precDesglose"],
+                f"{et} con opción: falta cita, aviso o exclusión del monitorio")
+    # la opción no toca otros subtipos: mismo resultado y texto con y sin ella, en los dos motores
+    for st in ("verbal", "ordinario", "monitorio_sin", "ar_fp"):
+        for cu in (1500, 5000):
+            c0 = dict(CTX_BASE, subtipo=st, cuantia=cu, **ipc)
+            c1 = dict(c0, tituloVerbalPH=True)
+            w0, w1 = _web([c0, c1])
+            s0, s1 = _script(C, c0), _script(C, c1)
+            chk(w0["preceptiva"] == w1["preceptiva"] and w0["precDesglose"] == w1["precDesglose"]
+                and s0["preceptiva"] == s1["preceptiva"] and s0["precTexto"] == s1["precTexto"]
+                and all(w0[k] == w1[k] and s0[k] == s1[k] for k in CAMPOS_CIFRAS),
+                f"{st} {cu}: la opción altera algo fuera de la ejecución")
+    return n, div, res
+
+
 def main():
     casos = json.load(open(CASOS, encoding="utf-8"))
     div, err, ok = [], [], 0
@@ -606,11 +671,15 @@ def main():
     print(f"\nVerbal por materia (cuotas LPH) — comprobaciones: {nph}  ·  correctas: {nph - len(divph)}  ·  fallan: {len(divph)}")
     for d in divph:
         print("  ", d)
-    total = len(casos) + n51 + len(CASOS_51_1) + n511s + ng + nt + nph
-    malos = len(div) + len(err) + len(div51) + len(div511) + len(div511s) + len(divg) + len(divt) + len(divph)
+    ntv, divtv, _ = comprobar_titulo_verbal_ph()
+    print(f"\nEjecución de un verbal de cuotas (--titulo-verbal-ph) — comprobaciones: {ntv}  ·  correctas: {ntv - len(divtv)}  ·  fallan: {len(divtv)}")
+    for d in divtv:
+        print("  ", d)
+    total = len(casos) + n51 + len(CASOS_51_1) + n511s + ng + nt + nph + ntv
+    malos = len(div) + len(err) + len(div51) + len(div511) + len(div511s) + len(divg) + len(divt) + len(divph) + len(divtv)
     print(f"\nTOTAL: {total} casos · {total - malos} coinciden · {malos} divergen")
 
-    return 1 if (div or err or div51 or div511 or div511s or divg or divt or divph) else 0
+    return 1 if (div or err or div51 or div511 or div511s or divg or divt or divph or divtv) else 0
 
 
 if __name__ == "__main__":
