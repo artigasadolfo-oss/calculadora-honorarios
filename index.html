@@ -409,6 +409,12 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 
           <label class="ck" id="indetWrap" style="margin-top:12px"><input type="checkbox" id="indeterminada"> Cuantía indeterminada / inestimable (criterio del artículo; 24.000&nbsp;&euro; solo para el tope del tercio)</label>
 
+          <!-- Verbal por materia: cuotas de la LPH (art. 250.1.15.º LEC). Solo con «Juicio verbal»; no cambia importes. -->
+          <div class="hidden" id="materiaPHWrap" style="margin-top:10px">
+            <label class="ck"><input type="checkbox" id="materiaPH"> Verbal por materia: cuotas de la LPH (art. 250.1.15.º LEC)</label>
+            <div class="hint">Abogado y procurador preceptivos a cualquier cuantía (aunque sea de 1.500&nbsp;&euro;). No cambia los importes, solo la preceptividad. Lectura literal de la LEC, sin jurisprudencia leída.</div>
+          </div>
+
           <!-- Distribución por fases (declarativos / desahucios) -->
           <div class="grp hidden" id="boxFases">
             <div class="gt">Distribución por fases</div>
@@ -1103,6 +1109,13 @@ Honorarios de primera instancia.`
       desglose:'no es preceptiva la petición inicial (art. 814.2 LEC), pero los honorarios son a cargo del deudor con el límite del art. 394.3 LEC (art. 21.5 LPH)'};
     if(st==='monitorio_sin' || st==='monitorio_con') return {preceptiva:false, texto:'No preceptiva (art. 814.2 LEC)',
       desglose:'no preceptiva: petición inicial sin abogado (art. 814.2 LEC); oposición con abogado si la cuantía lo exige (art. 818.1 LEC); ejecución posterior con abogado si pasa de 2.000 € (art. 539.1 LEC)'};
+    /* Verbal por MATERIA de cuotas de la LPH (art. 250.1.15.º LEC, «sea cual fuere dicha cantidad»).
+       Los arts. 23.2.1.º y 31.2.1.º LEC solo dispensan de abogado y procurador en los verbales «cuya
+       determinación se haya efectuado por razón de la cuantía» y ésta no exceda de 2.000 €: el de cuotas
+       se determina por materia. Lectura literal, SIN jurisprudencia leída. Misma regla y mismo texto que
+       calc_icali.py (--materia-ph). Solo actúa con la casilla marcada; sin ella, el verbal sigue igual. */
+    if(st==='verbal' && ctx.materiaPH) return {preceptiva:true, texto:'Preceptiva (verbal por materia, art. 250.1.15.º LEC)',
+      desglose:'Preceptiva (verbal por MATERIA, cuotas de la LPH, art. 250.1.15.º LEC: la dispensa de los arts. 23.2.1.º y 31.2.1.º LEC solo alcanza a los verbales por razón de la cuantía): honorarios en costas a cualquier cuantía, con el tope del art. 394.3 LEC. Lectura literal de la LEC, sin jurisprudencia leída'};
     if(st==='verbal' && cef<=2000) return {preceptiva:false, texto:'No preceptiva (art. 31.2.1.º LEC)',
       desglose:'no preceptiva (verbal por cuantía de hasta 2.000 €, art. 31.2.1.º LEC): honorarios fuera de las costas salvo art. 32.5 LEC'};
     if(st==='ejecucion' && cef<=2000) return {preceptiva:false, texto:'No preceptiva si el título no la exigía (art. 539.1 LEC)',
@@ -1363,6 +1376,7 @@ Honorarios de primera instancia.`
        apartados 3, 4 y 5 del art. 51; NO el 51.2, que va sobre la Escala. */
     var necesita1i=isApel||(st==='recurso_rescision')||(st==='recurso_revision_firmes')||(st==='recurso_casacion_inadm');
     var isMon=(st.indexOf('monitorio')===0);
+    show('materiaPHWrap', st==='verbal');
     show('boxFases', isDecl||isDesah);
     show('faseAPwrap', st==='ordinario');
     show('boxSesiones', isDecl||isDesah);
@@ -1429,7 +1443,7 @@ Honorarios de primera instancia.`
       reconvModo:(q('reconvModo')&&q('reconvModo').value)||'indet', reconvCuantia:num('reconvCuantia'),
       cautelarModo:(q('cautelarModo')&&q('cautelarModo').value)||'cuantia', cautelarCuantia:num('cautelarCuantia'), cautelarTramite:(q('cautelarTramite')&&q('cautelarTramite').value)||'734',
       sentenciaCuantia:num('sentenciaCuantia'),
-      noMaterializa:chk('noMaterializa'), legislacionEspecial:chk('legislacionEspecial'),
+      noMaterializa:chk('noMaterializa'), legislacionEspecial:chk('legislacionEspecial'), materiaPH:chk('materiaPH'),
       recConCuantia:ent('recConCuantia',0), recCuantiaImporte:num('recCuantiaImporte')
     };
   }
