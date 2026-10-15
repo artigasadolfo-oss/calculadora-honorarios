@@ -371,7 +371,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
       <div class="nsec" style="margin-top:6px">Actualización IPC</div>
       <div class="critipc">
         <label class="ajck"><input type="checkbox" id="aplicarIPC" checked> Aplicar IPC</label>
-        <div class="ajrow"><span class="ajlbl">Variación&nbsp;% (IPC)</span><input id="ipcManual" type="text" inputmode="decimal" value="32,97" class="ajnum"></div>
+        <div class="ajrow"><span class="ajlbl">Variación&nbsp;% (IPC)</span><input id="ipcManual" type="text" inputmode="decimal" value="33,40" class="ajnum"></div>
         <div class="ipcconf hidden" id="ipcConfirm">
           <span class="ipcconftxt">¿Guardar <b id="ipcConfVal"></b>&nbsp;% como IPC vigente?</span>
           <span class="ipcconfbtns"><button type="button" id="ipcGuardar" class="ipcbtn ok">Guardar</button><button type="button" id="ipcDescartar" class="ipcbtn">Descartar</button></span>
@@ -384,7 +384,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 
   <main class="main">
     <div class="phead">
-      <div><div class="eyebrow">Herramientas internas</div><div class="ptitle">Honorarios</div><div class="ul"></div><div class="psub">Escala ICALI (Colegio de Alicante) &middot; revisi&oacute;n IPC +32,97&nbsp;% &mdash; minuta y tasaci&oacute;n de costas.</div></div>
+      <div><div class="eyebrow">Herramientas internas</div><div class="ptitle">Honorarios</div><div class="ul"></div><div class="psub">Escala ICALI (Colegio de Alicante) &middot; revisi&oacute;n IPC +33,40&nbsp;% &mdash; minuta y tasaci&oacute;n de costas.</div></div>
       <div class="pr">
         <button class="ghost" id="btnLimpiar" type="button" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex:0 0 15px"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar</button>
         <button class="btnp" id="btnCopiar" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar desglose para minuta</button>
@@ -1284,7 +1284,7 @@ Honorarios de primera instancia.`
     var suplidos=Math.max(0, ctx.gastosExtras||0);
 
     var aplicar=!!ctx.aplicarIPC;
-    var varIPC=isFinite(ctx.ipcManual) ? ctx.ipcManual : 32.97;
+    var varIPC=isFinite(ctx.ipcManual) ? ctx.ipcManual : 33.40;
     var clienteIPC=totalCliente, costasIPC=totalCostas;
     if(aplicar && isFinite(varIPC)){ clienteIPC=totalCliente*(1+varIPC/100); costasIPC=totalCostas*(1+varIPC/100); }
     function redondea(x){ if(!ctx.aplicarRedondeo || !(x>0)) return x; var paso=x<=500?25:(x<=2000?50:100); return Math.ceil(x/paso)*paso; }
@@ -1558,7 +1558,7 @@ Honorarios de primera instancia.`
     if(!LAST) calcular();
     var R=LAST.R, ctx=LAST.ctx, N=R.nucleo;
     var grupo=(document.querySelector('.navlink.sel')&&document.querySelector('.navlink.sel').getAttribute('data-grupo'))||'monitorio';
-    var ipcTxt=(isFinite(R.varIPC)?R.varIPC.toString().replace('.',','):'32,97');
+    var ipcTxt=(isFinite(R.varIPC)?R.varIPC.toString().replace('.',','):'33,40');
     var L=[];
     L.push('CALCULADORA DE HONORARIOS ICALI — Artigas Abogados');
     L.push('Escala ICALI (Colegio de Abogados de Alicante) · revisión IPC +'+ipcTxt+' %');
@@ -1710,7 +1710,7 @@ Honorarios de primera instancia.`
   function refreshIpcConfirm(){
     var el=q('ipcManual'), row=q('ipcConfirm'); if(!el||!row) return;
     var cur=(el.value||'').trim();
-    var sv=ipcSaved(); var savedEff=(sv!==null && sv!=='') ? sv : '32,97';
+    var sv=ipcSaved(); var savedEff=(sv!==null && sv!=='') ? sv : '33,40';
     if(cur!=='' && cur!==savedEff){ if(q('ipcConfVal')) q('ipcConfVal').textContent=cur; row.classList.remove('hidden'); }
     else { row.classList.add('hidden'); }
   }
@@ -1719,7 +1719,7 @@ Honorarios de primera instancia.`
     initEscala();
     var ipcEl=q('ipcManual'); if(ipcEl){ ipcEl.addEventListener('input', refreshIpcConfirm); }
     var g=q('ipcGuardar'); if(g){ g.addEventListener('click', function(){ try{ localStorage.setItem(IPC_KEY, (q('ipcManual').value||'').trim()); }catch(e){} refreshIpcConfirm(); }); }
-    var d=q('ipcDescartar'); if(d){ d.addEventListener('click', function(){ var sv=ipcSaved(); q('ipcManual').value=(sv!==null && sv!=='')?sv:'32,97'; refreshIpcConfirm(); calcular(); }); }
+    var d=q('ipcDescartar'); if(d){ d.addEventListener('click', function(){ var sv=ipcSaved(); q('ipcManual').value=(sv!==null && sv!=='')?sv:'33,40'; refreshIpcConfirm(); calcular(); }); }
   }
   document.addEventListener('DOMContentLoaded', init);
 
