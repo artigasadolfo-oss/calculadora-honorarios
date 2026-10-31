@@ -486,6 +486,12 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
             <div class="hint hidden" id="renunciaHint"></div>
           </div>
 
+          <!-- Transacción (DG 2.ª E) en el resto de procedimientos; en declarativos y desahucios va en el selector de arriba -->
+          <div class="grp hidden" id="boxTransaccion">
+            <div class="gt">Finalización anticipada del procedimiento</div>
+            <label class="ck"><input type="checkbox" id="transaccion"> Transacción tras iniciado el procedimiento (+25&nbsp;%, DG 2.ª E)</label>
+          </div>
+
           <!-- Fases de ejecución -->
           <div class="grp hidden" id="boxEjecucion">
             <div class="gt">Fases de ejecución</div>
@@ -495,6 +501,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
               <label class="ck"><input type="checkbox" id="ejEmb"> Embargos (10&nbsp;%)</label>
               <label class="ck"><input type="checkbox" id="ejSub"> Subasta (10&nbsp;%)</label>
             </div>
+            <div class="fld hidden" id="cuantiaDiscutidaWrap" style="margin-top:12px"><label for="cuantiaDiscutida">Cuantía discutida en la oposición, con intereses y costas (art. 27.2)</label><div class="moneywrap"><input id="cuantiaDiscutida" type="text" inputmode="decimal" placeholder="Vacío si se discute toda la cuantía"><span class="eurotag">&euro;</span></div><div class="glosa">La oposición devenga el 20&nbsp;% de la Escala sobre esta cuantía (mínimo 300&nbsp;&euro;).</div></div>
             <div class="hint hidden" id="ejHint">Sin ninguna fase marcada no hay importe: marca las actuaciones hechas.</div>
           </div>
 
@@ -561,6 +568,12 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
                   <div class="fld"><label for="plurVencedores">Letrados vencedores</label><input id="plurVencedores" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo tasación de costas (DG 2.ª F): +20&nbsp;% por cada uno y se divide</div></div>
                   <div class="fld"><label for="plurContrarios">Partes contrarias</label><input id="plurContrarios" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo tasación de costas (DG 2.ª F): +10&nbsp;% por cada uno</div></div>
                   <div class="fld"><label for="numClientes">Nº de clientes</label><input id="numClientes" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo minuta al cliente (DG 2.ª G): +20&nbsp;% por cada uno y se divide</div></div>
+                </div>
+                <div class="subopt col hidden" id="clientesTitulosOpt">
+                  <div class="miniflds">
+                    <div class="fld"><label for="coincidenciaTitulos">¿Los clientes invocan los mismos títulos o causas de pedir?</label><div class="selwrap"><select id="coincidenciaTitulos" class="bigselect"><option value="distintos">No, son distintos (+20&nbsp;% por cada cliente)</option><option value="parcial">Solo en parte</option><option value="identicos">Sí, son idénticos (sin incremento)</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div><div class="glosa">DG 2.ª G: con títulos idénticos no hay incremento y el pago es proporcional; con coincidencia parcial, el incremento recae solo en quienes se apartan de la mayoría.</div></div>
+                    <div class="fld hidden" id="clientesDistintosWrap"><label for="numClientesDistintos">Clientes con título distinto al de la mayoría</label><input id="numClientesDistintos" type="number" min="1" step="1" placeholder="1"></div>
+                  </div>
                 </div>
               </div>
               <div class="gensec">
@@ -1051,6 +1064,10 @@ Honorarios de primera instancia.`
     var indet=q('indeterminada'), cuEl=q('cuantia'), kpi=q('kpiCuantia');
     if(indet&&cuEl){ if(indet.checked){ cuEl.value=''; cuEl.placeholder='Indeterminada'; cuEl.disabled=true; if(kpi) kpi.style.opacity='.5'; } else { cuEl.disabled=false; cuEl.placeholder='0,00'; if(kpi) kpi.style.opacity=''; } }
     var st=(q('subtipo')&&q('subtipo').value)||'';
+    var nCli=parseInt((q('numClientes')&&q('numClientes').value)||'1',10);
+    tog('clientesTitulosOpt', nCli>1);
+    var cti=q('coincidenciaTitulos'); tog('clientesDistintosWrap', !!(cti&&cti.value==='parcial'));
+    tog('cuantiaDiscutidaWrap', st==='ejecucion' && !!(q('ejOpo')&&q('ejOpo').checked));
     var desOrd=!!(q('desOrdinario')&&q('desOrdinario').checked);
     tog('faseAPwrap', st==='ordinario' || (st==='ar_fp' && desOrd));
     var ren=q('renunciaHint');
@@ -1091,7 +1108,7 @@ Honorarios de primera instancia.`
      H7  Vencedores y contrarios (DG 2.ª F): solo tasación de costas. Varios clientes (DG 2.ª G):
          solo minuta al cliente.
      H8  Suplidos: fuera del IPC, del redondeo, del tope y del IVA. Salida al extranjero, 600 €/día.
-     H9  Legislación especial (DG 3.ª): en todos los procedimientos.
+     H9  Legislación especial (DG 3.ª): en todos los procedimientos, sobre el total de honorarios del asunto.
      H10 Sentencia por menos de lo pedido (arts. 13 y 15.B): esa base, solo en costas.
      H11 Tope del tercio «por cada uno de los litigantes» vencedores (art. 394.3 LEC). */
   /*@MOTOR@*/
@@ -1146,12 +1163,35 @@ Honorarios de primera instancia.`
     return {total:res, detalle:det};
   }
   /* DG 2.ª G: «sólo serán de aplicación con cargo a los clientes propios». El «20 % por cada
-     uno» se aplica por cada cliente sin contar el primero (lectura del despacho). */
-  function pluralidadCliente(total, clientes){
-    var res=total, det=[];
+     uno» se aplica por cada cliente sin contar el primero (lectura del despacho).
+     Coincidencia de títulos o causas de pedir (texto del PDF, DG 2.ª G):
+       'distintos' (por defecto, conserva las cifras anteriores): no idénticos → +20 % por cada
+                   cliente, dividiendo entre todos.
+       'identicos': coincidencia TOTAL → ningún incremento; pago proporcional (total / n).
+       'parcial'  : coincidencia PARCIAL → incremento y proporcionalidad solo a quienes esgrimen
+                   títulos o causas distintos a los de la mayoría (k = clientesDistintos).
+                   [verificar] Lectura simple: la regla de «distintos» (sin contar al primero) se
+                   aplica a esos k sobre su parte proporcional (total/n): cada cliente distinto paga
+                   total/n × (1 + 0,20 × (k−1)); cada uno de la mayoría, total/n sin incremento.
+                   Con k = 1 no hay incremento (no se cuenta al primero) y con k = n coincide con
+                   'distintos'. El importe devuelto (total) es el de un cliente DISTINTO; el de la
+                   mayoría va en mayoria (sin IPC, redondeo ni IVA). */
+  function pluralidadCliente(total, clientes, coincidencia, clientesDistintos){
+    var res=total, det=[], mayoria=null;
     var n=Math.max(1, clientes||1);
-    if(n>1){ var incJ=0.20*(n-1); res=res*(1+incJ)/n; det.push('Varios clientes (DG 2.ª G) +'+Math.round(incJ*100)+' % → /'+n); }
-    return {total:res, detalle:det};
+    if(n>1){
+      var modo=coincidencia||'distintos';
+      if(modo==='identicos'){
+        res=res/n; det.push('Varios clientes con títulos y causas de pedir idénticos (DG 2.ª G): sin incremento → /'+n);
+      } else if(modo==='parcial'){
+        var k=Math.floor(clientesDistintos); if(!isFinite(k)) k=1; k=Math.min(n, Math.max(1, k));
+        var incP=0.20*(k-1); mayoria=total/n; res=total*(1+incP)/n;
+        det.push('Varios clientes, coincidencia parcial de títulos (DG 2.ª G): los '+k+' con título distinto +'+Math.round(incP*100)+' % → /'+n+'; los otros '+(n-k)+' sin incremento: '+mayoria.toFixed(2));
+      } else {
+        var incJ=0.20*(n-1); res=res*(1+incJ)/n; det.push('Varios clientes (DG 2.ª G) +'+Math.round(incJ*100)+' % → /'+n);
+      }
+    }
+    return {total:res, detalle:det, mayoria:mayoria};
   }
 
   /* Honorarios del asunto para una cuantía de demanda dada (la pedida, o la de la sentencia
@@ -1178,7 +1218,11 @@ Honorarios de primera instancia.`
       /* Art. 27: mínimos POR APARTADO (27.1: 150 · 27.2: 300 · 27.3 a+b: 150 único). */
       var sumaPct=0, sumaEj=0, minEj=0, aplicaMinEj=false;
       if(ctx.ejPre){ sumaPct+=0.20; var t1=esc.total*0.20; if(t1<150){ t1=150; aplicaMinEj=true; } sumaEj+=t1; minEj+=150; }
-      if(ctx.ejOpo){ sumaPct+=0.20; var t2=esc.total*0.20; if(t2<300){ t2=300; aplicaMinEj=true; } sumaEj+=t2; minEj+=300; }
+      /* Art. 27.2 (oposición a la ejecución): 20 % de la Escala sobre la CUANTÍA DISCUTIDA (con intereses y
+         costas), mín. 300 €. Sin cuantiaDiscutida (vacía o 0) se toma toda la cuantía de la ejecución. */
+      var escOpo=(ctx.ejOpo && (ctx.cuantiaDiscutida||0)>0) ? computeEscalaBreakdown(ctx.cuantiaDiscutida) : esc;
+      var sinMinOpo=0;
+      if(ctx.ejOpo){ sumaPct+=0.20; var t2=escOpo.total*0.20; sinMinOpo=t2; if(t2<300){ t2=300; aplicaMinEj=true; } sumaEj+=t2; minEj+=300; }
       if(ctx.ejEmb || ctx.ejSub){
         var t3=0;
         if(ctx.ejEmb){ sumaPct+=0.10; t3+=esc.total*0.10; }
@@ -1187,7 +1231,8 @@ Honorarios de primera instancia.`
         sumaEj+=t3; minEj+=150;
       }
       sinFases=!(ctx.ejPre||ctx.ejOpo||ctx.ejEmb||ctx.ejSub);
-      basePorNormaSinMin=esc.total*sumaPct; minimoNormaMostrar=minEj; aplicaMinNorma=aplicaMinEj; importeNormaBase=sumaEj;
+      /* Sin cuantía discutida distinta, la misma expresión de siempre (cifras idénticas). */
+      basePorNormaSinMin=(escOpo===esc) ? esc.total*sumaPct : esc.total*(sumaPct-0.20)+sinMinOpo; minimoNormaMostrar=minEj; aplicaMinNorma=aplicaMinEj; importeNormaBase=sumaEj;
     } else if(st==='recurso_apelacion' || st==='recurso_apelacion_parcial'){
       /* Art. 50.1: 50% de los HONORARIOS DE 1ª INSTANCIA; el mínimo del art. 50 va más abajo, sobre el total. */
       var _h1i=honorariosPrimeraInstancia(ctx.apelInstancia||'ordinario', esc.total, ctx);
@@ -1226,7 +1271,11 @@ Honorarios de primera instancia.`
     else pctFase=fasePct((st==='ar_fp' && ctx.desOrdinario)?'ordinario':st, {aleg:ctx.faseAleg, ap:ctx.faseAP, vista:ctx.faseVista});
     var total=importeNormaBase*pctFase;
 
-    if(ctx.finalizacion==='transaccion' && (isDecl2||isDesah)) total*=1.25;  /* DG 2.ª E */
+    /* DG 2.ª E: asunto solucionado o transigido tras iniciado el procedimiento → honorarios devengados hasta la
+       paralización +25 %. Todos los subtipos salvo los recursos (recurso_*): en ellos el +25 % se aplicaría
+       antes de los incrementos de vista/prueba y del mínimo del art. 50, orden que el texto no fija
+       [verificar]. Supuesto de Letrado distinto (60 %): pendiente, no implementado. */
+    if(ctx.finalizacion==='transaccion' && st.indexOf('recurso_')!==0) total*=1.25;
     if(ctx.noMaterializa) total*=0.50;                                        /* DG 2.ª I */
 
     if(st==='recurso_apelacion' || st==='recurso_apelacion_parcial'){
@@ -1245,7 +1294,6 @@ Honorarios de primera instancia.`
       m48=Math.max(e48, MON48.MIN); total+=m48;
       det.push('Monitorio previo con oposición (art. 48.1): 10 % de la Escala'+(e48<MON48.MIN?' → mínimo 150 €':'')+' = '+m48.toFixed(2));
     }
-    if(ctx.legislacionEspecial) total*=1.50;                                  /* DG 3.ª */
 
     /* Art. 33: medida cautelar. */
     var cc=0;
@@ -1266,6 +1314,12 @@ Honorarios de primera instancia.`
     var recUnitConCuantia=Math.max(computeEscalaBreakdown(ctx.recCuantiaImporte||0).total*ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1);
     total+=((ctx.recRepo||0)+(ctx.recRev||0)+(ctx.recQueja||0))*ART51.MIN_51_1 + Math.max(0, ctx.recConCuantia||0)*recUnitConCuantia;
 
+    /* DG 3.ª (legislación histórica de CCAA distinta de la Valenciana o extranjera): +50 % sobre los Honorarios
+       correspondientes, esto es, sobre el TOTAL de honorarios del asunto (núcleo + monitorio previo + cautelar +
+       sesiones + recursos), tanto en costas como en minuta. La salvedad del PDF («salvo cuando en el artículo
+       correspondiente ya se hubiere contemplado») no se automatiza: la casilla la marca el letrado. */
+    if(ctx.legislacionEspecial) total*=1.50;
+
     return {total:total, esc:esc, cuantiaEscala:cuantiaEscala, nIndet:nIndet, criterioIndet:criterioIndet,
             minDerivFrom:minDerivFrom, minDerivTo:minDerivTo, minDerivAplica:minDerivAplica,
             pctFase:pctFase, esAllan:esAllan, esRenunciaVerbal:esRenunciaVerbal, sinFases:sinFases,
@@ -1277,7 +1331,7 @@ Honorarios de primera instancia.`
     var N=nucleoHonorarios(ctx, ctx.cuantia);
     var sentAplica=isDecl2 && !ctx.indeterminada && (ctx.sentenciaCuantia||0)>0 && ctx.sentenciaCuantia<(ctx.cuantia||0);
     var NC=sentAplica ? nucleoHonorarios(ctx, ctx.sentenciaCuantia) : N;
-    var pc=pluralidadCliente(N.total, ctx.numClientes);
+    var pc=pluralidadCliente(N.total, ctx.numClientes, ctx.coincidenciaTitulos, ctx.numClientesDistintos);
     var pk=pluralidadCostas(NC.total, ctx.plurVencedores, ctx.plurContrarios);
     var salidas=Math.max(0, ctx.numSalidasMedio||0)*SALIDA.MEDIO + Math.max(0, ctx.numSalidasDia||0)*SALIDA.DIA + Math.max(0, ctx.numSalidasExtranjero||0)*SALIDA.EXTRANJERO;
     var totalCliente=pc.total+salidas, totalCostas=pk.total+salidas;
@@ -1288,13 +1342,17 @@ Honorarios de primera instancia.`
     var clienteIPC=totalCliente, costasIPC=totalCostas;
     if(aplicar && isFinite(varIPC)){ clienteIPC=totalCliente*(1+varIPC/100); costasIPC=totalCostas*(1+varIPC/100); }
     function redondea(x){ if(!ctx.aplicarRedondeo || !(x>0)) return x; var paso=x<=500?25:(x<=2000?50:100); return Math.ceil(x/paso)*paso; }
-    var baseCliente=redondea(clienteIPC), costasRed=redondea(costasIPC);
+    /* CÉNTIMO (31/10/2026): la base imponible va en céntimos. La base del cliente y la base de costas
+       (topada o no) se redondean a 2 decimales, mitad hacia arriba (r2 evita el error de coma flotante);
+       IVA = r2(base × 0,21); total = base + IVA + suplidos, suma de importes ya redondeados. */
+    function r2(x){ return Math.round(x*100+1e-9)/100; }
+    var baseCliente=r2(redondea(clienteIPC)), costasRed=redondea(costasIPC);
 
     var cuantiaTope=(ctx.indeterminada?TOPE_INESTIMABLE:(ctx.cuantia||0)) + ((isDecl2 && ctx.reconvencion) ? (ctx.reconvModo==='cuantia'?(ctx.reconvCuantia||0):TOPE_INESTIMABLE) : 0);
     var lim=limiteUnTercio(cuantiaTope,false), vencedores=Math.max(1, ctx.plurVencedores||1);
     var muerde=(isFinite(lim) && lim>0 && costasRed>lim);
-    var baseCostas=muerde ? lim : costasRed, recorte=muerde ? (costasRed-baseCostas) : 0;
-    var ivaCliente=baseCliente*0.21, ivaCostas=baseCostas*0.21;
+    var baseCostas=r2(muerde ? lim : costasRed), recorte=muerde ? r2(costasRed-baseCostas) : 0;
+    var ivaCliente=r2(baseCliente*0.21), ivaCostas=r2(baseCostas*0.21);
     return {ctx:ctx, nucleo:N, nucleoCostas:NC, sentAplica:sentAplica, sinFases:N.sinFases,
       totalCliente:totalCliente, totalCostas:totalCostas, salidas:salidas, suplidos:suplidos,
       pluralCliente:pc.detalle, pluralCostas:pk.detalle,
@@ -1302,8 +1360,9 @@ Honorarios de primera instancia.`
       clienteIPC:clienteIPC, costasIPC:costasIPC, baseCliente:baseCliente, costasRed:costasRed,
       cuantiaTope:cuantiaTope, lim:lim, vencedores:vencedores, limTotal:lim*vencedores,
       muerde:muerde, baseCostas:baseCostas, recorte:recorte,
-      ivaCliente:ivaCliente, conIvaCliente:baseCliente+ivaCliente+suplidos,
-      ivaCostas:ivaCostas, conIvaCostas:baseCostas+ivaCostas+suplidos,
+      ivaCliente:ivaCliente, conIvaCliente:r2(baseCliente+ivaCliente+suplidos),
+      ivaCostas:ivaCostas, conIvaCostas:r2(baseCostas+ivaCostas+suplidos),
+      totalClienteMayoria:pc.mayoria,
       prec:checkPreceptividad(ctx)};
   }
   /*@FIN-MOTOR@*/
@@ -1395,6 +1454,7 @@ Honorarios de primera instancia.`
     show('faseAPwrap', st==='ordinario');
     show('boxSesiones', isDecl||isDesah);
     show('boxFinalizacion', isDecl||isDesah);
+    show('boxTransaccion', !(isDecl||isDesah) && st.indexOf('recurso_')!==0);
     show('boxDecl', isDecl);
     show('boxDesahucio', st==='ar_fp');
     show('boxEjecucion', isEjec);
@@ -1439,7 +1499,9 @@ Honorarios de primera instancia.`
       cuantia:num('cuantia'),
       indeterminada:chk('indeterminada'),
       numSalidasMedio:ent('numSalidasMedio',0), numSalidasDia:ent('numSalidasDia',0), numSalidasExtranjero:ent('numSalidasExtranjero',0), gastosExtras:num('gastosExtras'),
-      numClientes:ent('numClientes',1), plurVencedores:ent('plurVencedores',1), plurContrarios:ent('plurContrarios',1),
+      numClientes:ent('numClientes',1), coincidenciaTitulos:(q('coincidenciaTitulos')&&q('coincidenciaTitulos').value)||'distintos', numClientesDistintos:ent('numClientesDistintos',1),
+      cuantiaDiscutida:num('cuantiaDiscutida'),
+      plurVencedores:ent('plurVencedores',1), plurContrarios:ent('plurContrarios',1),
       recRev:ent('recRev',0), recRepo:ent('recRepo',0), recQueja:ent('recQueja',0),
       aplicarIPC:chk('aplicarIPC'), ipcManual:parseFloat((ipcRaw+'').replace(',','.')), aplicarRedondeo:chk('aplicarRedondeo'),
       desOposicion:chk('desOposicion'), reclRentas:chk('reclRentas'), enerv:chk('enerv'), desOrdinario:chk('desOrdinario'),
@@ -1450,7 +1512,7 @@ Honorarios de primera instancia.`
       apelSesVista:ent('apelSesVista',0), apelSesPrueba:ent('apelSesPrueba',0),
       faseAleg:chk('faseAleg'), faseAP:chk('faseAP'), faseVista:chk('faseVista'),
       sesionesExtra:ent('sesionesExtra',0),
-      finalizacion:(q('finalizacion')&&q('finalizacion').value)||'',
+      finalizacion:(st==='verbal'||st==='ordinario'||st==='ar_fp'||st==='ar_precario') ? ((q('finalizacion')&&q('finalizacion').value)||'') : (chk('transaccion')?'transaccion':''),
       allanParte:(q('allanParte')&&q('allanParte').value)||'demandante',
       allanMomento:(q('allanMomento')&&q('allanMomento').value)||'antes_contestacion',
       derivaMonitorio:chk('derivaMonitorio'), reconvencion:chk('reconvencion'), medidaCautelar:chk('medidaCautelar'),
@@ -1715,7 +1777,7 @@ Honorarios de primera instancia.`
     else { row.classList.add('hidden'); }
   }
   function init(){ bind(); restoreIPC(); pintarSubtipos('monitorio'); calcular(); ajustaAnchoCuantia();
-    bindMoney('cuantia'); bindMoney('gastosExtras'); bindMoney('reconvCuantia'); bindMoney('cautelarCuantia'); bindMoney('recCuantiaImporte'); bindMoney('sentenciaCuantia');
+    bindMoney('cuantia'); bindMoney('gastosExtras'); bindMoney('reconvCuantia'); bindMoney('cautelarCuantia'); bindMoney('recCuantiaImporte'); bindMoney('sentenciaCuantia'); bindMoney('cuantiaDiscutida');
     initEscala();
     var ipcEl=q('ipcManual'); if(ipcEl){ ipcEl.addEventListener('input', refreshIpcConfirm); }
     var g=q('ipcGuardar'); if(g){ g.addEventListener('click', function(){ try{ localStorage.setItem(IPC_KEY, (q('ipcManual').value||'').trim()); }catch(e){} refreshIpcConfirm(); }); }

@@ -228,6 +228,7 @@ CTX_BASE = {
     "cautelarModo": "cuantia", "cautelarCuantia": 0, "cautelarTramite": "734", "sentenciaCuantia": 0,
     "noMaterializa": False, "legislacionEspecial": False, "materiaPH": False,
     "tituloVerbalPH": False,
+    "coincidenciaTitulos": "distintos", "numClientesDistintos": 1, "cuantiaDiscutida": 0,
 }
 
 
@@ -252,6 +253,8 @@ def a_script(c):
         cautelar_caucion=float(c["cautelarCuantia"]), cautelar_indet=(c["cautelarModo"] == "indet"),
         sentencia=float(c["sentenciaCuantia"]),
         vencedores=c["plurVencedores"], contrarios=c["plurContrarios"], clientes=c["numClientes"],
+        titulos_clientes=c["coincidenciaTitulos"], clientes_distintos=c["numClientesDistintos"],
+        cuantia_discutida=float(c["cuantiaDiscutida"] or 0),
         allanamiento=(c["finalizacion"] == "allanamiento"), parte=c["allanParte"], momento=c["allanMomento"],
         renuncia=(c["finalizacion"] == "renuncia"), transaccion=(c["finalizacion"] == "transaccion"),
         legislacion_especial=c["legislacionEspecial"], no_materializa=c["noMaterializa"],
@@ -290,6 +293,7 @@ def _script(C, c):
             "clienteIPC": r["con_ipc"], "baseCliente": r["minuta"], "costasRed": r["costas_redondeo"],
             "lim": r["tercio"], "baseCostas": r["costas"], "muerde": r["topa"], "suplidos": r["suplidos"],
             "conIvaCliente": r["minuta_iva"], "conIvaCostas": r["costas_iva"], "preceptiva": r["preceptiva"],
+            "ivaCliente": r["iva_minuta"], "ivaCostas": r["iva_costas"], "totalClienteMayoria": r["minuta_mayoria"],
             "precTexto": r["preceptividad"]}
 
 
@@ -311,6 +315,24 @@ def casos_generales():
                 caso(**base, legislacionEspecial=True, noMaterializa=(cu > 50000))
                 caso(**base, plurVencedores=3, plurContrarios=2, numClientes=2, aplicarIPC=True, aplicarRedondeo=True)
                 caso(**base, gastosExtras=437.5, numSalidasMedio=1, numSalidasDia=1, numSalidasExtranjero=2, aplicarIPC=True)
+    # 31/10/2026 (D1, D2, D4, D5, céntimo): más casos en rejilla
+    for cu in (3000, 30000, 60000):
+        for n_cli in (2, 3, 4):
+            for mod in ("distintos", "parcial", "identicos"):
+                for k in (1, 2, 3, 9):
+                    caso(subtipo="ordinario", cuantia=cu, numClientes=n_cli, coincidenciaTitulos=mod, numClientesDistintos=k,
+                         aplicarIPC=True, aplicarRedondeo=(k % 2 == 0), gastosExtras=100)
+        for cd in (0, 1000, 5000, 20000, 50000, 90000):
+            for fases in ((False, True, False, False), (True, True, False, False), (True, True, True, True)):
+                caso(subtipo="ejecucion", cuantia=cu, ejPre=fases[0], ejOpo=fases[1], ejEmb=fases[2], ejSub=fases[3],
+                     cuantiaDiscutida=cd, aplicarIPC=(cd > 5000), aplicarRedondeo=(cd > 20000), legislacionEspecial=(cd == 50000))
+        for st in subt:
+            caso(subtipo=st, cuantia=cu, ejPre=(st == "ejecucion"), faseAleg=True, faseAP=True, faseVista=True,
+                 finalizacion="transaccion", aplicarIPC=True, aplicarRedondeo=True)
+            caso(subtipo=st, cuantia=cu, ejPre=(st == "ejecucion"), faseAleg=True, finalizacion="transaccion", legislacionEspecial=True)
+        caso(subtipo="ordinario", cuantia=cu, medidaCautelar=True, cautelarCuantia=cu, sesionesExtra=2, recConCuantia=1,
+             recCuantiaImporte=cu, derivaMonitorio=True, legislacionEspecial=True, faseAleg=True, faseAP=True, faseVista=True)
+        caso(subtipo="ordinario", cuantia=cu, aplicarIPC=True, ipcManual=33.4, faseAleg=True, sentenciaCuantia=cu / 3, plurVencedores=2)
     for cu in cuantias + [2001, 5000, 12000]:    # verbal por materia (cuotas LPH, art. 250.1.15.º LEC), 13/10/2026
         for ind in (False, True):
             caso(subtipo="verbal", cuantia=cu, indeterminada=ind, materiaPH=True)
@@ -352,6 +374,7 @@ def casos_generales():
         for bits in range(1, 16):   # sin ninguna fase, la web no da importe: se prueba aparte
             caso(subtipo="ejecucion", cuantia=cu, ejPre=bool(bits & 1), ejOpo=bool(bits & 2), ejEmb=bool(bits & 4), ejSub=bool(bits & 8))
     rnd = random.Random(23092026)
+    rnd2 = random.Random(31102026)
     for _ in range(600):
         st = rnd.choice(subt)
         c = dict(CTX_BASE)
@@ -377,12 +400,21 @@ def casos_generales():
                  noMaterializa=rnd.random() < 0.15, legislacionEspecial=rnd.random() < 0.2)
         if st == "ejecucion" and not (c["ejPre"] or c["ejOpo"] or c["ejEmb"] or c["ejSub"]):
             c["ejPre"] = True   # sin fases, la web no da importe (y el script toma 27.1): se prueba aparte
+        # campos nuevos con su propio generador: la secuencia anterior de casos al azar no cambia
+        c.update(coincidenciaTitulos=rnd2.choice(["distintos", "parcial", "identicos"]), numClientesDistintos=rnd2.randint(1, 5),
+                 cuantiaDiscutida=rnd2.choice([0, 0, rnd2.randint(1, 3000), rnd2.randint(1, 90000)]))
         casos.append(c)
     return casos
 
 
 CAMPOS = ["totalCliente", "totalCostas", "clienteIPC", "baseCliente", "costasRed", "lim", "baseCostas",
-          "muerde", "suplidos", "conIvaCliente", "conIvaCostas", "preceptiva"]
+          "muerde", "suplidos", "conIvaCliente", "conIvaCostas", "preceptiva", "ivaCliente", "ivaCostas"]
+# 31/10/2026: «al céntimo» (antes 0,01, que dejaba pasar 164,47 frente a 164,46) en bases, IVA y totales con IVA,
+# que son importes en céntimos. Los intermedios en bruto (importe base, IPC, costasRed, lim) salen de motor_web.js
+# ya redondeados a 2 decimales y del script en bruto: ahí la tolerancia sigue siendo de medio céntimo más el redondeo.
+TOL = 0.005
+TOL_CRUDO = 0.0101
+CAMPOS_CENTIMO = ("baseCliente", "baseCostas", "conIvaCliente", "conIvaCostas", "ivaCliente", "ivaCostas")
 
 
 def comparar_general():
@@ -395,7 +427,7 @@ def comparar_general():
             div.append(f"{c['subtipo']} {c['cuantia']}: la web no da importe (sin fases)")
             continue
         s = _script(C, c)
-        malos = [k for k in CAMPOS if (w[k] != s[k] if isinstance(s[k], bool) else abs(w[k] - s[k]) > 0.01)]
+        malos = [k for k in CAMPOS if (w[k] != s[k] if isinstance(s[k], bool) else abs(w[k] - s[k]) > (TOL if k in CAMPOS_CENTIMO else TOL_CRUDO))]
         if malos:
             div.append(f"{c['subtipo']} {c['cuantia']}: " + ", ".join(f"{k} web {w[k]} / script {s[k]}" for k in malos[:3]))
     # ejecución sin ninguna fase: la web enseña un guion, no 0,00 €
@@ -607,6 +639,128 @@ def comprobar_titulo_verbal_ph():
     return n, div, res
 
 
+# ── Reparación del motor 31/10/2026: D1, D2, D4, D5 y céntimo ──────────────
+# Importes calculados A MANO desde el texto del PDF (icali-texto-pdf.txt), sin IPC ni redondeo salvo indicación.
+# Se comprueban en los TRES cálculos: index.html (motor_web.js), fac-motor.js (generado, motor_fac.js) y calc_icali.py.
+FAC_MOTOR = os.environ.get("FAC_MOTOR") or os.path.expanduser("~/Programación/LexArt/MAQUETA/dev-facturar/capa/fac-motor.js")
+ORD30 = dict(subtipo="ordinario", cuantia=30000)
+CASOS_REPARACION = [
+    # D1 · DG 2.ª G · Escala de 30.000 = 4.730,00; tres clientes
+    ("D1 distintos (defecto): +40 % /3", dict(ORD30, numClientes=3), "totalCliente", ESC[30000] * 1.4 / 3),
+    ("D1 distintos explícito: igual que el defecto", dict(ORD30, numClientes=3, coincidenciaTitulos="distintos"), "totalCliente", ESC[30000] * 1.4 / 3),
+    ("D1 idénticos: sin incremento, /3", dict(ORD30, numClientes=3, coincidenciaTitulos="identicos"), "totalCliente", ESC[30000] / 3),
+    ("D1 idénticos con 2 clientes: /2", dict(ORD30, numClientes=2, coincidenciaTitulos="identicos"), "totalCliente", ESC[30000] / 2),
+    ("D1 parcial, 2 distintos de 3: cada distinto 1,2 × 4.730 / 3", dict(ORD30, numClientes=3, coincidenciaTitulos="parcial", numClientesDistintos=2), "totalCliente", ESC[30000] * 1.2 / 3),
+    ("D1 parcial, 2 distintos de 3: cada uno de la mayoría 4.730 / 3", dict(ORD30, numClientes=3, coincidenciaTitulos="parcial", numClientesDistintos=2), "totalClienteMayoria", ESC[30000] / 3),
+    ("D1 parcial, 1 distinto de 3: sin incremento (no se cuenta al primero)", dict(ORD30, numClientes=3, coincidenciaTitulos="parcial", numClientesDistintos=1), "totalCliente", ESC[30000] / 3),
+    ("D1 parcial, 3 distintos de 3: igual que distintos", dict(ORD30, numClientes=3, coincidenciaTitulos="parcial", numClientesDistintos=3), "totalCliente", ESC[30000] * 1.4 / 3),
+    ("D1 parcial con k mayor que n: se limita a n", dict(ORD30, numClientes=3, coincidenciaTitulos="parcial", numClientesDistintos=9), "totalCliente", ESC[30000] * 1.4 / 3),
+    ("D1 con un solo cliente la coincidencia no cuenta", dict(ORD30, numClientes=1, coincidenciaTitulos="identicos"), "totalCliente", ESC[30000]),
+    ("D1 idénticos: la tasación de costas no cambia", dict(ORD30, numClientes=3, coincidenciaTitulos="identicos"), "totalCostas", ESC[30000]),
+    # D2 · DG 3.ª · +50 % sobre el total (núcleo + cautelar + sesiones)
+    ("D2 ordinario 30.000 + cautelar 734 (30.000) + 2 sesiones, +50 % sobre el total: minuta",
+     dict(ORD30, medidaCautelar=True, cautelarTramite="734", cautelarCuantia=30000, sesionesExtra=2, legislacionEspecial=True), "totalCliente", (ESC[30000] + 0.30 * ESC[30000] + 300) * 1.5),
+    ("D2 ídem: costas", dict(ORD30, medidaCautelar=True, cautelarTramite="734", cautelarCuantia=30000, sesionesExtra=2, legislacionEspecial=True), "totalCostas", 9673.50),
+    ("D2 sin DG 3.ª: 6.449,00", dict(ORD30, medidaCautelar=True, cautelarTramite="734", cautelarCuantia=30000, sesionesExtra=2), "totalCliente", 6449.00),
+    ("D2 verbal 3.000 tras monitorio (48.1) con DG 3.ª: (810 + 150) × 1,5",
+     dict(subtipo="verbal", cuantia=3000, derivaMonitorio=True, legislacionEspecial=True, faseAleg=True, faseVista=True), "totalCliente", None),
+    # D4 · art. 27.2 · 20 % de la Escala sobre la cuantía discutida, mín. 300
+    ("D4 ejecución 30.000, oposición por 5.000: 20 % de 1.190 = 238 → mín. 300", dict(subtipo="ejecucion", cuantia=30000, ejOpo=True, cuantiaDiscutida=5000), "totalCliente", 300.00),
+    ("D4 ejecución 30.000, oposición por 20.000: 20 % de 3.590", dict(subtipo="ejecucion", cuantia=30000, ejOpo=True, cuantiaDiscutida=20000), "totalCliente", ESC[20000] * 0.20),
+    ("D4 sin cuantía discutida: toda la cuantía (20 % de 4.730)", dict(subtipo="ejecucion", cuantia=30000, ejOpo=True), "totalCliente", ESC[30000] * 0.20),
+    ("D4 cuantía discutida 0: toda la cuantía", dict(subtipo="ejecucion", cuantia=30000, ejOpo=True, cuantiaDiscutida=0), "totalCliente", ESC[30000] * 0.20),
+    ("D4 con diligencias (27.1 sobre 30.000) + oposición por 5.000", dict(subtipo="ejecucion", cuantia=30000, ejPre=True, ejOpo=True, cuantiaDiscutida=5000), "totalCliente", ESC[30000] * 0.20 + 300),
+    ("D4 cuantía discutida sin marcar la oposición: no pesa", dict(subtipo="ejecucion", cuantia=30000, ejPre=True, cuantiaDiscutida=5000), "totalCliente", ESC[30000] * 0.20),
+    ("D4 cuantía discutida mayor que la ejecución (intereses y costas): 20 % de 50.000 = 6.630", dict(subtipo="ejecucion", cuantia=30000, ejOpo=True, cuantiaDiscutida=50000), "totalCliente", 6630.00 * 0.20),
+    ("D4 la cuantía discutida no cambia el tope del tercio (cuantía 30.000)", dict(subtipo="ejecucion", cuantia=30000, ejOpo=True, cuantiaDiscutida=5000), "lim", 10000.00),
+    # D5 · DG 2.ª E · +25 % en todos los subtipos salvo recursos
+    ("D5 monitorio sin oposición 10.000 con transacción: 1.025 × 1,25", dict(subtipo="monitorio_sin", cuantia=10000, finalizacion="transaccion"), "totalCliente", 1281.25),
+    ("D5 monitorio sin oposición 10.000 sin transacción: 1.025", dict(subtipo="monitorio_sin", cuantia=10000), "totalCliente", 1025.00),
+    ("D5 ejecución 30.000 diligencias con transacción: 946 × 1,25", dict(subtipo="ejecucion", cuantia=30000, ejPre=True, finalizacion="transaccion"), "totalCliente", ESC[30000] * 0.20 * 1.25),
+    ("D5 en un recurso (apelación) no se aplica", dict(subtipo="recurso_apelacion", cuantia=30000, apelInstancia="ordinario", finalizacion="transaccion"), "totalCliente", None),
+    ("D5 ordinario 30.000 completo con transacción (como antes): 4.730 × 1,25", dict(ORD30, faseAleg=True, faseAP=True, faseVista=True, finalizacion="transaccion"), "totalCliente", ESC[30000] * 1.25),
+    # Céntimo · cuantía 2.349,50, IPC manual 33,40 %, sin redondeo: costas 889,63 topan en el tercio (783,1666…)
+    ("CÉNTIMO base de costas topada a 2 decimales: 783,17", dict(subtipo="verbal", cuantia=2349.5, aplicarIPC=True, ipcManual=33.4), "baseCostas", 783.17),
+    ("CÉNTIMO IVA de costas 21 % de 783,17 = 164,4657 → 164,47", dict(subtipo="verbal", cuantia=2349.5, aplicarIPC=True, ipcManual=33.4), "ivaCostas", 164.47),
+    ("CÉNTIMO total costas con IVA: 783,17 + 164,47", dict(subtipo="verbal", cuantia=2349.5, aplicarIPC=True, ipcManual=33.4), "conIvaCostas", 947.64),
+    ("CÉNTIMO total costas con suplidos 437,50 (sin IVA)", dict(subtipo="verbal", cuantia=2349.5, aplicarIPC=True, ipcManual=33.4, gastosExtras=437.5), "conIvaCostas", 1385.14),
+    ("CÉNTIMO IVA de la minuta sin topar: 21 % de 666,89 = 140,0469 → 140,05", dict(subtipo="verbal", cuantia=2349.5), "ivaCliente", 140.05),
+]
+# Valores que dependen de otro cálculo del mismo motor (se comprueban por diferencia, no por cifra a mano)
+CASOS_RELATIVOS = [
+    ("D2 verbal 3.000 tras monitorio con DG 3.ª = 1,5 × sin DG 3.ª",
+     dict(subtipo="verbal", cuantia=3000, derivaMonitorio=True, faseAleg=True, faseVista=True), dict(legislacionEspecial=True), 1.5),
+    ("D2 ejecución con DG 3.ª = 1,5 × sin", dict(subtipo="ejecucion", cuantia=9600, ejPre=True, ejOpo=True, cuantiaDiscutida=3000), dict(legislacionEspecial=True), 1.5),
+    ("D5 apelación: la transacción no altera la cifra", dict(subtipo="recurso_apelacion", cuantia=30000, apelInstancia="ordinario"), dict(finalizacion="transaccion"), 1.0),
+    ("D5 casación inadmisión: la transacción no altera la cifra", dict(subtipo="recurso_casacion_inadm", cuantia=30000), dict(finalizacion="transaccion"), 1.0),
+]
+SUBT_TRANSACCION = ["monitorio_lph", "monitorio_sin", "monitorio_con", "verbal", "ordinario", "ar_fp", "ar_precario", "ejecucion"]
+
+
+def _fac(casos):
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as fh:
+        json.dump(casos, fh)
+        ruta = fh.name
+    try:
+        r = subprocess.run(["node", os.path.join(AQUI, "motor_fac.js"), ruta], capture_output=True, text=True,
+                           env=dict(os.environ, FAC_MOTOR=FAC_MOTOR))
+        if r.returncode != 0:
+            raise RuntimeError(r.stderr[:400])
+        return json.loads(r.stdout)
+    finally:
+        os.remove(ruta)
+
+
+def comprobar_reparacion():
+    """Casos del texto en las tres copias + relaciones (D2, D5) + r2() del script."""
+    C = _modulo_calc()
+    div, n = [], 0
+    ctxs = [dict(CTX_BASE, **k) for _, k, _, _ in CASOS_REPARACION]
+    web, fac = _web(ctxs), _fac(ctxs)
+    for (nom, _, campo, esp), c, w, f in zip(CASOS_REPARACION, ctxs, web, fac):
+        s = _script(C, c)
+        vs = {"web": w[campo], "fac-motor": f[campo], "script": s[campo]}
+        if esp is None:      # sin cifra a mano: solo paridad entre las tres
+            n += 1
+            if not (vs["web"] == vs["fac-motor"] and abs(vs["web"] - vs["script"]) < TOL_CRUDO):
+                div.append(f"{nom}: {vs}")
+            continue
+        for quien, v in vs.items():
+            n += 1
+            if abs(v - esp) >= (TOL if campo in CAMPOS_CENTIMO else TOL_CRUDO):
+                div.append(f"{nom}: {quien} da {v}, el texto {esp:.2f}")
+    # relaciones
+    for nom, base, extra, factor in CASOS_RELATIVOS:
+        a, b = dict(CTX_BASE, **base), dict(CTX_BASE, **base, **extra)
+        for quien, (ra, rb) in (("web", _web([a, b])), ("fac-motor", _fac([a, b])),
+                                ("script", (_script(C, a), _script(C, b)))):
+            n += 1
+            if abs(rb["totalCliente"] - ra["totalCliente"] * factor) >= TOL_CRUDO:
+                div.append(f"{nom}: {quien} {ra['totalCliente']} → {rb['totalCliente']} (factor {factor})")
+    # D5 en todos los subtipos del motor salvo recursos: +25 % exacto sobre la cifra sin transacción
+    for st in SUBT_TRANSACCION:
+        a = dict(CTX_BASE, subtipo=st, cuantia=9600, ejPre=(st == "ejecucion"), faseAleg=True, faseAP=True, faseVista=True)
+        b = dict(a, finalizacion="transaccion")
+        for quien, (ra, rb) in (("web", _web([a, b])), ("fac-motor", _fac([a, b])), ("script", (_script(C, a), _script(C, b)))):
+            n += 1
+            if abs(rb["totalCliente"] - ra["totalCliente"] * 1.25) >= TOL_CRUDO:
+                div.append(f"D5 {st}: {quien} {ra['totalCliente']} → {rb['totalCliente']} (esperado ×1,25)")
+    # r2() del script: mitad hacia arriba sin ruido de coma flotante
+    for x, esp in ((164.465, 164.47), (164.535, 164.54), (0.105, 0.11), (1.005, 1.01), (783.1666666666666, 783.17), (2.675, 2.68), (0.1 + 0.2, 0.30)):
+        n += 1
+        if C.r2(x) != esp:
+            div.append(f"script r2({x}) = {C.r2(x)}, esperado {esp}")
+    # tercera copia contra la web en TODO el contraste general: igualdad exacta de las cifras
+    casos = casos_generales()
+    w_all, f_all = _web(casos), _fac(casos)
+    for c, w, f in zip(casos, w_all, f_all):
+        n += 1
+        if w != f:
+            malos = [k for k in w if w.get(k) != f.get(k)]
+            div.append(f"web/fac-motor {c['subtipo']} {c['cuantia']}: " + ", ".join(f"{k} {w.get(k)}/{f.get(k)}" for k in malos[:3]))
+    return n, div
+
+
 def main():
     casos = json.load(open(CASOS, encoding="utf-8"))
     div, err, ok = [], [], 0
@@ -675,11 +829,15 @@ def main():
     print(f"\nEjecución de un verbal de cuotas (--titulo-verbal-ph) — comprobaciones: {ntv}  ·  correctas: {ntv - len(divtv)}  ·  fallan: {len(divtv)}")
     for d in divtv:
         print("  ", d)
-    total = len(casos) + n51 + len(CASOS_51_1) + n511s + ng + nt + nph + ntv
-    malos = len(div) + len(err) + len(div51) + len(div511) + len(div511s) + len(divg) + len(divt) + len(divph) + len(divtv)
+    nr, divr = comprobar_reparacion()
+    print(f"\nReparación 31/10/2026 (D1, D2, D4, D5, céntimo; web = fac-motor = script) — comprobaciones: {nr}  ·  correctas: {nr - len(divr)}  ·  fallan: {len(divr)}")
+    for d in divr:
+        print("  ", d)
+    total = len(casos) + n51 + len(CASOS_51_1) + n511s + ng + nt + nph + ntv + nr
+    malos = len(div) + len(err) + len(div51) + len(div511) + len(div511s) + len(divg) + len(divt) + len(divph) + len(divtv) + len(divr)
     print(f"\nTOTAL: {total} casos · {total - malos} coinciden · {malos} divergen")
 
-    return 1 if (div or err or div51 or div511 or div511s or divg or divt or divph or divtv) else 0
+    return 1 if (div or err or div51 or div511 or div511s or divg or divt or divph or divtv or divr) else 0
 
 
 if __name__ == "__main__":

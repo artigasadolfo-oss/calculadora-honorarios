@@ -22,6 +22,7 @@ if (require.main === module) {
       totalCliente: r2(R.totalCliente), totalCostas: r2(R.totalCostas), clienteIPC: r2(R.clienteIPC),
       baseCliente: r2(R.baseCliente), costasRed: r2(R.costasRed), lim: r2(R.lim), baseCostas: r2(R.baseCostas),
       muerde: R.muerde, suplidos: r2(R.suplidos), conIvaCliente: r2(R.conIvaCliente), conIvaCostas: r2(R.conIvaCostas),
+      ivaCliente: r2(R.ivaCliente), ivaCostas: r2(R.ivaCostas), totalClienteMayoria: (R.totalClienteMayoria == null ? null : r2(R.totalClienteMayoria)),
       preceptiva: R.prec.preceptiva, precDesglose: R.prec.desglose};
   });
   process.stdout.write(JSON.stringify(out));
