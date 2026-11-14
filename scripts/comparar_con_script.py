@@ -229,6 +229,7 @@ CTX_BASE = {
     "noMaterializa": False, "legislacionEspecial": False, "materiaPH": False,
     "tituloVerbalPH": False,
     "coincidenciaTitulos": "distintos", "numClientesDistintos": 1, "cuantiaDiscutida": 0,
+    "catalogo": None,
 }
 
 
@@ -264,7 +265,8 @@ def a_script(c):
         rec_revision=c["recRev"], rec_reposicion=c["recRepo"], rec_queja=c["recQueja"],
         rec_con_cuantia=c["recConCuantia"], cuantia_recurso=float(c["recCuantiaImporte"]),
         rec_num=c["rec511Num"], rec_cuantia_propia=c["rec511Cuantia"],
-        ipc=(c["ipcManual"] if c["aplicarIPC"] else 0.0), sin_redondeo=not c["aplicarRedondeo"], json=False)
+        ipc=(c["ipcManual"] if c["aplicarIPC"] else 0.0), sin_redondeo=not c["aplicarRedondeo"], json=False,
+        catalogo=c.get("catalogo"))
 
 
 def _modulo_calc():
@@ -435,6 +437,77 @@ def comparar_general():
     if not sin.get("sinFases"):
         div.append("ejecución sin fases: la web da un importe en vez del guion")
     return len(casos) + 1, div
+
+
+# ── Catálogo civil (arts. 1-68), 14/11/2026 ─────────────────────────────────
+# Todas las entradas de datos/catalogo_icali.json con TODAS sus opciones, partes, fases (por defecto, todas,
+# cada una suelta y ninguna), extras y bases auxiliares, cruzadas con las Disposiciones Generales.
+CATALOGO_JSON = os.path.join(os.path.dirname(AQUI), "datos", "catalogo_icali.json")
+
+def casos_catalogo():
+    import itertools
+    cat = json.load(open(CATALOGO_JSON, encoding="utf-8"))
+    casos = []
+    def caso(**k):
+        c = dict(CTX_BASE); c.update(k); casos.append(c)
+    def campos(d):
+        if d == "art39" or not isinstance(d, dict): return []
+        return d.get("campos", [])
+    for e in cat:
+        if e.get("remite") and not e.get("calculo"):
+            continue  # remite a un subtipo de la calculadora: ya contrastado
+        ops = [o["k"] for o in e.get("opciones") or []] or [None]
+        for op in ops:
+            sp = dict(e)
+            for o in e.get("opciones") or []:
+                if o["k"] == op: sp.update({k: v for k, v in o.items() if k not in ("k", "t")})
+            partes = [p["k"] for p in sp.get("partes") or []] or [None]
+            fs = [f["k"] for f in sp.get("fases") or []]
+            sets_f = [None, fs, []] + [[k] for k in fs] if fs else [None]
+            ex = [x["k"] for x in sp.get("extras") or []]
+            sets_x = [[], ex] + [[k] for k in ex] if ex else [[]]
+            cs = campos(sp.get("bases")) + [c for b in (sp.get("bases_aux") or {}).values() for c in campos(b)]
+            cauces = sp.get("cauce") or [None]
+            for parte, fsel, xsel, cauce in itertools.product(partes, sets_f, sets_x, cauces):
+                for cu, vals in ((0, {}), (1500, {"honorarios": 640}), (30000, {"honorarios": 4730}),
+                                 (186420.55, {"honorarios": 15321.77})):
+                    v = dict(vals)
+                    for i, c in enumerate(cs): v[c["k"]] = round(cu * (0.3 + 0.2 * i) + 7 * i, 2) if cu else ""
+                    a39 = {"vivienda": "ambos", "valor": cu * 4, "catastral": cu * 2, "anios": 7, "edad": 9,
+                           "comp": cu / 10, "comp_mensual": 150, "ajuar": 1200, "pension": 300, "meses": 30} if cu else {}
+                    ci = {"id": e["id"], "opcion": op, "parte": parte, "fases": fsel, "extras": xsel,
+                          "valores": v, "art39": a39, "cauce": cauce}
+                    base = dict(subtipo="catalogo", cuantia=cu, catalogo=ci)
+                    caso(**base)
+                    caso(**base, indeterminada=True)
+                    caso(**base, aplicarIPC=True, aplicarRedondeo=True, sesionesExtra=2, finalizacion="transaccion")
+                    caso(**base, legislacionEspecial=True, noMaterializa=True, numClientes=3, plurVencedores=2,
+                         plurContrarios=3, numSalidasMedio=1, gastosExtras=55.5)
+                    if cauce:
+                        caso(**base, faseAleg=True, faseAP=(cauce == "ordinario"), faseVista=False)
+                        caso(**base, finalizacion="allanamiento", allanParte="demandado", allanMomento="tras_contestacion")
+                        caso(**base, finalizacion="renuncia", faseAleg=True)
+    # Art. 39 con cada forma de atribuir la vivienda
+    for viv in ("ninguna", "arrendada", "indefinida", "temporal", "hijos", "ambos"):
+        for meses in ("", 6, 40):
+            a39 = {"vivienda": viv, "valor": 180000, "catastral": 95000, "renta": 650, "usufructo": 41000, "anios": 3,
+                   "edad": 14, "comp": 0, "comp_mensual": 400, "ajuar": 2500, "pension": 450, "meses": meses}
+            caso(subtipo="catalogo", cuantia=0, catalogo={"id": "a39", "art39": a39})
+            caso(subtipo="catalogo", cuantia=0, catalogo={"id": "a42", "art39": a39, "valores": {"bienes": 230000}})
+    return casos
+
+def comparar_catalogo():
+    C = _modulo_calc()
+    casos = casos_catalogo()
+    web = _web(casos)
+    div = []
+    for c, w in zip(casos, web):
+        s = _script(C, c)
+        malos = [k for k in CAMPOS if (w[k] != s[k] if isinstance(s[k], bool) else abs(w[k] - s[k]) > (TOL if k in CAMPOS_CENTIMO else TOL_CRUDO))]
+        if malos:
+            div.append(f"{c['catalogo']['id']} {json.dumps(c['catalogo'], ensure_ascii=False)[:120]} cu={c['cuantia']}: "
+                       + ", ".join(f"{k} web {w[k]} / script {s[k]}" for k in malos[:3]))
+    return len(casos), div
 
 
 # Importes calculados A MANO desde el texto literal (sin IPC ni redondeo), no desde el código.
@@ -833,11 +906,15 @@ def main():
     print(f"\nReparación 31/10/2026 (D1, D2, D4, D5, céntimo; web = fac-motor = script) — comprobaciones: {nr}  ·  correctas: {nr - len(divr)}  ·  fallan: {len(divr)}")
     for d in divr:
         print("  ", d)
-    total = len(casos) + n51 + len(CASOS_51_1) + n511s + ng + nt + nph + ntv + nr
-    malos = len(div) + len(err) + len(div51) + len(div511) + len(div511s) + len(divg) + len(divt) + len(divph) + len(divtv) + len(divr)
+    ncat, divcat = comparar_catalogo()
+    print(f"\nCatálogo civil arts. 1-68 (todas las opciones × DG; web = script) — casos: {ncat}  ·  coinciden: {ncat - len(divcat)}  ·  divergen: {len(divcat)}")
+    for d in divcat[:15]:
+        print("  ", d)
+    total = len(casos) + n51 + len(CASOS_51_1) + n511s + ng + nt + nph + ntv + nr + ncat
+    malos = len(div) + len(err) + len(div51) + len(div511) + len(div511s) + len(divg) + len(divt) + len(divph) + len(divtv) + len(divr) + len(divcat)
     print(f"\nTOTAL: {total} casos · {total - malos} coinciden · {malos} divergen")
 
-    return 1 if (div or err or div51 or div511 or div511s or divg or divt or divph or divtv or divr) else 0
+    return 1 if (div or err or div51 or div511 or div511s or divg or divt or divph or divtv or divr or divcat) else 0
 
 
 if __name__ == "__main__":

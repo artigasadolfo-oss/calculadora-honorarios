@@ -157,6 +157,39 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .ipcbar .ipcpct{display:flex;align-items:center;gap:8px}
 .ipcbar .ipcpct input{width:90px;padding:8px 10px;border:1px solid var(--ink-200);border-radius:8px;font-size:13px;font-variant-numeric:tabular-nums;outline:none}
 .hint{font-size:11.5px;color:var(--ink-400);margin-top:8px;line-height:1.45}
+/* «Todo el baremo» (catálogo civil arts. 1-68) */
+#boxCatalogo .catbus{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+#boxCatalogo .catbus input{flex:1;padding:11px 12px 11px 34px;border:1px solid var(--ink-200);border-radius:9px;font-family:var(--sans);font-size:13.5px;outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 11px center/15px}
+#boxCatalogo .catbus input:focus{box-shadow:0 0 0 2px var(--ink-200);border-color:var(--ink-300)}
+#boxCatalogo .catcuenta{font-size:11px;color:var(--ink-400);white-space:nowrap}
+#boxCatalogo .catcab{display:flex;gap:8px;align-items:center;margin-top:16px}
+#boxCatalogo .catart{font-family:var(--geo);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:var(--ink-100);color:var(--ink-700)}
+#boxCatalogo .catcap{font-size:11.5px;color:var(--ink-400)}
+#boxCatalogo .cattit{font-size:15px;font-weight:600;color:var(--ink-900);margin-top:6px}
+#boxCatalogo .catbase{font-size:12px;color:var(--ink-500);margin-top:8px}
+#boxCatalogo .catblk{margin-top:16px}
+#boxCatalogo .catlab{font-family:var(--geo);text-transform:uppercase;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--ink-500);margin-bottom:8px}
+#boxCatalogo .catradios,#boxCatalogo .catfases{display:flex;flex-direction:column;gap:8px}
+#boxCatalogo .catr,#boxCatalogo .catf{align-items:flex-start;line-height:1.4}
+#boxCatalogo .catr input,#boxCatalogo .catf input{margin-top:2px}
+#boxCatalogo .catseg{display:inline-flex;border:1px solid var(--ink-200);border-radius:9px;overflow:hidden}
+#boxCatalogo .catseg label{padding:8px 14px;font-size:13px;color:var(--ink-700);cursor:pointer;border-left:1px solid var(--ink-200)}
+#boxCatalogo .catseg label:first-child{border-left:0}
+#boxCatalogo .catseg label.on{background:var(--ink-900);color:#fff}
+#boxCatalogo .catseg input{display:none}
+#boxCatalogo .catcampos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+#boxCatalogo .catu{color:var(--ink-400);font-size:11px}
+#boxCatalogo .catayuda{font-size:11.5px;color:var(--ink-500);margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#boxCatalogo .catmini,#boxCatalogo .catir{border:1px solid var(--ink-200);background:#fff;border-radius:7px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--ink-700)}
+#boxCatalogo .catmini:hover,#boxCatalogo .catir:hover{background:var(--ink-100)}
+#boxCatalogo .catrem{margin-top:12px;font-size:13px;color:var(--ink-700);line-height:1.5}
+#boxCatalogo .catrem .catir{display:block;margin-top:10px;padding:8px 14px}
+#boxCatalogo .catnota{margin-top:12px;font-size:12px;color:#8a5a00;background:#fff7e6;border-radius:8px;padding:8px 10px}
+#boxCatalogo .catdes{margin-top:18px;padding-top:14px;border-top:1px solid var(--ink-100)}
+#boxCatalogo .catdes:empty{display:none}
+#boxCatalogo .catdl{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--ink-700);padding:3px 0}
+#boxCatalogo .catdl b{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+#boxCatalogo .catdl:last-child{border-top:1px solid var(--ink-100);margin-top:4px;padding-top:7px;color:var(--ink-900)}
 /* Criterio / verificaciones / finales */
 .crithead{font-size:13px;line-height:1.5;color:var(--ink-700)}
 .crithead strong{color:var(--ink-950)}
@@ -366,6 +399,7 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
       <div class="navlink" data-grupo="desahucios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M10 20v-6h4v6"/></svg><span>Desahucios</span></div>
       <div class="navlink" data-grupo="ejecuciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3l7 7-3 3-7-7z"/><path d="M12 6L6 12"/><path d="M3 21h9"/><path d="M9 15l-6 6"/></svg><span>Ejecuciones</span></div>
       <div class="navlink" data-grupo="recursos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg><span>Recursos</span></div>
+      <div class="navlink" data-grupo="baremo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7"/><path d="M9 11h5"/></svg><span>Todo el baremo</span></div>
       <div class="nsec" style="margin-top:6px">Criterio</div>
       <div class="navlink" id="lnkEscala"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg><span>Escala ICALI</span></div>
       <div class="nsec" style="margin-top:6px">Actualización IPC</div>
@@ -404,8 +438,16 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
       <div class="pcard">
         <div class="hd"><div class="ht">Cálculo de honorarios</div></div>
         <div class="bd">
-          <div class="sublabel">Subtipo de procedimiento</div>
-          <div class="selwrap"><select id="subtipo" class="bigselect"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+          <div class="sublabel" id="subtipoLbl">Subtipo de procedimiento</div>
+          <div class="selwrap" id="subtipoWrap"><select id="subtipo" class="bigselect"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+
+          <!-- Todo el baremo civil (arts. 1-68): buscador + formulario de la actuación elegida -->
+          <div class="hidden" id="boxCatalogo">
+            <div class="sublabel">Actuación del baremo civil (arts. 1-68)</div>
+            <div class="catbus"><input id="catBuscar" type="search" autocomplete="off" placeholder="Buscar: tercería, divorcio, cautelar, desahucio, casación…"><span class="catcuenta" id="catCuenta"></span></div>
+            <div class="selwrap"><select id="catSel" class="bigselect"></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+            <div id="catForm"></div>
+          </div>
 
           <label class="ck" id="indetWrap" style="margin-top:12px"><input type="checkbox" id="indeterminada"> Cuantía indeterminada / inestimable (criterio del artículo; 24.000&nbsp;&euro; solo para el tope del tercio)</label>
 
@@ -704,6 +746,7 @@ var ESCALA = [
   }
 
   var SUBTIPOS={
+    baremo:[{value:'catalogo',text:'Todo el baremo civil (arts. 1-68)'}],
     monitorio:[
       {value:'monitorio_lph',text:'Monitorio (Propiedad Horizontal)'},
       {value:'monitorio_sin',text:'Monitorio (sin oposición)'},
@@ -955,7 +998,8 @@ Honorarios de primera instancia.`
     recurso_esp_audiencia:{minimo:2000,normaPct:1},
     recurso_rescision:{minimo:500,normaPct:null},
     recurso_revision_firmes:{minimo:0,normaPct:null},
-    recurso_casacion_inadm:{minimo:0,normaPct:null}
+    recurso_casacion_inadm:{minimo:0,normaPct:null},
+    catalogo:{minimo:0,normaPct:null}
   };
 
   /* Art. 51 ICALI — otros recursos. Verificado contra el PDF oficial
@@ -1119,6 +1163,126 @@ Honorarios de primera instancia.`
   var TOPE_INESTIMABLE=24000;                                           /* art. 394.3 LEC */
   var SESION=150;
 
+  /* CATÁLOGO CIVIL ICALI (arts. 1-68), 14/11/2026. Datos: datos/catalogo_icali.json, inyectados entre
+     los marcadores por scripts/inyectar_catalogo.py (no editar el bloque a mano). Evaluador genérico con
+     el MISMO algoritmo y orden de operaciones que catalogo_calcula() de calc_icali.py (paridad al céntimo).
+     Su resultado entra en nucleoHonorarios() como importe del artículo y sigue el resto de las DG. */
+  /*@CATALOGO@*/
+var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje de derecho","calculo":"escala","pct":0.75,"min":600,"base":"Cuantía del arbitraje","literal":"los defensores de cada una de las partes, devengarán por su actuación como tales y cada uno de ellos, el 75% de la Escala. Criterio, si el resultado es inferior, 600 €"},{"id":"a2","art":"Art. 2","cap":"Arbitraje","titulo":"Arbitraje de equidad","calculo":"escala","pct":0.6,"min":600,"base":"Cuantía del arbitraje","literal":"los defensores de cada una de las partes, devengarán el 60% de la Escala. Criterio, si el resultado es inferior, 600 €"},{"id":"a3","art":"Art. 3","cap":"Conciliación, competencia e incidentes","titulo":"Papeleta o demanda de conciliación","calculo":"fijo","fijo":150,"literal":"Por la redacción de papeleta o demanda de conciliación se establece como criterio la cantidad de 150 €"},{"id":"a4","art":"Art. 4","cap":"Conciliación, competencia e incidentes","titulo":"Asistencia al acto de conciliación","calculo":"honorarios","ref":"total","base":"Cuantía del juicio correspondiente","opciones":[{"k":"aven","t":"Con avenencia (50 % de los honorarios del juicio, mín. 200 €)","calculo":"honorarios","pct":0.5,"min":200},{"k":"sin","t":"Sin avenencia (150 €)","calculo":"fijo","fijo":150}],"literal":"a) Si hay avenencia, cada uno de los Letrados intervinientes minutarán a razón del 50% de los Honorarios del juicio correspondiente ... 200 €. b) Si no hay avenencia ... 150 €"},{"id":"a5","art":"Art. 5","cap":"Conciliación, competencia e incidentes","titulo":"Diligencias preliminares (art. 256 LEC)","calculo":"fijo","opciones":[{"k":"sin","t":"Sin oposición (350 €)","fijo":350},{"k":"con","t":"Con oposición (400 €)","fijo":400}],"literal":"a) En las Diligencias Preliminares del artículo 256 L.E.C., se establece un criterio de 350 €. b) En caso de oposición ... 400 €"},{"id":"a6","art":"Art. 6","cap":"Conciliación, competencia e incidentes","titulo":"Declinatoria (cuestión de competencia)","calculo":"honorarios","ref":"aleg","min":300,"base":"Cuantía del pleito principal","opciones":[{"k":"sin","t":"Sin oposición (30 % de la fase de alegaciones)","pct":0.3},{"k":"con","t":"Con oposición (40 % de la fase de alegaciones)","pct":0.4}],"nota":"En procesos concursales se aplica el incidente concursal (art. 54.C).","literal":"a) Sin oposición, el 30% de los Honorarios correspondientes a la fase de alegaciones. b) Con oposición, el 40%. Criterio, si el resultado es inferior, 300 €"},{"id":"a7","art":"Art. 7","cap":"Conciliación, competencia e incidentes","titulo":"Competencia entre distintas jurisdicciones","calculo":"honorarios","ref":"aleg","pct":0.5,"min":300,"base":"Cuantía del pleito principal","literal":"los Honorarios se devengarán a razón del 50% de la fase de alegaciones. Criterio, si el resultado es inferior, 300 €"},{"id":"a8","art":"Art. 8","cap":"Conciliación, competencia e incidentes","titulo":"Cuestión incidental con cuantía propia","calculo":"escala","pct":0.4,"min":300,"base":"Cuantía propia de la cuestión","nota":"Denuncia, oposición, prejudicial, sustitución, intervención de terceros, etc., con objeto valuable distinto del principal.","literal":"Si estas cuestiones tienen cuantía propia se devengará el 40% de la Escala. Criterio, si el resultado es inferior, 300 €"},{"id":"a9","art":"Art. 9","cap":"Conciliación, competencia e incidentes","titulo":"Cuestión incidental sin cuantía propia","calculo":"honorarios","ref":"fase","min":300,"base":"Cuantía del pleito principal","opciones":[{"k":"r1","t":"Defecto subsanable o cuestión autónoma (15 % de la fase)","pct":0.15},{"k":"r2","t":"Tiende a acabar la instancia (40 % de la fase)","pct":0.4}],"literal":"1ª) ... se devengará el 15% de lo que corresponda a éste en la fase procesal en la que se produzca la cuestión incidental. 2ª) ... el 40% de lo que corresponda a la fase procesal ... Criterio 300 €"},{"id":"a10","art":"Art. 10","cap":"Conciliación, competencia e incidentes","titulo":"Incidente de nulidad de actuaciones","calculo":"escala","pct":0.4,"min":300,"base":"Cuantía propia de la actuación que se anula","literal":"si la actuación que se pretende anular tiene cuantía propia, se devengará el 40% de la Escala. Criterio, si el resultado es inferior, 300 €"},{"id":"a11","art":"Art. 11","cap":"Impugnación de honorarios y jura de cuentas","titulo":"Impugnación de honorarios por excesivos","calculo":"escala","pct":0.05,"min":100,"base":"Lo que se reduce de la minuta (o lo discutido)","literal":"se devengará el 5% de la Escala, tomando como base ... la cantidad que se reduzca de la Minuta impugnada, y si no hubiere reducción, la discutida. Criterio 100 €"},{"id":"a12","art":"Art. 12","cap":"Impugnación de honorarios y jura de cuentas","titulo":"Impugnación de honorarios por indebidos","calculo":"escala","pct":1.0,"min":300,"base":"Importe de las partidas impugnadas","literal":"se devengará la Escala en su integridad, tomando como base ... el importe de las partidas impugnadas. Criterio 300 €"},{"id":"a13","art":"Art. 13","cap":"Juicios verbales","titulo":"Juicio verbal por razón de la cuantía","remite":"verbal"},{"id":"a14_1","art":"Art. 14.1","cap":"Juicios verbales","titulo":"Verbal de precario","remite":"ar_precario"},{"id":"a14_2","art":"Art. 14.2","cap":"Juicios verbales","titulo":"Posesión de bienes adquiridos por herencia","calculo":"escala","pct":0.4,"min":800,"cauce":["verbal"],"sesion":150,"base":"Cuantía del proceso (reglas de la LEC)","literal":"se devengará el 40% de la Escala tomando como base ... la cuantía del proceso determinada conforme a las reglas de la L.E.C. Criterio 800 €"},{"id":"a14_3","art":"Art. 14.3","cap":"Juicios verbales","titulo":"Tutela sumaria de la posesión (interdicto)","calculo":"escala","pct":0.4,"min":800,"cauce":["verbal"],"sesion":150,"base":"Cuantía del proceso (reglas de la LEC)","literal":"sobre tutela sumaria de la tenencia o posesión de una cosa o derecho ... el 40% de la Escala ... Criterio 800 €"},{"id":"a14_4","art":"Art. 14.4","cap":"Juicios verbales","titulo":"Suspensión de obra nueva","calculo":"escala","min":1000,"cauce":["verbal"],"sesion":150,"base":"Cuantía determinada en autos","opciones":[{"k":"sin","t":"Sin oposición (75 %)","pct":0.75},{"k":"con","t":"Con oposición (100 %)","pct":1.0}],"literal":"A) Sin oposición el 75%. B) Con oposición el 100%. Criterio 1.000 €"},{"id":"a14_5","art":"Art. 14.5","cap":"Juicios verbales","titulo":"Demolición o derribo de obra en ruina","calculo":"escala","min":1000,"cauce":["verbal"],"sesion":150,"base":"Cuantía determinada en autos","opciones":[{"k":"sin","t":"Sin oposición (75 %)","pct":0.75},{"k":"con","t":"Con oposición (100 %)","pct":1.0}],"literal":"A) Sin oposición el 75%. B) Con oposición el 100%. Criterio 1.000 €"},{"id":"a14_6","art":"Art. 14.6","cap":"Juicios verbales","titulo":"Efectividad de derechos reales inscritos","calculo":"escala","min":800,"cauce":["verbal"],"sesion":150,"base":"Cuantía determinada en autos","opciones":[{"k":"sin","t":"Sin oposición (75 %)","pct":0.75},{"k":"con","t":"Con oposición (100 %)","pct":1.0}],"literal":"A) Sin oposición el 75%. B) Con oposición al 100%. Criterio 800 €"},{"id":"a14_7","art":"Art. 14.7","cap":"Juicios verbales","titulo":"Alimentos","calculo":"escala","pct":0.4,"min":800,"cauce":["verbal"],"sesion":150,"bases":{"modo":"anualidades","campos":[{"k":"mensual","t":"Pensión mensual"},{"k":"anios","t":"Años (10, o el plazo menor de la sentencia)","def":10,"max":10,"unidad":"años"}]},"literal":"el 40% de la Escala, tomando como base ... la cuantía de diez anualidades, salvo que la sentencia ... establezca un plazo inferior. Criterio 800 €"},{"id":"a14_8","art":"Art. 14.8","cap":"Juicios verbales","titulo":"Rectificación de hechos inexactos","calculo":"escala","pct":1.0,"min":500,"cauce":["verbal"],"sesion":150,"base":"Cuantía del proceso (reglas de la LEC)","literal":"se devengará la Escala en su integridad ... Criterio 500 €"},{"id":"a14_9","art":"Art. 14.9","cap":"Juicios verbales","titulo":"Venta a plazos de muebles inscrita (incumplimiento)","calculo":"escala","min":500,"cauce":["verbal"],"sesion":150,"base":"Cuantía determinada en autos","opciones":[{"k":"sin","t":"Sin oposición (75 %)","pct":0.75},{"k":"con","t":"Con oposición (100 %)","pct":1.0}],"literal":"A) Sin oposición el 75%. B) Con oposición el 100%. Criterio 500 €"},{"id":"a14_10","art":"Art. 14.10","cap":"Juicios verbales","titulo":"Entrega de bien en leasing o venta con reserva de dominio","calculo":"escala","min":500,"cauce":["verbal"],"sesion":150,"base":"Cuantía determinada en autos","opciones":[{"k":"sin","t":"Sin oposición (75 %)","pct":0.75},{"k":"con","t":"Con oposición (100 %)","pct":1.0}],"literal":"A) Sin oposición el 75%. B) Con oposición el 100%. Criterio 500 €"},{"id":"a14_11","art":"Art. 14.11","cap":"Juicios verbales","titulo":"Relaciones del hijo con abuelos, parientes y allegados","calculo":"fijo","fijo":700,"cauce":["verbal"],"sesion":150,"literal":"Se establece como criterio la cantidad de 700 €"},{"id":"a15","art":"Art. 15","cap":"Juicios ordinarios","titulo":"Juicio ordinario por razón de la cuantía","remite":"ordinario"},{"id":"a16_1","art":"Art. 16.1","cap":"Juicios ordinarios","titulo":"Derechos honoríficos y títulos nobiliarios","calculo":"fijo","fijo":2000,"cauce":["ordinario"],"sesion":150,"literal":"se establece como criterio la cantidad 2.000 €"},{"id":"a16_2","art":"Art. 16.2","cap":"Juicios ordinarios","titulo":"Honor, intimidad, imagen y derechos fundamentales","cauce":["ordinario"],"sesion":150,"base":"Cantidades pretendidas","opciones":[{"k":"eco","t":"Con pretensión económica (Escala íntegra, mín. 2.000 €)","calculo":"escala","pct":1.0,"min":2000},{"k":"noeco","t":"Sin pretensión económica (2.000 €)","calculo":"fijo","fijo":2000}],"literal":"si de forma directa se persiguen pretensiones económicas se devengará la Escala en su integridad ... Si no se persiguen pretensiones económicas ... 2.000 €. Criterio 2.000 €"},{"id":"a16_3","art":"Art. 16.3","cap":"Juicios ordinarios","titulo":"Impugnación de acuerdos sociales","calculo":"escala","pct":1.0,"min":2000,"indet":2000,"cauce":["ordinario"],"sesion":150,"base":"Cuantía que afecta a la parte impugnante","literal":"A) La Escala en su integridad ... base ... la que afecte a la parte impugnante del acuerdo social. Criterio 2.000 €. B) Si la cuantía es indeterminada ... 2.000 €"},{"id":"a16_4","art":"Art. 16.4","cap":"Juicios ordinarios","titulo":"Competencia desleal, propiedad industrial e intelectual, publicidad","cauce":["ordinario"],"sesion":150,"base":"Daños y perjuicios reclamados","opciones":[{"k":"sin","t":"Sin reclamar daños (2.000 €)","calculo":"fijo","fijo":2000},{"k":"con","t":"Reclamando daños (2.000 € + Escala de los daños)","calculo":"fijo_mas_escala","fijo":2000,"pct":1.0,"min":2000}],"literal":"se devengará el criterio de 2.000 €. Si además se reclama indemnización de daños y perjuicios se aplicará la Escala en su integridad, sumándose el resultado a la anterior cifra. Criterio 2.000 €"},{"id":"a16_5","art":"Art. 16.5","cap":"Juicios ordinarios","titulo":"Condiciones generales de la contratación","calculo":"escala","pct":1.0,"min":2000,"indet":2000,"cauce":["ordinario"],"sesion":150,"base":"Valor del contrato o de la cláusula afectada","literal":"la Escala en su integridad, tomando como base ... el valor económico del contrato o la cláusula afectada de nulidad, salvo que por carecer ésta de cuantía pueda considerarse inestimable. Criterio 2.000 €"},{"id":"a16_6","art":"Art. 16.6","cap":"Juicios ordinarios","titulo":"Tanteo, retracto o adquisición preferente","calculo":"escala","pct":1.0,"min":2000,"cauce":["ordinario"],"sesion":150,"bases":{"modo":"max","campos":[{"k":"precio","t":"Precio de adquisición del inmueble"},{"k":"catastral","t":"Valor catastral al ejercitar la acción"}]},"literal":"la Escala en su integridad, tomando como base ... el precio de adquisición del inmueble, sin que pueda ser inferior al valor catastral al tiempo del ejercicio de la acción. Criterio 2.000 €"},{"id":"a16_7a","art":"Art. 16.7.A","cap":"Propiedad horizontal","titulo":"PH: acciones de la LPH (no solo reclamación de cantidad)","calculo":"escala","pct":1.0,"min":1500,"cauce":["ordinario","verbal"],"sesion":150,"base":"Cuantía del procedimiento (reglas de la LEC)","aviso_ph":true,"literal":"siempre que no verse exclusivamente sobre reclamación de cantidad, se devengará la Escala, tomando como base ... la cuantía del procedimiento calculada según las Normas de la L.E.C. Criterio 1.500 €"},{"id":"a16_7b","art":"Art. 16.7.B","cap":"Propiedad horizontal","titulo":"PH: impugnación de acuerdos no valorables","calculo":"fijo","fijo":1500,"cauce":["ordinario","verbal"],"sesion":150,"aviso_ph":true,"literal":"En las acciones relativas a impugnación de acuerdos que por su naturaleza no sean susceptibles de valoración económica, se establece como criterio la cantidad de 1.500 €"},{"id":"a16_7c","art":"Art. 16.7.C","cap":"Propiedad horizontal","titulo":"PH: impugnación del presupuesto de la comunidad","calculo":"escala","pct":1.0,"min":1500,"cauce":["ordinario","verbal"],"sesion":150,"base":"Partidas impugnadas","aviso_ph":true,"literal":"se devengará la Escala en su integridad, tomando como base ... la cuantía de las partidas impugnadas. Criterio 1.500 €"},{"id":"a16_7d","art":"Art. 16.7.D","cap":"Propiedad horizontal","titulo":"PH: privación del derecho de ocupación","calculo":"fijo","cauce":["ordinario","verbal"],"sesion":150,"aviso_ph":true,"opciones":[{"k":"temp","t":"Privación temporal (1.500 €)","fijo":1500},{"k":"def","t":"Privación definitiva (1.800 €)","fijo":1800}],"literal":"Si la privación fuere temporal 1.500 €. Si la privación fuese definitiva 1.800 €"},{"id":"a17_1","art":"Art. 17.1","cap":"Juicios ordinarios","titulo":"Tercería de dominio o de mejor derecho","calculo":"escala","min":2000,"cauce":["ordinario"],"opciones":[{"k":"md","t":"Mejor derecho (Escala íntegra)","pct":1.0,"bases":{"modo":"uno","campos":[{"k":"credito","t":"Crédito menor de los que pretenden preferencia"}]}},{"k":"md619","t":"Mejor derecho resuelta sin más trámite, art. 619 LEC (70 %)","pct":0.7,"bases":{"modo":"uno","campos":[{"k":"credito","t":"Crédito menor de los que pretenden preferencia"}]}},{"k":"dom","t":"Dominio (Escala íntegra)","pct":1.0,"bases":{"modo":"min","campos":[{"k":"bien","t":"Valor del bien objeto de la tercería"},{"k":"pleito","t":"Importe del pleito afectado"}]}},{"k":"dom619","t":"Dominio resuelta sin más trámite, art. 619 LEC (70 %)","pct":0.7,"bases":{"modo":"min","campos":[{"k":"bien","t":"Valor del bien objeto de la tercería"},{"k":"pleito","t":"Importe del pleito afectado"}]}}],"literal":"Mejor Derecho: base la cuantía del crédito menor ... Dominio: la menor de A) el valor del bien ... B) el importe del pleito ... Si ... art. 619 ... se dictase resolución sin más trámite, el 70% de la Escala. Criterio 2.000 €","nota":"Sesión adicional: 150 € por criterio del despacho (el art. 17 no la menciona).","sesion":150},{"id":"a17_2","art":"Art. 17.2","cap":"Juicios ordinarios","titulo":"División de cosa común","calculo":"escala","pct":1.0,"min":2000,"cauce":["ordinario","verbal"],"bases":{"modo":"prod_pct","campos":[{"k":"valor","t":"Valor de la cosa común"},{"k":"pct","t":"Porcentaje del cliente en la comunidad","unidad":"%","def":50}]},"nota":"Costas: el límite es el porcentaje de la parte vencida (art. 17.2.b). Introduce aquí el de la vencida si calculas la tasación. Sesión adicional: 150 € por criterio del despacho (el art. 17 no la menciona).","literal":"a) Cada parte minutará tomando como base ... el porcentaje que le corresponda en dicha comunidad. b) A los efectos de tasación de costas se aplicará el límite del porcentaje que tuviera la parte vencida en costas. Criterio 2.000 €","sesion":150},{"id":"a18","art":"Arts. 18-19","cap":"Arrendamientos","titulo":"Desahucio por falta de pago o fin de plazo (con o sin rentas)","remite":"ar_fp"},{"id":"a20","art":"Art. 20","cap":"Arrendamientos","titulo":"Resolución del arrendamiento por otra causa","calculo":"escala","pct":0.4,"min":1500,"cauce":["verbal","ordinario"],"sesion":150,"base":"Valor del inmueble","literal":"por cualquier otra causa distinta a la falta de pago o finalización del plazo, se devengará el 40% de la Escala, tomando como base ... el valor del inmueble. Criterio 1.500 €"},{"id":"a21","art":"Art. 21","cap":"Arrendamientos","titulo":"Determinación de rentas o repercusiones; cláusulas de actualización","calculo":"escala","pct":1.0,"min":500,"cauce":["verbal","ordinario"],"sesion":150,"bases":{"modo":"max_anual","campos":[{"k":"anual","t":"Anualidad de la renta que se declare"},{"k":"contro","t":"Cantidad anual en controversia"},{"k":"anios","t":"Años que restan de contrato (máx. 10)","def":1,"max":10,"unidad":"años"}]},"literal":"la mayor de: A) Una anualidad de la renta que definitivamente se declare. B) La cantidad objeto de controversia multiplicada por los años que resten de contrato con un máximo de diez. Criterio 500 €"},{"id":"a22","art":"Art. 22","cap":"Arrendamientos","titulo":"Reclamación de rentas o cantidades del arrendatario","remite":"verbal","nota":"Se aplica el declarativo que corresponda (verbal u ordinario por cuantía)."},{"id":"a23","art":"Art. 23","cap":"Arrendamientos","titulo":"Tanteo, retracto o adquisición preferente arrendaticia","calculo":"escala","pct":1.0,"min":2000,"cauce":["verbal","ordinario"],"sesion":150,"bases":{"modo":"max","campos":[{"k":"precio","t":"Precio de adquisición del inmueble"},{"k":"catastral","t":"Valor catastral al ejercitar la acción"}]},"literal":"la Escala en su integridad, tomando como base ... el precio de adquisición del inmueble, sin que pueda ser inferior al valor catastral ... Criterio 2.000 €"},{"id":"a24","art":"Art. 24","cap":"Arrendamientos","titulo":"Otra cuestión arrendaticia","remite":"verbal","nota":"Honorarios conforme al procedimiento seguido."},{"id":"a25","art":"Art. 25","cap":"Arrendamientos","titulo":"Aparcería","remite":"a20","nota":"Se aplican los artículos de arrendamientos; si la base es la renta, se toma el valor de los productos recibidos por el propietario."},{"id":"a26","art":"Art. 26","cap":"Ejecución","titulo":"Ejecución provisional","calculo":"escala","min":100,"opciones":[{"k":"cumple","t":"Solo solicitud y cumplimiento antes del auto (5 %)","pct":0.05,"base":"Cuantía de la ejecución provisional"},{"k":"op534","t":"Oposición a restituir, deshacer o indemnizar, art. 534.4 LEC (15 %)","pct":0.15,"base":"Lo obligado a restituir, deshacer o indemnizar"}],"nota":"Si hay despacho y tramitación, se aplica la ejecución forzosa (art. 27). Daños de los arts. 533-534 LEC: art. 31.B.","literal":"se devengará el 5% de la Escala con un criterio ... de 100 € ... Por la oposición a restituir, deshacer o indemnizar ... el 15% de la Escala ... Criterio 100 €"},{"id":"a27","art":"Art. 27","cap":"Ejecución","titulo":"Ejecución dineraria de títulos judiciales","remite":"ejecucion"},{"id":"a28","art":"Art. 28","cap":"Ejecución","titulo":"Ejecución de títulos extrajudiciales y auto de cuantía máxima","calculo":"fases","base":"Suma de lo despachado (o pedido)","partes":[{"k":"ejecutante","t":"Ejecutante"},{"k":"ejecutado","t":"Ejecutado"}],"bases_aux":{"discutida":{"modo":"uno","campos":[{"k":"discutida","t":"Cuantía discutida (con intereses y costas)"}]}},"grupos":{"g1":150,"opo":300,"apr":150},"fases":[{"k":"hasta","t":"Hasta el inicio del apremio (65 %)","pct":0.65,"grupo":"g1","def":true},{"k":"opo","t":"Incidente de oposición (ejecutante 35 % · ejecutado 100 %, sobre lo discutido)","pct":{"ejecutante":0.35,"ejecutado":1.0},"grupo":"opo","base":"discutida"},{"k":"apr_a","t":"Apremio hasta pedir la realización (10 %)","pct":0.1,"grupo":"apr"},{"k":"apr_b","t":"Resto del apremio, subasta incluida (10 %)","pct":0.1,"grupo":"apr"}],"literal":"Se devengará el 65% de la Escala ... hasta el inicio del procedimiento de apremio. Criterio 150 €. 2. En el incidente de oposición el ejecutante devengará el 35% de la Escala y el ejecutado el 100% ... base la cuantía discutida ... Criterio 300 €. 3. a) ... 10% ... b) ... 10% ... Criterio 150 €"},{"id":"a29","art":"Art. 29","cap":"Ejecución","titulo":"Ejecución hipotecaria o pignoraticia","calculo":"fases","bases":{"modo":"min","campos":[{"k":"req","t":"Cantidad del requerimiento de pago (+ intereses vencidos si se cuantifican)"},{"k":"resp","t":"Responsabilidad total de los bienes hipotecados"}]},"partes":[{"k":"ejecutante","t":"Ejecutante"},{"k":"ejecutado","t":"Ejecutado"}],"bases_aux":{"discutida":{"modo":"uno","campos":[{"k":"discutida","t":"Cuantía discutida"}]},"liberacion":{"modo":"max","campos":[{"k":"lib","t":"Cantidad por la que se admite la liberación"},{"k":"cuota","t":"Cuota mensual pactada (se toma una anualidad)","mult":12}]}},"grupos":{"g1":150,"opo":300,"demas":150},"fases":[{"k":"hasta","t":"Hasta pedir la realización de bienes (65 %)","pct":0.65,"grupo":"g1","def":true},{"k":"opo","t":"Incidente de oposición (ejecutante 35 % · ejecutado 100 %, sobre lo discutido)","pct":{"ejecutante":0.35,"ejecutado":1.0},"grupo":"opo","base":"discutida"},{"k":"demas","t":"Demás intervenciones hasta el final (20 %)","pct":0.2,"grupo":"demas"},{"k":"lib","t":"Liberación de la vivienda, art. 693.3 LEC, sin oposición (100 %)","pct":1.0,"grupo":"lib","base":"liberacion"}],"literal":"base ... la menor de: A) La cantidad por la que se solicite el requerimiento ... B) La total responsabilidad de los bienes hipotecados ... 1. 65% ... Criterio 150 €. 2. ... ejecutante 35% ... ejecutado 100% ... cuantía discutida. Criterio 300 €. 3. ... 20% ... Criterio 150 €. 4. liberación ... 100% de la Escala, base la mayor de: A) la cantidad por la que se admita ... B) el importe de una anualidad de las cuotas pactadas."},{"id":"a30","art":"Art. 30","cap":"Ejecución","titulo":"Ejecución de medidas económicas de familia","remite":"a28"},{"id":"a31a","art":"Art. 31.A","cap":"Ejecución","titulo":"Ejecución no dineraria (entregar, hacer o no hacer)","calculo":"fases","grupos":{"dem":150,"rest":150,"opo":300},"opciones":[{"k":"pleito","t":"Sobre los honorarios del pleito principal","ref":"honorarios","base":"Cuantía del pleito principal"},{"k":"escala","t":"Sobre la Escala de la cuantía fijada en ejecución","ref":"escala","base":"Cuantía de la ejecución"}],"fases":[{"k":"dem","t":"Demanda o solicitud de despacho (20 %)","pct":0.2,"grupo":"dem","def":true},{"k":"rest","t":"Restantes trámites hasta la entrega o cumplimiento (30 %)","pct":0.3,"grupo":"rest"},{"k":"opo","t":"Incidente de oposición (20 %)","pct":0.2,"grupo":"opo"}],"literal":"el 50% de los Honorarios del pleito principal, o el 50% de la Escala sobre la cuantía de la ejecución ... a) el 20% por la demanda ... Criterio 150 €. b) el otro 30% ... Criterio 150 €. 2. ... oposición ... el 20% ... Criterio 300 €"},{"id":"a31b","art":"Art. 31.B","cap":"Ejecución","titulo":"Daños, frutos, rendición de cuentas o liquidación de intereses (arts. 712-720 LEC)","calculo":"fases","base":"Cantidad de que se trate","grupos":{"sol":100,"opo":100},"bases_aux":{"discutida":{"modo":"uno","campos":[{"k":"discutida","t":"Cantidad discutida"}]}},"fases":[{"k":"sol","t":"Solicitud (20 %)","pct":0.2,"grupo":"sol","def":true},{"k":"opo","t":"Oposición, ambas partes (30 % sobre lo discutido)","pct":0.3,"grupo":"opo","base":"discutida"}],"nota":"La ejecución dineraria posterior va por el art. 27 (31.C). También aplicable a los daños de los arts. 533-534 y 742 LEC.","literal":"se devengará el 20% de la Escala sobre la cantidad de que se trate. Si hay oposición, devengarán ambas partes por la misma el 30% de la Escala sobre la cantidad discutida. Criterio 100 €"},{"id":"a31d","art":"Art. 31.D","cap":"Ejecución","titulo":"Exequátur de sentencia extranjera","calculo":"fijo","fijo":600,"nota":"La propia ejecución se minuta por el artículo que corresponda.","literal":"por el exequatur, se establece como criterio la cantidad de 600 €"},{"id":"a32","art":"Art. 32","cap":"Ejecución","titulo":"Ejecución de medidas no pecuniarias de familia","calculo":"fases","fases":[{"k":"pet","t":"Petición de cumplimiento (150 €)","fijo":150,"def":true},{"k":"opo","t":"Oposición, ambas partes (300 €)","fijo":300},{"k":"otras","t":"Otras actuaciones del ejecutante (150 €)","fijo":150}],"literal":"si el Letrado del solicitante limita su actuación a la petición de cumplimiento ... 150 €. Si hay oposición ... para ambas partes ... 300 €. Si el Letrado ejecutante realiza otras actuaciones ... 150 €"},{"id":"a33","art":"Art. 33","cap":"Medidas cautelares","titulo":"Medidas cautelares (pieza separada o autónoma)","calculo":"escala","indet":400,"bases":{"modo":"max","campos":[{"k":"caucion","t":"Caución fijada (u ofrecida si se deniega)"},{"k":"pretension","t":"Pretensión que se asegura (suelo del 15 %)","mult":0.15}]},"opciones":[{"k":"733","t":"Sin audiencia del demandado, art. 733.2 LEC (20 %)","pct":0.2},{"k":"734","t":"Con vista, art. 734 LEC (30 %)","pct":0.3},{"k":"739","t":"Con oposición, arts. 739-741 LEC (40 %)","pct":0.4},{"k":"modif","t":"Modificación o caución sustitutoria (30 % sobre la nueva caución)","pct":0.3}],"extras":[{"k":"repro","t":"Reproducción tras una denegación previa (50 %)","mult":0.5},{"k":"ejec","t":"Además, ejecución de las medidas (+40 %)","add":0.4},{"k":"a744","t":"Además, intervención del art. 744 LEC (+20 %)","add":0.2}],"nota":"Para pedirla dentro de un verbal u ordinario usa la casilla de cautelar del propio juicio. Indemnización del art. 742 LEC: art. 31.B.","literal":"A) ... 733.2 ... el 20% de la Escala. B) ... 734 ... el 30%. C) ... 739 al 741 ... el 40%. La cuantía será el importe de la caución ... no ... inferior a un 15% de la cuantía de la pretensión ... indeterminada ... 400 €. reproducción ... reducidos al 50%. ejecución de las medidas ... 40% ... 744 ... 20%"},{"id":"a34","art":"Art. 34","cap":"Familia y personas","titulo":"Capacidad de las personas e internamiento","calculo":"fijo","opciones":[{"k":"cap","t":"Procedimiento sobre la capacidad (1.000 €)","fijo":1000},{"k":"reint","t":"Reintegración o modificación del alcance, art. 761 LEC (1.000 €)","fijo":1000},{"k":"int_sin","t":"Internamiento no voluntario sin oposición (500 €)","fijo":500},{"k":"int_con","t":"Internamiento no voluntario con oposición (1.000 €)","fijo":1000}],"literal":"1. ... capacidad ... 1.000 €. 2. ... reintegrar ... 1.000 €. 3. ... internamiento ... sin oposición ... 500 €. ... oposición ... 1.000 €"},{"id":"a35","art":"Art. 35","cap":"Familia y personas","titulo":"Filiación; oposición a resoluciones de protección de menores","calculo":"fijo","opciones":[{"k":"fil","t":"Filiación, paternidad o maternidad (2.000 €)","fijo":2000},{"k":"men","t":"Oposición a resoluciones administrativas de menores o asentimiento en adopción (1.000 €)","fijo":1000}],"nota":"Alimentos provisionales en la filiación: añádelos aparte con el art. 39.C.","literal":"A) ... filiación ... 2.000 €. 2. Si se solicitasen alimentos provisionales ... artículo 39, apartado C). B) ... 1.000 €"},{"id":"a36","art":"Arts. 36-38 y 40","cap":"Familia y personas","titulo":"Medidas provisionales y eficacia civil canónica","calculo":"fijo","fijo":500,"opciones":[{"k":"771","t":"Medidas previas a la demanda, art. 771 LEC (500 €)","fijo":500},{"k":"772","t":"Confirmación o modificación, art. 772 LEC (500 €)","fijo":500},{"k":"773","t":"Medidas derivadas de la admisión, art. 773 LEC (500 €)","fijo":500},{"k":"cust","t":"Custodia compartida sin contenido económico (500 €)","fijo":500},{"k":"778","t":"Eficacia civil de resoluciones eclesiásticas, art. 778 LEC (500 €)","fijo":500},{"k":"val","t":"Con contenido económico valuable (art. 39: 30 % de la Escala)","calculo":"escala","pct":0.3,"bases":"art39"}],"literal":"Art. 36 ... 500 €. Art. 37 ... 500 €. Art. 38 ... 500 € ... custodia compartida ... 500 €. Art. 39 ... si ... presupuestos valuables económicamente, ... aplicar la Escala al 30% absorbiéndose ... los criterios antes establecidos. Art. 40 ... 500 €"},{"id":"a39","art":"Art. 39","cap":"Familia y personas","titulo":"Medidas con contenido económico (calculadora de bases)","calculo":"escala","pct":0.3,"bases":"art39","nota":"El 30 % de la Escala absorbe el criterio fijo del artículo de la medida. [verificar] Si la vivienda es temporal, el +25 % se aplica aquí a todos los honorarios de las medidas.","literal":"aplicar la Escala al 30% ... A) vivienda ... usufructo ... temporal ... porcentaje igual a los años ... incrementándose luego los Honorarios en un 25% ... hijos menores ... diferencia ... edad del menor de los hijos y veinticinco años ... no ... inferior al valor catastral ... arrendada ... dos anualidades de renta ... compensación ... no ... inferior ... a dos anualidades. B) ajuar ... su valor. C) pensiones ... dos anualidades ... salvo ... período inferior."},{"id":"a41","art":"Art. 41","cap":"Familia y personas","titulo":"Separación, divorcio o nulidad contenciosos","calculo":"fijo","fijo":2000,"opciones":[{"k":"crit","t":"Criterio (2.000 €, reconvención incluida)","fijo":2000},{"k":"val","t":"Sin medidas provisionales minutadas: medidas definitivas por el art. 39 (30 % de la Escala)","calculo":"escala","pct":0.3,"bases":"art39"}],"nota":"Si ya se minutaron las provisionales, solo se minuta la diferencia (art. 43).","literal":"incluida la reconvención ... 2.000 € ... Si no se hubiesen solicitado medidas provisionales ... por las medidas definitivas se minutará conforme ... artículo 39. Absorbiéndose ... el criterio"},{"id":"a42","art":"Art. 42","cap":"Familia y personas","titulo":"Separación o divorcio de mutuo acuerdo (art. 777 LEC)","calculo":"fases","partes":[{"k":"una","t":"Una sola dirección letrada"},{"k":"dos","t":"Letrados distintos (cada uno)"}],"bases_aux":{"bienes":{"modo":"uno","campos":[{"k":"bienes","t":"Valor de los bienes gananciales a liquidar"}]}},"grupos":{"liq":500},"fases":[{"k":"crit","t":"Procedimiento y convenio (una dirección 1.500 € · cada letrado 1.000 €)","fijo":{"una":1500,"dos":1000},"def":true,"excl":"conv"},{"k":"val","t":"Convenio con contenido económico (art. 39: 30 % de la Escala, absorbe el criterio)","pct":0.3,"base":"art39","excl":"conv"},{"k":"liq","t":"Liquidación de gananciales en el convenio (10 %; con letrados distintos, la mitad)","pct":{"una":0.1,"dos":0.05},"grupo":"liq","base":"bienes"}],"literal":"A) ... una sola dirección Letrada ... 1.500 €. B) ... Letrados distintos, cada uno ... 1.000 €. Por el convenio regulador ... artículos 38 ó 39. Absorbiéndose ... La liquidación de la sociedad de gananciales ... 10% de la Escala ... valor de los bienes. Si interviniesen Letrados distintos, cada uno percibirá el 50% ... Criterio 500 €"},{"id":"a43","art":"Art. 43","cap":"Familia y personas","titulo":"Modificación de medidas definitivas (art. 775 LEC)","calculo":"escala","pct":1.0,"opciones":[{"k":"inst","t":"Letrado del instante (contenciosa)","min":750,"bases":{"modo":"dif","campos":[{"k":"ini","t":"Medidas iniciales (importe mensual)"},{"k":"fin","t":"Medidas fijadas (importe mensual)"},{"k":"meses","t":"Meses (24, o el período menor fijado)","def":24,"max":24,"unidad":"meses"}]}},{"k":"opos","t":"Letrado opositor (contenciosa)","min":750,"bases":{"modo":"dif","campos":[{"k":"ini","t":"Lo solicitado por el actor (mensual)"},{"k":"fin","t":"Lo fijado judicialmente (mensual)"},{"k":"meses","t":"Meses (24, o el período menor fijado)","def":24,"max":24,"unidad":"meses"}]}},{"k":"ma1","t":"Mutuo acuerdo, una dirección letrada","min":750,"bases":{"modo":"dif","campos":[{"k":"ini","t":"Medidas existentes (mensual)"},{"k":"fin","t":"Medidas solicitadas (mensual)"},{"k":"meses","t":"Meses","def":24,"max":24,"unidad":"meses"}]}},{"k":"ma2","t":"Mutuo acuerdo, letrados distintos (cada uno)","min":600,"bases":{"modo":"dif","campos":[{"k":"ini","t":"Medidas existentes (mensual)"},{"k":"fin","t":"Medidas solicitadas (mensual)"},{"k":"meses","t":"Meses","def":24,"max":24,"unidad":"meses"}]}}],"literal":"la Escala en su integridad ... A) ... instante, la diferencia entre las medidas iniciales y las que en definitiva se señalen. B) ... opositor ... la diferencia entre lo solicitado por el actor y lo que en definitiva se señale ... dos anualidades ... Criterio 750 €. C) mutuo acuerdo ... dos anualidades ... 1. ... una dirección ... 750 €. 2. ... Letrados distintos ... 600 €"},{"id":"a44","art":"Art. 44","cap":"Herencia y liquidaciones","titulo":"División judicial de la herencia","calculo":"fases","base":"Haber que corresponde al cliente","sesion":150,"bases_aux":{"contro":{"modo":"uno","campos":[{"k":"contro","t":"Lo que es objeto de controversia (verbal)"}]}},"grupos":{"main":1000,"v_inv":500,"v_ops":500},"fases":[{"k":"a","t":"Solicitud y propuesta de inventario (50 % del 50 %)","pct":0.25,"def":true},{"k":"b","t":"Formación del inventario (10 % del 50 %)","pct":0.05},{"k":"c","t":"Junta para contador y peritos (10 % del 50 %)","pct":0.05},{"k":"d","t":"Traslado de las operaciones divisorias (20 % del 50 %)","pct":0.1},{"k":"e","t":"Entrega de los bienes (10 % del 50 %)","pct":0.05},{"k":"v_inv","t":"Inventario resuelto por juicio verbal (50 % sobre lo controvertido)","pct":0.5,"base":"contro","grupo":"v_inv"},{"k":"v_ops","t":"Operaciones divisorias por juicio verbal (50 % sobre lo controvertido)","pct":0.5,"base":"contro","grupo":"v_ops"}],"literal":"50% de la Escala ... suma del haber que corresponde al cliente ... A) 50%. B) 10%. C) 10%. D) 20%. E) 10%. Criterio 1.000 €. ... por los cauces del juicio verbal ... 50% de la Escala sobre lo que sea objeto de controversia ... 500 €. ... cada sesión más ... 150 €"},{"id":"a45","art":"Art. 45","cap":"Herencia y liquidaciones","titulo":"Liquidación del régimen económico matrimonial","calculo":"fases","base":"Total haber que corresponde al cliente","bases_aux":{"contro":{"modo":"uno","campos":[{"k":"contro","t":"Haber discutido del cliente (verbal)"}]}},"grupos":{"main":1000,"v":500},"fases":[{"k":"a","t":"Solicitud y propuesta de inventario (50 % del 50 %)","pct":0.25,"def":true},{"k":"b","t":"Formación del inventario (10 % del 50 %)","pct":0.05},{"k":"c","t":"Vista del art. 809.2 LEC (20 % del 50 %)","pct":0.1},{"k":"d","t":"Propuesta de adjudicación hasta el final (20 % del 50 %)","pct":0.1},{"k":"v","t":"Inventario u operaciones por juicio verbal (50 % sobre el haber discutido)","pct":0.5,"base":"contro","grupo":"v"}],"literal":"50% de la Escala ... total haber que corresponda al cliente ... A) 50%. B) 10%. C) 20%. D) 20%. Criterio 1.000 €. ... Juicio Verbal ... 50 % de la Escala sobre el haber discutido ... 500 €"},{"id":"a46","art":"Art. 46","cap":"Familia y personas","titulo":"Uniones de hecho; visitas de abuelos y parientes","remite":"a36","nota":"Uniones de hecho: por analogía, los artículos matrimoniales. Visitas de parientes: art. 14.11."},{"id":"a47","art":"Art. 47","cap":"Monitorio y cambiario","titulo":"Monitorio sin oposición","remite":"monitorio_sin"},{"id":"a48","art":"Art. 48","cap":"Monitorio y cambiario","titulo":"Monitorio con oposición","calculo":"escala","min":150,"base":"Cantidad requerida de pago","opciones":[{"k":"mismo","t":"Mismo letrado sigue en el declarativo (10 % por el monitorio)","pct":0.1},{"k":"dist_v","t":"Letrado distinto de la petición inicial, le correspondía verbal (60 %)","pct":0.6},{"k":"dist_o","t":"Letrado distinto de la petición inicial, le correspondía ordinario (30 %)","pct":0.3},{"k":"opos","t":"Letrado del opositor si el actor no demanda en plazo (ordinario, 30 %)","pct":0.3}],"nota":"El declarativo posterior se calcula aparte (verbal u ordinario, con la casilla «Viene de un monitorio»).","literal":"1. ... el 10% de la Escala ... Letrado distinto ... juicio verbal ... 60% ... juicio ordinario ... 30%. 2. ... el Abogado del demandado opositor ... 30%. 3. ... base ... la cantidad objeto de requerimiento de pago. Criterio 150 €"},{"id":"a49","art":"Art. 49","cap":"Monitorio y cambiario","titulo":"Juicio cambiario","calculo":"fases","base":"Cantidad requerida o despachada","partes":[{"k":"acreedor","t":"Acreedor"},{"k":"deudor","t":"Deudor"}],"bases_aux":{"efectos":{"modo":"uno","campos":[{"k":"efectos","t":"Suma de los efectos discutidos"}]}},"grupos":{"g1":150,"g2":150,"opo":300},"fases":[{"k":"jc","t":"Juicio cambiario (65 %)","pct":{"acreedor":0.65,"deudor":0.65},"grupo":"g1","def":true},{"k":"823","t":"Personación del deudor, art. 823.1 LEC (15 % sobre los efectos discutidos)","pct":0.15,"grupo":"g2","base":"efectos"},{"k":"opo","t":"Pieza de oposición (demandante 35 % · demandado 100 %)","pct":{"acreedor":0.35,"deudor":1.0},"grupo":"opo"}],"nota":"La ejecución posterior va por el art. 27. [verificar] El 65 % del apartado 1 se ofrece a ambas partes; el texto no distingue.","literal":"1. ... 65% de la Escala ... Criterio 150 €. 2. ... 823 ... 15% ... suma de los efectos discutidos. Criterio 150 €. 3. ... demandante ... 35% ... demandado ... 100%. Criterio 300 €"},{"id":"a50","art":"Art. 50","cap":"Recursos","titulo":"Recurso de apelación","remite":"recurso_apelacion"},{"id":"a51","art":"Art. 51","cap":"Recursos","titulo":"Reposición, revisión, queja, rescisión, revisión de firmes, casación inadmitida","remite":"recurso_51_1"},{"id":"a52a","art":"Art. 52.A","cap":"Concursal","titulo":"Comunicación preconcursal (abogado del deudor)","calculo":"fases","fases":[{"k":"com","t":"Comunicación al Juzgado (1.000 €)","fijo":1000,"def":true},{"k":"adic","t":"Adicional: no pide el concurso en plazo o lo pide otro letrado (1.000 €)","fijo":1000}],"literal":"... 1.000 €. ... no solicite en plazo la declaración de concurso o sea otro Letrado ... cantidad adicional de 1.000 €"},{"id":"a52b","art":"Art. 52.B-C","cap":"Concursal","titulo":"Concurso: abogado del deudor","calculo":"fases","base":"Masa pasiva (lista definitiva o relación de la solicitud)","bases_aux":{"instantes":{"modo":"uno","campos":[{"k":"instantes","t":"Créditos de los acreedores instantes"}]}},"fases":[{"k":"decl","t":"Voluntario: estudio, solicitud y declaración (45 %)","pct":0.45,"def":true,"excl":"inicio"},{"k":"nec_sin","t":"Necesario sin oposición o con allanamiento: toda la fase común (30 %)","pct":0.3,"excl":"inicio"},{"k":"nec_opo","t":"Necesario: incidente de oposición (100 % sobre los créditos instantes)","pct":1.0,"base":"instantes","excl":"inicio"},{"k":"comun","t":"Resto de la fase común (5 %)","pct":0.05},{"k":"conv","t":"Convenio o liquidación anticipada (25 %)","pct":0.25,"excl":"fin"},{"k":"liq","t":"Liquidación ordinaria (15 %)","pct":0.15,"excl":"fin"}],"extras":[{"k":"conj","t":"Declaración conjunta de varios deudores (−10 % en la fase común, art. 54.L)","fases_mult":{"decl":0.9,"nec_sin":0.9,"comun":0.9}}],"nota":"Incidentes y recursos van aparte (arts. 54.H y 55). Cuestiones laborales: criterios de lo social.","literal":"B) ... 45% ... 5% ... 25% ... convenio ... liquidación anticipada; o bien, el 15% ... liquidación ordinaria ... masa pasiva ... C) 1.- Sin oposición ... 30% ... fase común ... 2.- ... oposición ... la Escala en su integridad ... créditos de los acreedores instantes ... y ... resto de la fase común ... punto 2º del apartado B). 3.- ... punto 3º del apartado B)"},{"id":"a53","art":"Art. 53","cap":"Concursal","titulo":"Concurso: abogado del acreedor","calculo":"fases","base":"Crédito del cliente","grupos":{"pers":300,"total":500},"fases":[{"k":"pers","t":"Voluntario: solo personación o comunicación de créditos (15 %)","pct":0.15,"grupo":"pers","def":true,"excl":"vol"},{"k":"total","t":"Voluntario: intervención completa hasta el final (25 %)","pct":0.25,"grupo":"total","excl":"vol"},{"k":"inst_sin","t":"Necesario, acreedor instante: solicitud sin oposición (70 %)","pct":0.7,"excl":"vol"},{"k":"inst_opo","t":"Necesario, acreedor instante: incidente de oposición (100 %)","pct":1.0,"excl":"vol"},{"k":"resto","t":"Necesario: resto de la intervención tras la declaración (25 %)","pct":0.25}],"nota":"[verificar] En el necesario se toma una sola base (crédito instante = crédito del cliente). Incidentes y recursos van aparte.","literal":"A) ... personación ... comunicación de créditos ... 15% ... Criterio 300 €. ... va más allá ... 25% ... Criterio 500 €. B) 1.- ... sin oposición ... 70% ... crédito instante. 2.- ... oposición ... 100% ... 3.- ... resto ... 25% ... crédito del cliente"},{"id":"a54a","art":"Art. 54.A","cap":"Concursal","titulo":"Sección de calificación","base":"Responsabilidad reclamada (o fijada en sentencia)","opciones":[{"k":"deudor","t":"Abogado del deudor: 500 € + 10 % sobre la responsabilidad reclamada","calculo":"fijo_mas_escala","fijo":500,"pct":0.1},{"k":"acreedor","t":"Abogado del acreedor que alega e interviene: 500 € + 5 % sobre la fijada","calculo":"fijo_mas_escala","fijo":500,"pct":0.05},{"k":"solo","t":"Solo alegaciones en la sección (500 €)","calculo":"fijo","fijo":500},{"k":"afect","t":"Defensa de cómplice o afectado (10 % sobre lo reclamado a su cliente)","calculo":"escala","pct":0.1}],"literal":"Por la intervención efectiva formulando alegaciones ... 500 €. Además, el Abogado del deudor ... 10% ... responsabilidad civil reclamada ... acreedor ... 5% ... responsabilidad fijada en sentencia. ... cómplices o personas afectadas ... 10% ..."},{"id":"a54b","art":"Art. 54.B","cap":"Concursal","titulo":"Daños por desestimación del concurso","remite":"verbal","nota":"Honorarios del verbal por cuantía sobre los daños fijados (o solicitados)."},{"id":"a54c","art":"Art. 54.C","cap":"Concursal","titulo":"Declinatoria en el concurso","calculo":"sobre_importe","min":300,"campo":"Honorarios de la fase en que se plantea","opciones":[{"k":"sin","t":"Sin oposición (20 %)","pct":0.2},{"k":"con","t":"Con oposición (25 %)","pct":0.25}],"literal":"sin oposición ... 20% de los Honorarios que correspondan a la fase en la que se plantea ... oposición ... 25%. Criterio 300 €"},{"id":"a54d","art":"Art. 54.D","cap":"Concursal","titulo":"Medidas cautelares en el concurso","base":"Fianza","opciones":[{"k":"inaud","t":"Inaudita parte, adoptadas o no (400 €)","calculo":"fijo","fijo":400},{"k":"fianza","t":"Con oposición, estimadas con fianza (30 % sobre la fianza, mín. 400 €)","calculo":"escala","pct":0.3,"min":400},{"k":"sinf","t":"Con oposición, sin fianza o desestimadas (500 €)","calculo":"fijo","fijo":500}],"literal":"inaudita parte ... 400 €. ... oposición ... con fianza ... 30% ... fianza ... 400 €. ... sin fianza o se desestima ... 500 €"},{"id":"a54g","art":"Art. 54.G","cap":"Concursal","titulo":"Oposición al convenio","calculo":"escala","pct":0.1,"base":"Masa pasiva de la lista definitiva","literal":"el 10% de la Escala tomando como base la cuantía de la masa pasiva"},{"id":"a54h","art":"Art. 54.H","cap":"Concursal","titulo":"Incidente concursal","calculo":"escala","pct":1.0,"min":700,"opciones":[{"k":"1","t":"Anulación de actos del concursado","base":"Valor del bien o derecho anulado"},{"k":"2","t":"Compensación de deudas","base":"Importe compensado"},{"k":"3","t":"Resolución contractual","base":"Importe económico del contrato"},{"k":"4","t":"Saldos de cuentas indistintas","base":"Cuantía litigiosa (o la de la sentencia, si menor)"},{"k":"5","t":"Créditos contra la masa","base":"Importe del crédito"},{"k":"6","t":"Impugnación de inventario o lista de acreedores","base":"Importe impugnado o crédito no reconocido o a reclasificar"},{"k":"7","t":"Separación de bienes y derechos","base":"Valor de los bienes o derechos"},{"k":"8","t":"Rescisión de actos perjudiciales","base":"Importe del perjuicio"},{"k":"9","t":"Incumplimiento de convenio","base":"Cantidad reclamada como no satisfecha"},{"k":"10","t":"Oposición a la conclusión del concurso","base":"Valor de los bienes alegados (límite: crédito del instante)"},{"k":"otros","t":"Otros incidentes, recusación de la AC, rendición de cuentas, autorizaciones (700 €)","calculo":"fijo","fijo":700}],"nota":"Acción de reintegración ejercida por un acreedor (54.F.2): este mismo artículo.","literal":"se devengarán los Honorarios que resulten de aplicar la Escala, tomando las siguientes bases ... Criterio ... 700 €. ... demás incidentes ... recusación ... rendición de cuentas ... autorizaciones ... 700 €"},{"id":"a55","art":"Art. 55","cap":"Concursal","titulo":"Recursos en el concurso","remite":"recurso_apelacion","nota":"Arts. 50 y 51."},{"id":"a56","art":"Art. 56","cap":"Herencia y liquidaciones","titulo":"Declaración de herederos abintestato judicial","calculo":"fijo","fijo":400,"literal":"Se establece un criterio de 400 €"},{"id":"a57","art":"Art. 57","cap":"Monitorio y cambiario","titulo":"Pérdida, sustracción o extravío de efectos cambiarios","calculo":"escala","pct":0.5,"min":250,"base":"Importe nominal del efecto","literal":"aplicando el 50 % de la Escala, tomando como base ... el importe nominal del efecto. Criterio 250 €"},{"id":"a58","art":"Art. 58","cap":"Jurisdicción voluntaria","titulo":"Familia y estado civil","calculo":"fijo","opciones":[{"k":"A","t":"Adopción (500 €)","fijo":500},{"k":"B","t":"Nombramiento de tutor o curador (400 €)","fijo":400},{"k":"C","t":"Defensor judicial (400 €)","fijo":400},{"k":"D","t":"Declaración de ausencia o fallecimiento (500 €)","fijo":500},{"k":"E","t":"Dispensa de ley y perpetua memoria (400 €)","fijo":400},{"k":"F","t":"Medidas provisionales por ausencia (500 €)","fijo":500},{"k":"G","t":"Guarda y acogimiento de menores (400 €)","fijo":400}],"literal":"A) adopción 500 €. B) tutor o curador 400 €. C) defensor judicial 400 €. D) ausencia o fallecimiento 500 €. E) dispensa de Ley y perpetua memoria 400 €. F) Medidas provisionales en caso de ausencia 500 €. G) Guarda y Acogimiento 400 €"},{"id":"a59","art":"Art. 59","cap":"Jurisdicción voluntaria","titulo":"Sucesiones","calculo":"fijo","opciones":[{"k":"A","t":"Testamentos: elevación, protocolización, apertura (400 €)","fijo":400},{"k":"B","t":"Prórroga o renuncia de albaceas y contadores (200 €)","fijo":200},{"k":"C","t":"Aceptación a beneficio de inventario (400 €)","fijo":400},{"k":"D","t":"Aprobación judicial de particiones (200 €)","fijo":200}],"literal":"A) ... 400 €. B) ... 200 €. C) ... 400 €. D) ... 200 €"},{"id":"a60","art":"Art. 60","cap":"Jurisdicción voluntaria","titulo":"Patrimonio, bienes o cosas","calculo":"fijo","opciones":[{"k":"A","t":"Venta de bienes de menores o personas con discapacidad (500 €)","fijo":500},{"k":"B","t":"Rendición de cuentas de tutela o curatela (200 €)","fijo":200},{"k":"C","t":"Subastas voluntarias y judiciales (400 €)","fijo":400},{"k":"D","t":"Deslinde y amojonamiento (500 €)","fijo":500},{"k":"E","t":"Posesión judicial sin interdicto de adquirir (400 €)","fijo":400},{"k":"F","t":"Consignación (300 €)","fijo":300},{"k":"G","t":"Hipoteca legal y su ampliación (400 €)","fijo":400},{"k":"H","t":"Expediente de dominio o doble inmatriculación (750 €)","fijo":750},{"k":"I","t":"Convocatoria judicial de juntas (400 €)","fijo":400}],"literal":"A) 500 €. B) 200 €. C) 400 €. D) 500 €. E) 400 €. F) 300 €. G) 400 €. H) 750 €. I) 400 €"},{"id":"a61","art":"Art. 61","cap":"Jurisdicción voluntaria","titulo":"Depósito y reconocimiento de efectos mercantiles","calculo":"escala","pct":0.15,"min":250,"base":"Valor de los efectos","literal":"el 15% de la Escala. Criterio 250 €"},{"id":"a62","art":"Art. 62","cap":"Jurisdicción voluntaria","titulo":"Derecho marítimo","calculo":"escala","pct":0.05,"min":500,"base":"Valor afectado","opciones":[{"k":"A","t":"Calificación, liquidación y contribución a la avería (5 %)"},{"k":"B","t":"Descarga, abandono, intervención de efectos y fianza (5 %)"},{"k":"C","t":"Enajenación y apoderamiento de efectos, recomposición de la nave (5 %)"}],"literal":"A) ... 5% ... Criterio 500 €. B) ... 5% ... Criterio 500 €. C) ... de conformidad con el apartado B"},{"id":"a63","art":"Art. 63","cap":"Jurisdicción voluntaria","titulo":"Otro expediente de jurisdicción voluntaria","calculo":"fases","base":"Cuantía determinada","grupos":{"vol":400},"fases":[{"k":"vol","t":"Expediente voluntario (10 % de la Escala)","pct":0.1,"grupo":"vol","def":true},{"k":"cont","t":"Se convierte en contencioso por oposición (Escala íntegra del juicio)","pct":1.0,"grupo":"cont"}],"nota":"Sin cuantía determinada, rige el criterio de 400 €. Para aplicar las fases del juicio contencioso calcúlalo como verbal u ordinario.","literal":"si tuvieran cuantía determinada ... 10% de la Escala ... si por haber oposición ... se convirtiere en contencioso se aplicará en su integridad la Escala del juicio ... sin perjuicio de lo devengado en el período voluntario. Criterio 400 €"},{"id":"a64","art":"Art. 64","cap":"Recursos","titulo":"Casación o infracción procesal ante el TSJ","calculo":"fases","base":"Cuantía del recurso","partes":[{"k":"recurrente","t":"Recurrente"},{"k":"recurrido","t":"Recurrido"}],"fases":[{"k":"int","t":"Recurrente: interposición (45 %, mín. 1.000 €) · Recurrido: instrucción e impugnación (30 %, mín. 700 €)","pct":{"recurrente":0.45,"recurrido":0.3},"min":{"recurrente":1000,"recurrido":700},"def":true},{"k":"ins","t":"Recurrente: instrucción (10 %, mín. 300 €)","pct":{"recurrente":0.1,"recurrido":0},"min":{"recurrente":300,"recurrido":0}},{"k":"vis","t":"Vista ante la Sala, o no hubo vista y se entiende devengada (20 %)","pct":0.2,"min":{"recurrente":600,"recurrido":500}}],"literal":"1. ... recurrente ... A) ... 45% ... 1.000 €. B) ... 10% ... 300 €. C) ... 20% ... 600 €. ... no hubiera vista ... 75% de la Escala. 2. ... recurrida ... A) ... 30% ... 700 €. B) ... 20% ... 500 €. ... no hubiera vista ... 50%"},{"id":"a65","art":"Art. 65","cap":"Recursos","titulo":"Queja contra la inadmisión de la casación","calculo":"fijo","fijo":500,"literal":"500 €"},{"id":"a66","art":"Art. 66","cap":"Recursos","titulo":"Revisión de sentencias firmes ante el TSJ","calculo":"sobre_importe","pct":0.4,"min":900,"campo":"Honorarios de la casación (art. 64)","literal":"el 40% de los Honorarios devengados para el recurso de casación. Criterio 900 €"},{"id":"a67","art":"Art. 67","cap":"Recursos","titulo":"Incidente de inadmisión de la casación","calculo":"escala","pct":0.15,"min":400,"base":"Cuantía del recurso","literal":"el 15% de la Escala. Criterio 400 €"},{"id":"a68","art":"Art. 68","cap":"Recursos","titulo":"Incidente de nulidad previo al amparo","calculo":"escala","pct":0.15,"min":400,"base":"Cuantía del asunto","literal":"el 15% de la Escala. Criterio 400 €"}];
+/*@FIN-CATALOGO@*/
+  function catEntrada(id){ for(var i=0;i<CATALOGO.length;i++) if(CATALOGO[i].id===id) return CATALOGO[i]; return null; }
+  function catResuelve(id){ var e=catEntrada(id), n=0; while(e && e.remite && catEntrada(e.remite) && n<5){ e=catEntrada(e.remite); n++; } return e; }
+  function catSpec(e, opcion){
+    var s={}, k; for(k in e) s[k]=e[k];
+    var ops=e.opciones||[];
+    if(ops.length){
+      var o=ops[0]; for(var i=0;i<ops.length;i++) if(ops[i].k===opcion) o=ops[i];
+      for(k in o) if(k!=='k' && k!=='t') s[k]=o[k];
+      s.opcion=o.k;
+    }
+    return s;
+  }
+  function catNum(x){ if(x===null || x===undefined || x==='') return 0; var v=Number(x); return isFinite(v)?v:0; }
+  function catParte(v, parte){ if(v && typeof v==='object') return (v[parte]!==undefined && v[parte]!==null)?v[parte]:0; return v; }
+  function catCampo(inp, c){
+    var raw=(inp.valores||{})[c.k];
+    var v=(raw===undefined || raw===null || raw==='') ? ((c.def!==undefined && c.def!==null)?c.def:0) : catNum(raw);
+    if(c.max!==undefined && c.max!==null && v>c.max) v=c.max;
+    if(v<0) v=0;
+    return v*((c.mult!==undefined && c.mult!==null)?c.mult:1);
+  }
+  /* Art. 39: bases de las medidas con contenido económico. */
+  function catalogoBase39(inp){
+    var V=inp.art39||{}; function g(k){ return Math.max(0, catNum(V[k])); }
+    var valorViv=Math.max(g('valor'), g('catastral')), modo=V.vivienda||'ninguna', viv=0, temporal=false;
+    if(modo==='arrendada') viv=g('renta')*24;
+    else {
+      var cands=[];
+      if(modo==='indefinida') cands.push([g('usufructo'), false]);
+      if(modo==='temporal' || modo==='ambos') cands.push([valorViv*Math.min(g('anios'),100)/100, true]);
+      if(modo==='hijos' || modo==='ambos') cands.push([valorViv*Math.max(0, 25-g('edad'))/100, false]);
+      for(var i=0;i<cands.length;i++) if(i===0 || cands[i][0]>viv){ viv=cands[i][0]; temporal=cands[i][1]; }
+    }
+    var comp=Math.max(g('comp'), g('comp_mensual')*24);
+    var meses=(V.meses===undefined || V.meses===null || V.meses==='') ? 24 : Math.min(g('meses'), 24);
+    var pens=g('pension')*meses;
+    return {base:viv+comp+g('ajuar')+pens, factor:temporal?1.25:1, vivienda:viv, comp:comp, pension:pens};
+  }
+  function catBase(d, inp){
+    if(d==='art39') return catalogoBase39(inp).base;
+    if(!d) return inp.indeterminada ? 0 : catNum(inp.cuantia);
+    var v=d.campos.map(function(c){ return catCampo(inp, c); }), m=d.modo;
+    if(m==='max') return Math.max.apply(null, v);
+    if(m==='min'){ var p=v.filter(function(x){ return x>0; }); return p.length?Math.min.apply(null,p):0; }
+    if(m==='prod_pct') return v[0]*v[1]/100;
+    if(m==='max_anual') return Math.max(v[0], v[1]*v[2]);
+    if(m==='anualidades') return v[0]*12*v[1];
+    if(m==='dif') return Math.abs(v[1]-v[0])*v[2];
+    return v[0];
+  }
+  function catFaseVisible(f, parte){
+    if(f.fijo && typeof f.fijo==='object') return catParte(f.fijo, parte)!==0;
+    if((f.fijo===undefined || f.fijo===null) && f.pct && typeof f.pct==='object') return catParte(f.pct, parte)!==0;
+    return true;
+  }
+  function esc$(x){ return computeEscalaBreakdown(x).total; }
+  function catEur(n){ var t=(Math.round(n*100)/100).toFixed(2).split('.'); return t[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+t[1]+' €'; }
+  function catalogoCalcula(inp){
+    var e=catResuelve(inp.id);
+    if(!e || (!e.calculo && !e.opciones)) return {id:inp.id, importe:0, sinMin:0, aplicaMin:false, minimo:0, base:0, indet:false, cauce:null, sesion:0, cap:'', detalle:[]};
+    var s=catSpec(e, inp.opcion), partes=s.partes||[], parte=partes.length?partes[0].k:null, i, k;
+    for(i=0;i<partes.length;i++) if(partes[i].k===inp.parte) parte=partes[i].k;
+    var sel=inp.extras||[], mult=1, add=0, fmult={};
+    (s.extras||[]).forEach(function(x){
+      if(sel.indexOf(x.k)<0) return;
+      if(x.mult!==undefined && x.mult!==null) mult*=x.mult;
+      if(x.add!==undefined && x.add!==null) add+=x.add;
+      for(var q in (x.fases_mult||{})) fmult[q]=(fmult[q]!==undefined?fmult[q]:1)*x.fases_mult[q];
+    });
+    var f39=(s.bases==='art39') ? catalogoBase39(inp).factor : 1;
+    var B=catBase(s.bases, inp), H=catNum((inp.valores||{}).honorarios);
+    var indet=!!inp.indeterminada && s.indet!==undefined && s.indet!==null;
+    var c=s.calculo, pct=catParte(s.pct, parte); if(pct===undefined || pct===null) pct=1;
+    var minimo=catNum(catParte(s.min, parte)), det=[], imp, sinMin;
+    if(c==='fijo'){ imp=sinMin=catNum(catParte(s.fijo, parte)); minimo=0; }
+    else if(indet){ imp=sinMin=s.indet*mult; minimo=0; det.push('Pretensión indeterminada: criterio de '+s.indet+' €'); }
+    else if(c==='escala'){ sinMin=esc$(B)*(pct+add)*mult; imp=Math.max(sinMin, minimo); }
+    else if(c==='fijo_mas_escala'){ sinMin=catNum(s.fijo)+esc$(B)*pct; imp=Math.max(sinMin, minimo); }
+    else if(c==='honorarios' || c==='sobre_importe'){ sinMin=H*pct; imp=Math.max(sinMin, minimo); }
+    else if(c==='fases'){
+      var eleg=inp.fases;
+      if(!eleg) eleg=(s.fases||[]).filter(function(f){ return f.def; }).map(function(f){ return f.k; });
+      var sumas={}, orden=[];
+      (s.fases||[]).forEach(function(f){
+        if(eleg.indexOf(f.k)<0 || !catFaseVisible(f, parte)) return;
+        var v;
+        if(f.fijo!==undefined && f.fijo!==null) v=catNum(catParte(f.fijo, parte));
+        else {
+          var M;
+          if(s.ref==='honorarios') M=H;
+          else if(f.base==='art39') M=esc$(catalogoBase39(inp).base);
+          else if(f.base) M=esc$(catBase((s.bases_aux||{})[f.base], inp) || B);
+          else M=esc$(B);
+          v=M*catNum(catParte(f.pct, parte))*(fmult[f.k]!==undefined?fmult[f.k]:1);
+          if(f.base==='art39') v=v*catalogoBase39(inp).factor;
+        }
+        var vMin=catNum(catParte(f.min, parte));
+        det.push(f.t+': '+catEur(Math.max(v, vMin))+(v<vMin?' (criterio mínimo de la fase)':''));
+        v=Math.max(v, vMin);
+        var g=f.grupo||'main';
+        if(!(g in sumas)){ sumas[g]=0; orden.push(g); }
+        sumas[g]+=v;
+      });
+      sinMin=0; imp=0;
+      orden.forEach(function(g){ sinMin+=sumas[g]; var gm=catNum((s.grupos||{})[g]); if(gm>sumas[g]) det.push('Criterio mínimo del bloque: '+catEur(gm)); imp+=Math.max(sumas[g], gm); });
+      minimo=0;
+    } else { imp=sinMin=0; }
+    imp=imp*f39; sinMin=sinMin*f39;
+    var cauces=s.cauce||[], cauce=cauces.length ? (cauces.indexOf(inp.cauce)>=0 ? inp.cauce : cauces[0]) : null;
+    return {id:e.id, importe:imp, sinMin:sinMin, aplicaMin:imp>sinMin+1e-9, minimo:minimo, base:B, indet:indet,
+            cauce:cauce, sesion:s.sesion||0, cap:e.cap||'', parte:parte, opcion:s.opcion, factor39:f39, detalle:det, entrada:e, spec:s};
+  }
+
   /* Juicio verbal a efectos de la DG 2.ª D: el verbal por cuantía, el precario y el desahucio,
      salvo que este se haya tramitado por el cauce del ordinario. */
   function esVerbalDG2D(ctx){ return ctx.subtipo==='verbal' || ctx.subtipo==='ar_precario' || (ctx.subtipo==='ar_fp' && !ctx.desOrdinario); }
@@ -1148,6 +1312,8 @@ Honorarios de primera instancia.`
        Solo actúa con la casilla marcada; sin ella, la ejecución sigue igual. */
     if(st==='ejecucion' && ctx.tituloVerbalPH) return {preceptiva:true, texto:'Preceptiva (ejecución de un verbal de cuotas, art. 539.1 LEC)',
       desglose:'Preceptiva (ejecución de lo resuelto en un verbal de cuotas de la LPH, art. 250.1.15.º LEC, proceso en que la intervención era preceptiva: art. 539.1, párrafo 1.º LEC). No aplicable a la ejecución de un monitorio sin oposición (art. 539.1, párrafo 4.º). Lectura literal de la LEC, sin jurisprudencia leída'};
+    if(st==='catalogo') return {preceptiva:true, texto:'Según el cauce y la cuantía de la actuación [verificar]',
+      desglose:'Según el cauce y la cuantía de la actuación: compruébese antes de incluir los honorarios en costas [verificar]'};
     if(st==='ejecucion' && cef<=2000) return {preceptiva:false, texto:'No preceptiva si el título no la exigía (art. 539.1 LEC)',
       desglose:'no preceptiva si se ejecuta una resolución de un proceso en que no lo era, o un monitorio sin oposición de hasta 2.000 € (art. 539.1 LEC)'};
     return {preceptiva:true, texto:'Preceptiva', desglose:'intervención preceptiva'};
@@ -1213,8 +1379,14 @@ Honorarios de primera instancia.`
     var minimoNormaMostrar=minimo;
     if(st==='ar_fp') minimoNormaMostrar = ctx.desOrdinario ? 2000 : (ctx.reclRentas ? 600 : 500);
 
-    var basePorNormaSinMin, aplicaMinNorma, importeNormaBase, sinFases=false;
-    if(st==='ejecucion'){
+    var basePorNormaSinMin, aplicaMinNorma, importeNormaBase, sinFases=false, cat=null;
+    if(st==='catalogo'){
+      var cinp={}, _k; for(_k in (ctx.catalogo||{})) cinp[_k]=ctx.catalogo[_k];
+      cinp.cuantia=cuDemanda||0; cinp.indeterminada=!!ctx.indeterminada;
+      cat=catalogoCalcula(cinp);
+      basePorNormaSinMin=cat.sinMin; importeNormaBase=cat.importe; aplicaMinNorma=cat.aplicaMin; minimoNormaMostrar=cat.minimo;
+      det=det.concat(cat.detalle);
+    } else if(st==='ejecucion'){
       /* Art. 27: mínimos POR APARTADO (27.1: 150 · 27.2: 300 · 27.3 a+b: 150 único). */
       var sumaPct=0, sumaEj=0, minEj=0, aplicaMinEj=false;
       if(ctx.ejPre){ sumaPct+=0.20; var t1=esc.total*0.20; if(t1<150){ t1=150; aplicaMinEj=true; } sumaEj+=t1; minEj+=150; }
@@ -1263,19 +1435,20 @@ Honorarios de primera instancia.`
 
     if(st==='ar_fp' && ctx.enerv) importeNormaBase=importeNormaBase*0.75;   /* art. 18 in fine */
 
-    var pctFase, esAllan=(ctx.finalizacion==='allanamiento' && (isDecl2||isDesah));
-    var esRenunciaVerbal=(ctx.finalizacion==='renuncia' && (isDecl2||isDesah) && esVerbalDG2D(ctx));
-    if(st==='ejecucion' || st.indexOf('recurso_')===0) pctFase=1;
+    var catCauce=cat ? cat.cauce : null;
+    var pctFase, esAllan=(ctx.finalizacion==='allanamiento' && (isDecl2||isDesah||!!catCauce));
+    var esRenunciaVerbal=(ctx.finalizacion==='renuncia' && (((isDecl2||isDesah) && esVerbalDG2D(ctx)) || catCauce==='verbal'));
+    if(st==='ejecucion' || st.indexOf('recurso_')===0 || (st==='catalogo' && !catCauce)) pctFase=1;
     else if(esAllan) pctFase=allanamientoPct(ctx.allanParte, ctx.allanMomento);
     else if(esRenunciaVerbal) pctFase=0.60;                                   /* DG 2.ª D, verbal */
-    else pctFase=fasePct((st==='ar_fp' && ctx.desOrdinario)?'ordinario':st, {aleg:ctx.faseAleg, ap:ctx.faseAP, vista:ctx.faseVista});
+    else pctFase=fasePct(catCauce || ((st==='ar_fp' && ctx.desOrdinario)?'ordinario':st), {aleg:ctx.faseAleg, ap:ctx.faseAP, vista:ctx.faseVista});
     var total=importeNormaBase*pctFase;
 
     /* DG 2.ª E: asunto solucionado o transigido tras iniciado el procedimiento → honorarios devengados hasta la
        paralización +25 %. Todos los subtipos salvo los recursos (recurso_*): en ellos el +25 % se aplicaría
        antes de los incrementos de vista/prueba y del mínimo del art. 50, orden que el texto no fija
        [verificar]. Supuesto de Letrado distinto (60 %): pendiente, no implementado. */
-    if(ctx.finalizacion==='transaccion' && st.indexOf('recurso_')!==0) total*=1.25;
+    if(ctx.finalizacion==='transaccion' && st.indexOf('recurso_')!==0 && !(cat && cat.cap==='Recursos')) total*=1.25;
     if(ctx.noMaterializa) total*=0.50;                                        /* DG 2.ª I */
 
     if(st==='recurso_apelacion' || st==='recurso_apelacion_parcial'){
@@ -1309,6 +1482,7 @@ Honorarios de primera instancia.`
     }
 
     if(isDecl2||isDesah) total+=Math.max(0, ctx.sesionesExtra||0)*SESION;
+    else if(cat && cat.sesion) total+=Math.max(0, ctx.sesionesExtra||0)*cat.sesion;
 
     /* Art. 51.1 accesorios: 300 € cada uno; con cuantía propia, 15 % de SU escala con el mismo mínimo. */
     var recUnitConCuantia=Math.max(computeEscalaBreakdown(ctx.recCuantiaImporte||0).total*ART51.PCT_51_1_CUANTIA, ART51.MIN_51_1);
@@ -1323,7 +1497,7 @@ Honorarios de primera instancia.`
     return {total:total, esc:esc, cuantiaEscala:cuantiaEscala, nIndet:nIndet, criterioIndet:criterioIndet,
             minDerivFrom:minDerivFrom, minDerivTo:minDerivTo, minDerivAplica:minDerivAplica,
             pctFase:pctFase, esAllan:esAllan, esRenunciaVerbal:esRenunciaVerbal, sinFases:sinFases,
-            monitorio48:m48, cautelar:cc, detalle:det};
+            monitorio48:m48, cautelar:cc, detalle:det, catalogo:cat};
   }
 
   function calcularHonorarios(ctx){
@@ -1349,6 +1523,8 @@ Honorarios de primera instancia.`
     var baseCliente=r2(redondea(clienteIPC)), costasRed=redondea(costasIPC);
 
     var cuantiaTope=(ctx.indeterminada?TOPE_INESTIMABLE:(ctx.cuantia||0)) + ((isDecl2 && ctx.reconvencion) ? (ctx.reconvModo==='cuantia'?(ctx.reconvCuantia||0):TOPE_INESTIMABLE) : 0);
+    /* Catálogo: tope del tercio sobre la base del artículo (pretensión indeterminada: 24.000 €). */
+    if(st==='catalogo') cuantiaTope=N.catalogo.indet ? TOPE_INESTIMABLE : N.catalogo.base;
     var lim=limiteUnTercio(cuantiaTope,false), vencedores=Math.max(1, ctx.plurVencedores||1);
     var muerde=(isFinite(lim) && lim>0 && costasRed>lim);
     var baseCostas=r2(muerde ? lim : costasRed), recorte=muerde ? r2(costasRed-baseCostas) : 0;
@@ -1427,7 +1603,225 @@ Honorarios de primera instancia.`
     try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){}
   });
 
-  var GRUPO_LABEL = {monitorio:'Monitorios', declarativos:'Declarativos', desahucios:'Desahucios', ejecuciones:'Ejecuciones', recursos:'Recursos'};
+  /* ===== «Todo el baremo»: interfaz del catálogo civil (arts. 1-68) =====
+     Estado propio (CATUI) para que volver a pintar el formulario no pierda lo escrito. Los cambios
+     de estructura (artículo, opción, parte) repintan; el resto solo recalcula. */
+  var CATUI={id:'a1', opcion:null, parte:null, fases:null, extras:[], valores:{}, art39:{}, cauce:null};
+  var CAT_ART39=[
+    {k:'valor',t:'Valor de mercado de la vivienda',eur:1},{k:'catastral',t:'Valor catastral de la vivienda',eur:1},
+    {k:'renta',t:'Renta mensual (vivienda arrendada)',eur:1},{k:'usufructo',t:'Valor del usufructo (atribución indefinida)',eur:1},
+    {k:'anios',t:'Años de la atribución temporal'},{k:'edad',t:'Edad del hijo menor (atribución a los hijos)'},
+    {k:'comp',t:'Pensión compensatoria: capital o total',eur:1},{k:'comp_mensual',t:'Pensión compensatoria mensual (× 24)',eur:1},
+    {k:'ajuar',t:'Ajuar doméstico',eur:1},{k:'pension',t:'Pensión de alimentos mensual',eur:1},{k:'meses',t:'Meses de alimentos (máx. 24; vacío = 24)',ph:'24'}];
+  var CAT_VIVIENDA=[['ninguna','Sin atribución de vivienda'],['arrendada','Vivienda arrendada (renta × 24)'],['indefinida','Atribución indefinida (usufructo)'],
+    ['temporal','Atribución temporal (1 % anual del valor; ×1,25)'],['hijos','Atribución a los hijos (1 % por año hasta los 25)'],['ambos','Temporal o hijos: la más alta']];
+  function catNorm(t){ return (t||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+  function catEsc(t){ return (t==null?'':t+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function catSubtipoDestino(e){ /* remite a una calculadora ya existente (verbal, ejecución…) */
+    if(!e || !e.remite || catEntrada(e.remite)) return null;
+    for(var g in SUBTIPOS){ var l=SUBTIPOS[g]; for(var i=0;i<l.length;i++) if(l[i].value===e.remite) return {grupo:g, value:l[i].value, text:l[i].text}; }
+    return null;
+  }
+  function catPintarLista(){
+    var sel=q('catSel'); if(!sel) return;
+    var f=catNorm(q('catBuscar')&&q('catBuscar').value).trim(), palabras=f?f.split(/\s+/):[];
+    sel.innerHTML=''; var grupos={}, orden=[], n=0, primero=null, sigue=false;
+    CATALOGO.forEach(function(e){
+      var hay=catNorm([e.art,e.cap,e.titulo,e.base,e.literal,e.nota,(e.opciones||[]).map(function(o){return o.t;}).join(' ')].join(' '));
+      for(var i=0;i<palabras.length;i++) if(hay.indexOf(palabras[i])<0) return;
+      if(!grupos[e.cap]){ grupos[e.cap]=document.createElement('optgroup'); grupos[e.cap].label=e.cap; orden.push(e.cap); }
+      var o=document.createElement('option'); o.value=e.id;
+      var d=catSubtipoDestino(e);
+      o.textContent=e.art+' · '+e.titulo+(d?'  → '+d.text:'');
+      grupos[e.cap].appendChild(o); n++; if(!primero) primero=e.id; if(e.id===CATUI.id) sigue=true;
+    });
+    orden.forEach(function(c){ sel.appendChild(grupos[c]); });
+    if(!n){ var o=document.createElement('option'); o.value=''; o.textContent='Ninguna actuación coincide con «'+(q('catBuscar').value)+'»'; sel.appendChild(o); }
+    if(q('catCuenta')) q('catCuenta').textContent = palabras.length ? (n+' de '+CATALOGO.length) : (CATALOGO.length+' actuaciones');
+    if(n && !sigue) catElegir(primero); else if(n) sel.value=CATUI.id;
+  }
+  function catElegir(id){
+    if(CATUI.id!==id){ CATUI={id:id, opcion:null, parte:null, fases:null, extras:[], valores:{}, art39:{}, cauce:null}; }
+    if(q('catSel')) q('catSel').value=id;
+    catPintarForm();
+  }
+  function catSpecActual(){ var e=catResuelve(CATUI.id); return e ? catSpec(e, CATUI.opcion) : null; }
+  function catCampoHTML(c, valor, pref){
+    var esEur=!c.unidad, ph=c.ph||(c.def!=null?String(c.def):(esEur?'0,00':'0'));
+    return '<div class="fld"><label>'+catEsc(c.t)+(c.unidad?' <span class="catu">('+catEsc(c.unidad)+')</span>':'')+'</label>'
+      +(esEur?'<div class="moneywrap">':'')+'<input type="text" inputmode="decimal" data-cat="'+pref+'" data-k="'+catEsc(c.k)+'" placeholder="'+ph+'" value="'+catEsc(valor==null?'':valor)+'">'
+      +(esEur?'<span class="eurotag">&euro;</span></div>':'')+'</div>';
+  }
+  function catPintarForm(){
+    var box=q('catForm'); if(!box) return;
+    var e0=catEntrada(CATUI.id), e=catResuelve(CATUI.id), H=[];
+    if(!e0){ box.innerHTML=''; return; }
+    var dest=catSubtipoDestino(e0);
+    var cab='<div class="catcab"><span class="catart">'+catEsc(e0.art)+'</span><span class="catcap">'+catEsc(e0.cap)+'</span></div>'
+      +'<div class="cattit">'+catEsc(e0.titulo)+'</div>';
+    if(dest){
+      box.innerHTML=cab+'<div class="catrem">Este artículo ya tiene su propia calculadora, con todas sus opciones: <b>'+catEsc(dest.text)+'</b>.'
+        +'<button type="button" class="catir" data-cat-ir="'+dest.grupo+'|'+dest.value+'">Abrir esa calculadora</button></div>';
+      catCajas(null); return;
+    }
+    if(e!==e0) cab+='<div class="hint" style="margin-top:4px">Se calcula como el '+catEsc(e.art)+' ('+catEsc(e.titulo)+').</div>';
+    H.push(cab);
+    var ops=e.opciones||[];
+    if(ops.length){
+      if(!CATUI.opcion) CATUI.opcion=ops[0].k;
+      H.push('<div class="catblk"><div class="catlab">Supuesto</div><div class="catradios">');
+      ops.forEach(function(o){ H.push('<label class="ck catr"><input type="radio" name="catOp" data-cat="op" value="'+catEsc(o.k)+'"'+(o.k===CATUI.opcion?' checked':'')+'> '+catEsc(o.t)+'</label>'); });
+      H.push('</div></div>');
+    }
+    var s=catSpec(e, CATUI.opcion);
+    var partes=s.partes||[];
+    if(partes.length){
+      if(!CATUI.parte || !partes.some(function(p){return p.k===CATUI.parte;})) CATUI.parte=partes[0].k;
+      H.push('<div class="catblk"><div class="catlab">Parte a la que se minuta</div><div class="catseg">');
+      partes.forEach(function(p){ H.push('<label class="'+(p.k===CATUI.parte?'on':'')+'"><input type="radio" name="catParte" data-cat="parte" value="'+catEsc(p.k)+'"'+(p.k===CATUI.parte?' checked':'')+'>'+catEsc(p.t)+'</label>'); });
+      H.push('</div></div>');
+    }
+    /* Base de cálculo */
+    var campos=(s.bases && typeof s.bases==='object') ? s.bases.campos : [];
+    var aux=[]; for(var ka in (s.bases_aux||{})){ (s.bases_aux[ka].campos||[]).forEach(function(c){ aux.push(c); }); }
+    var usa39=(s.bases==='art39') || (s.fases||[]).some(function(f){ return f.base==='art39'; });
+    var conH=(s.calculo==='honorarios' || s.calculo==='sobre_importe' || s.ref==='honorarios');
+    var baseTxt='';
+    if(s.calculo==='fijo') baseTxt='Importe fijo: no depende de la cuantía.';
+    else if(conH) baseTxt='';
+    else if(usa39 && s.bases==='art39') baseTxt='Base: la suma de las medidas económicas (abajo).';
+    else if(campos.length) baseTxt='Base: '+(s.bases.modo==='max'?'la mayor de estas cantidades':s.bases.modo==='min'?'la menor de estas cantidades':campos.length===1?'el importe de abajo':'la que resulta de estos datos')+'. Aquí no cuenta la casilla «Cuantía» de arriba.';
+    else baseTxt='Base: la casilla «Cuantía» de arriba'+(e.base?' = '+e.base.charAt(0).toLowerCase()+e.base.slice(1):'')+'.';
+    if(baseTxt) H.push('<div class="catbase">'+catEsc(baseTxt)+'</div>');
+    if(campos.length || aux.length){
+      H.push('<div class="catcampos">');
+      campos.forEach(function(c){ H.push(catCampoHTML(c, CATUI.valores[c.k], 'val')); });
+      aux.forEach(function(c){ H.push(catCampoHTML({k:c.k, t:c.t+' — vacío = la base principal', unidad:c.unidad}, CATUI.valores[c.k], 'val')); });
+      H.push('</div>');
+    }
+    if(conH){
+      var lab=s.campo || ('Honorarios de referencia'+(e.base?': '+e.base.charAt(0).toLowerCase()+e.base.slice(1):''));
+      H.push('<div class="catcampos">'+catCampoHTML({k:'honorarios', t:lab}, CATUI.valores.honorarios, 'val')+'</div>');
+      H.push('<div class="catayuda">Calcularlos con la cuantía de arriba como '
+        +'<button type="button" class="catmini" data-cat-h="verbal">juicio verbal</button>'
+        +'<button type="button" class="catmini" data-cat-h="ordinario">juicio ordinario</button>'
+        +(s.ref==='aleg'?'<span class="catu"> (fase de alegaciones, 60 %)</span>':'')+'</div>');
+    }
+    if(usa39){
+      var V=CATUI.art39;
+      H.push('<div class="catblk"><div class="catlab">Medidas con contenido económico (art. 39)</div>');
+      H.push('<div class="selwrap"><select class="bigselect" data-cat="a39viv">'+CAT_VIVIENDA.map(function(o){ return '<option value="'+o[0]+'"'+((V.vivienda||'ninguna')===o[0]?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>');
+      var viv=V.vivienda||'ninguna', ver={valor:/temporal|hijos|ambos/.test(viv), catastral:/temporal|hijos|ambos/.test(viv), renta:viv==='arrendada', usufructo:viv==='indefinida', anios:/temporal|ambos/.test(viv), edad:/hijos|ambos/.test(viv)};
+      H.push('<div class="catcampos">');
+      CAT_ART39.forEach(function(c){ if(ver[c.k]===false) return; H.push(catCampoHTML({k:c.k, t:c.t, ph:c.ph, unidad:c.eur?null:'n.º'}, V[c.k], 'a39')); });
+      H.push('</div><div class="hint" id="catA39Res"></div></div>');
+    }
+    /* Fases / actuaciones */
+    var fs=(s.fases||[]).filter(function(f){ return catFaseVisible(f, CATUI.parte); });
+    if(fs.length){
+      if(!CATUI.fases) CATUI.fases=fs.filter(function(f){ return f.def; }).map(function(f){ return f.k; });
+      H.push('<div class="catblk"><div class="catlab">Actuaciones realizadas</div><div class="catfases">');
+      var vistos={};
+      fs.forEach(function(f){
+        var tipo=f.excl?'radio':'checkbox', on=CATUI.fases.indexOf(f.k)>=0;
+        if(f.excl && !vistos[f.excl]){ vistos[f.excl]=1; }
+        H.push('<label class="ck catf"><input type="'+tipo+'"'+(f.excl?' name="catEx_'+catEsc(f.excl)+'"':'')+' data-cat="fase" data-ex="'+catEsc(f.excl||'')+'" value="'+catEsc(f.k)+'"'+(on?' checked':'')+'> <span>'+catEsc(f.t)+'</span></label>');
+      });
+      H.push('</div>');
+      if(fs.some(function(f){ return f.excl; })) H.push('<div class="hint">Las opciones redondas son alternativas entre sí: pulse de nuevo para desmarcar.</div>');
+      H.push('</div>');
+    }
+    var ex=s.extras||[];
+    if(ex.length){
+      H.push('<div class="catblk"><div class="catlab">Circunstancias</div><div class="catfases">');
+      ex.forEach(function(x){ H.push('<label class="ck catf"><input type="checkbox" data-cat="extra" value="'+catEsc(x.k)+'"'+(CATUI.extras.indexOf(x.k)>=0?' checked':'')+'> <span>'+catEsc(x.t)+'</span></label>'); });
+      H.push('</div></div>');
+    }
+    var cauces=s.cauce||[];
+    if(cauces.length>1){
+      if(cauces.indexOf(CATUI.cauce)<0) CATUI.cauce=cauces[0];
+      H.push('<div class="catblk"><div class="catlab">Se tramita por el cauce del</div><div class="catseg">');
+      cauces.forEach(function(c){ H.push('<label class="'+(c===CATUI.cauce?'on':'')+'"><input type="radio" name="catCauce" data-cat="cauce" value="'+c+'"'+(c===CATUI.cauce?' checked':'')+'>Juicio '+c+'</label>'); });
+      H.push('</div></div>');
+    } else CATUI.cauce=cauces[0]||null;
+    if(e.nota) H.push('<div class="hint">'+catEsc(e.nota)+'</div>');
+    H.push('<div class="catdes" id="catDesglose"></div>');
+    box.innerHTML=H.join('');
+    catCajas(s);
+  }
+  /* Muestra las cajas comunes (fases procesales, sesiones, finalización) que procedan para la actuación. */
+  function catCajas(s){
+    function show(id,on){ var el=q(id); if(el) el.classList[on?'remove':'add']('hidden'); }
+    var cauce=s ? CATUI.cauce : null;
+    show('boxFases', !!cauce); show('faseAPwrap', cauce==='ordinario');
+    show('boxSesiones', !!(s && s.sesion));
+    show('boxFinalizacion', !!cauce);
+    show('boxTransaccion', !!s && !cauce && catEntrada(CATUI.id).cap!=='Recursos');
+    var indet=!!(s && s.indet!=null);
+    show('indetWrap', indet);
+    if(!indet && q('indeterminada')) q('indeterminada').checked=false;
+    var sl=q('sesionesExtra'); if(sl && sl.previousElementSibling) sl.previousElementSibling.innerHTML='Sesiones adicionales (+'+((s&&s.sesion)||150)+'&nbsp;&euro; c/u)';
+  }
+  function catLeer(){
+    var o={id:CATUI.id, opcion:CATUI.opcion, parte:CATUI.parte, fases:CATUI.fases, extras:CATUI.extras.slice(), valores:{}, art39:{}, cauce:CATUI.cauce};
+    for(var k in CATUI.valores) o.valores[k]=parseMoney(CATUI.valores[k]);
+    for(var k2 in CATUI.art39) o.art39[k2]=(k2==='vivienda') ? CATUI.art39[k2] : (CATUI.art39[k2]===''?'':parseMoney(CATUI.art39[k2]));
+    return o;
+  }
+  function catDesglose(N){
+    var el=q('catDesglose'); if(!el) return;
+    var c=N && N.catalogo; if(!c){ el.innerHTML=''; return; }
+    var L=[];
+    if(c.base && !(c.spec && c.spec.calculo==='fijo')) L.push(['Base del artículo', eur(c.base)]);
+    (c.detalle||[]).forEach(function(d){ var m=d.match(/^(.*): ([\d.]+,\d\d €.*)$/); L.push(m?[m[1],m[2]]:[d,'']); });
+    if(c.factor39>1) L.push(['Atribución temporal de la vivienda (art. 39)','× 1,25']);
+    L.push(['Importe de la actuación'+(c.aplicaMin?' (criterio mínimo '+eur(c.minimo)+')':''), eur(c.importe)]);
+    el.innerHTML='<div class="catlab">Cómo sale</div>'+L.map(function(r){ return '<div class="catdl"><span>'+catEsc(r[0])+'</span><b>'+catEsc(r[1])+'</b></div>'; }).join('');
+    var a=q('catA39Res');
+    if(a){ var b=catalogoBase39(catLeer()); a.textContent='Vivienda '+eur(b.vivienda)+' · compensatoria '+eur(b.comp)+' · alimentos '+eur(b.pension)+' → base '+eur(b.base)+(b.factor>1?' (× 1,25)':''); }
+  }
+  function catBind(){
+    var b=q('catBuscar'); if(b) b.addEventListener('input', function(ev){ ev.stopPropagation(); catPintarLista(); calcular(); });
+    var sel=q('catSel'); if(sel) sel.addEventListener('change', function(ev){ ev.stopPropagation(); if(sel.value) catElegir(sel.value); calcular(); });
+    var f=q('catForm'); if(!f) return;
+    f.addEventListener('input', function(ev){
+      var t=ev.target, k=t.getAttribute('data-cat'); if(!k) return;
+      if(k==='val') CATUI.valores[t.getAttribute('data-k')]=t.value;
+      if(k==='a39') CATUI.art39[t.getAttribute('data-k')]=t.value;
+    });
+    f.addEventListener('change', function(ev){
+      var t=ev.target, k=t.getAttribute('data-cat'); if(!k) return;
+      if(k==='op'){ CATUI.opcion=t.value; CATUI.fases=null; catPintarForm(); }
+      else if(k==='parte'){ CATUI.parte=t.value; catPintarForm(); }
+      else if(k==='cauce'){ CATUI.cauce=t.value; catPintarForm(); }
+      else if(k==='a39viv'){ CATUI.art39.vivienda=t.value; catPintarForm(); }
+      else if(k==='extra'){ CATUI.extras=CATUI.extras.filter(function(x){ return x!==t.value; }); if(t.checked) CATUI.extras.push(t.value); }
+      else if(k==='fase'){
+        CATUI.fases=(CATUI.fases||[]).filter(function(x){ return x!==t.value; });
+        var exg=t.getAttribute('data-ex');
+        if(exg){ var s=catSpecActual(); (s.fases||[]).forEach(function(fz){ if(fz.excl===exg) CATUI.fases=CATUI.fases.filter(function(x){ return x!==fz.k; }); }); }
+        if(t.checked) CATUI.fases.push(t.value);
+      }
+    });
+    /* Radios alternativos: un segundo clic sobre el marcado lo desmarca. */
+    f.addEventListener('mousedown', function(ev){ var t=ev.target.closest && ev.target.closest('label.catf'); if(!t) return; var i=t.querySelector('input[type=radio]'); if(i) i._era=i.checked; });
+    f.addEventListener('click', function(ev){
+      var t=ev.target;
+      if(t.type==='radio' && t.getAttribute('data-cat')==='fase' && t._era){ t.checked=false; t._era=false; CATUI.fases=(CATUI.fases||[]).filter(function(x){ return x!==t.value; }); calcular(); return; }
+      var ir=t.getAttribute && t.getAttribute('data-cat-ir');
+      if(ir){ var p=ir.split('|'), nav=document.querySelector('.navlink[data-grupo="'+p[0]+'"]'); if(nav) nav.click(); var ss=q('subtipo'); ss.value=p[1]; ss.dispatchEvent(new Event('change',{bubbles:true})); return; }
+      var h=t.getAttribute && t.getAttribute('data-cat-h');
+      if(h){
+        var cu=parseMoney(q('cuantia').value), r=honorariosPrimeraInstancia(h, computeEscalaBreakdown(cu).total, {});
+        var s=catSpecActual(), imp=r.importe*((s && s.ref==='aleg') ? fasePct(h,{aleg:true}) : 1);
+        CATUI.valores.honorarios=fmtMoneyStr(Math.round(imp*100)/100);
+        var inp=f.querySelector('input[data-k="honorarios"]'); if(inp) inp.value=CATUI.valores.honorarios;
+        calcular();
+      }
+    });
+  }
+
+  var GRUPO_LABEL = {baremo:'Todo el baremo', monitorio:'Monitorios', declarativos:'Declarativos', desahucios:'Desahucios', ejecuciones:'Ejecuciones', recursos:'Recursos'};
   function subtipoText(st){ for(var g in SUBTIPOS){ var l=SUBTIPOS[g]; for(var i=0;i<l.length;i++){ if(l[i].value===st) return l[i].text; } } return st; }
 
   function pintarSubtipos(grupo){
@@ -1462,6 +1856,10 @@ Honorarios de primera instancia.`
     show('boxRecursoApel', isApel);
     show('boxRec511', st==='recurso_51_1');
     show('legEspWrap', true);
+    var esCat=(st==='catalogo');
+    show('boxCatalogo', esCat); show('subtipoLbl', !esCat); show('subtipoWrap', !esCat);
+    if(esCat){ show('indetWrap', true); show('boxTransaccion', false); catPintarLista(); catPintarForm(); }
+    else show('indetWrap', true);
     var nota=q('recInstNota');
     if(nota){
       nota.textContent = isApel
@@ -1512,7 +1910,7 @@ Honorarios de primera instancia.`
       apelSesVista:ent('apelSesVista',0), apelSesPrueba:ent('apelSesPrueba',0),
       faseAleg:chk('faseAleg'), faseAP:chk('faseAP'), faseVista:chk('faseVista'),
       sesionesExtra:ent('sesionesExtra',0),
-      finalizacion:(st==='verbal'||st==='ordinario'||st==='ar_fp'||st==='ar_precario') ? ((q('finalizacion')&&q('finalizacion').value)||'') : (chk('transaccion')?'transaccion':''),
+      finalizacion:(st==='verbal'||st==='ordinario'||st==='ar_fp'||st==='ar_precario'||(st==='catalogo' && !!CATUI.cauce)) ? ((q('finalizacion')&&q('finalizacion').value)||'') : (chk('transaccion')?'transaccion':''),
       allanParte:(q('allanParte')&&q('allanParte').value)||'demandante',
       allanMomento:(q('allanMomento')&&q('allanMomento').value)||'antes_contestacion',
       derivaMonitorio:chk('derivaMonitorio'), reconvencion:chk('reconvencion'), medidaCautelar:chk('medidaCautelar'),
@@ -1520,7 +1918,8 @@ Honorarios de primera instancia.`
       cautelarModo:(q('cautelarModo')&&q('cautelarModo').value)||'cuantia', cautelarCuantia:num('cautelarCuantia'), cautelarTramite:(q('cautelarTramite')&&q('cautelarTramite').value)||'734',
       sentenciaCuantia:num('sentenciaCuantia'),
       noMaterializa:chk('noMaterializa'), legislacionEspecial:chk('legislacionEspecial'), materiaPH:chk('materiaPH'), tituloVerbalPH:chk('tituloVerbalPH'),
-      recConCuantia:ent('recConCuantia',0), recCuantiaImporte:num('recCuantiaImporte')
+      recConCuantia:ent('recConCuantia',0), recCuantiaImporte:num('recCuantiaImporte'),
+      catalogo:(st==='catalogo') ? catLeer() : null
     };
   }
 
@@ -1544,6 +1943,10 @@ Honorarios de primera instancia.`
 
     /* Criterio + articulo (VERBATIM NORMAS) */
     var norma=NORMAS[ctx.subtipo]; var numero=(norma&&norma.numero)||'—'; var extracto=(norma&&norma.extracto)||'';
+    var catE=(ctx.subtipo==='catalogo') ? catEntrada(CATUI.id) : null;
+    if(catE){ numero=catE.art; extracto=catE.titulo+(catE.base?' — base: '+catE.base:''); }
+    var catDest=catE ? catSubtipoDestino(catE) : null;
+    if(catE) catDesglose(catDest ? null : N);
     var ch=q('criterioHead');
     if(ch){
       if(/^Art\.?\s*\d+/i.test(numero)){ var artTxt=numero.replace(/^Art\.?\s*/i,'Artículo '); ch.innerHTML='<strong>'+artTxt+'</strong>'+(extracto?' — '+extracto:''); }
@@ -1561,14 +1964,16 @@ Honorarios de primera instancia.`
     if(q('vhLimite')) q('vhLimite').textContent = eur(R.lim) + (R.vencedores>1 ? ' por vencedor (× '+R.vencedores+' = '+eur(R.limTotal)+')' : '');
 
     var md=q('kpiBaremoMin');
-    if(R.sinFases){
+    var catVacio = catE && (catDest ? 'Este artículo se calcula en su propia calculadora' : (N.catalogo && N.catalogo.spec && (N.catalogo.spec.calculo==='fases') && !(ctx.catalogo.fases||[]).length ? 'Marque al menos una actuación realizada' : ''));
+    if(R.sinFases || catVacio){
       /* Ejecución sin ninguna fase marcada: no hay resultado, y un 0,00 € pasaría por uno. */
       ['kpiBaremo','kpiIPC','kpiRedondeo'].forEach(function(id){ if(q(id)) q(id).innerHTML='&mdash;'; });
       if(md){ md.innerHTML=''; md.classList.add('hidden'); }
       if(q('clienteTotal')) q('clienteTotal').innerHTML='&mdash;';
       if(q('costasTotal'))  q('costasTotal').innerHTML='&mdash;';
-      if(q('clienteSub'))   q('clienteSub').textContent='Marca al menos una fase de ejecución';
-      var cs0=q('costasSub'); if(cs0){ cs0.classList.remove('bite'); cs0.textContent='Marca al menos una fase de ejecución'; }
+      var msg0=catVacio||'Marca al menos una fase de ejecución';
+      if(q('clienteSub'))   q('clienteSub').textContent=msg0;
+      var cs0=q('costasSub'); if(cs0){ cs0.classList.remove('bite'); cs0.textContent=msg0; }
       LAST={R:R, ctx:ctx, numero:numero, extracto:extracto};
       updateGenSummary(ctx); updateCriterioTexto();
       return;
@@ -1608,7 +2013,8 @@ Honorarios de primera instancia.`
   function eurKpi(n){ var s=eur(n); var m=s.match(/^(.*?)(\s*€)$/); if(m){ return m[1]+'<span class="cur">€</span>'; } return s; }
 
   var criterioOpen=false;
-  function getCriterioTexto(ctx){ var st=ctx.subtipo||''; var txt=CRITERIO_TEXTOS[st]||''; if(st==='ar_fp' && ctx.reclRentas){ txt=CRITERIO_TEXTOS['ar_fp']; } return txt; }
+  function getCriterioTexto(ctx){ var st=ctx.subtipo||''; var txt=CRITERIO_TEXTOS[st]||'';
+    if(st==='catalogo'){ var ce=catEntrada(CATUI.id); return ce ? (ce.art+' — '+ce.titulo+'\n\n'+(ce.literal||'(Sin extracto: ver el baremo)')+(ce.nota?'\n\nNota: '+ce.nota:'')) : ''; } if(st==='ar_fp' && ctx.reclRentas){ txt=CRITERIO_TEXTOS['ar_fp']; } return txt; }
   function updateCriterioTexto(){
     var box=q('criterioTexto'); if(!box) return;
     if(!criterioOpen){ box.style.display='none'; return; }
@@ -1626,7 +2032,14 @@ Honorarios de primera instancia.`
     L.push('Escala ICALI (Colegio de Abogados de Alicante) · revisión IPC +'+ipcTxt+' %');
     L.push('');
     L.push('Procedimiento: '+(GRUPO_LABEL[grupo]||grupo));
-    L.push('Subtipo: '+subtipoText(ctx.subtipo));
+    if(ctx.subtipo==='catalogo'){
+      var ce2=catEntrada(CATUI.id), sp2=catSpecActual();
+      L.push('Actuación: '+ce2.art+' — '+ce2.titulo);
+      if(sp2 && sp2.opcion){ (ce2.opciones||catResuelve(CATUI.id).opciones||[]).forEach(function(o){ if(o.k===sp2.opcion) L.push('Supuesto: '+o.t); }); }
+      if(sp2 && sp2.partes && CATUI.parte){ sp2.partes.forEach(function(p){ if(p.k===CATUI.parte) L.push('Parte: '+p.t); }); }
+      if(CATUI.cauce) L.push('Cauce: juicio '+CATUI.cauce);
+      if(N.catalogo) L.push('Importe de la actuación: '+eur(N.catalogo.importe)+(N.catalogo.base?' (base '+eur(N.catalogo.base)+')':''));
+    } else L.push('Subtipo: '+subtipoText(ctx.subtipo));
     L.push('Cuantía del procedimiento: '+(ctx.indeterminada?'indeterminada (criterio del artículo; 24.000 € solo para el tope del tercio)':eur(ctx.cuantia)));
     if(R.sinFases){
       L.push('');
@@ -1776,7 +2189,7 @@ Honorarios de primera instancia.`
     if(cur!=='' && cur!==savedEff){ if(q('ipcConfVal')) q('ipcConfVal').textContent=cur; row.classList.remove('hidden'); }
     else { row.classList.add('hidden'); }
   }
-  function init(){ bind(); restoreIPC(); pintarSubtipos('monitorio'); calcular(); ajustaAnchoCuantia();
+  function init(){ bind(); catBind(); restoreIPC(); pintarSubtipos('monitorio'); calcular(); ajustaAnchoCuantia();
     bindMoney('cuantia'); bindMoney('gastosExtras'); bindMoney('reconvCuantia'); bindMoney('cautelarCuantia'); bindMoney('recCuantiaImporte'); bindMoney('sentenciaCuantia'); bindMoney('cuantiaDiscutida');
     initEscala();
     var ipcEl=q('ipcManual'); if(ipcEl){ ipcEl.addEventListener('input', refreshIpcConfirm); }
