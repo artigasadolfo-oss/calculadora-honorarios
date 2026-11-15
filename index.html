@@ -554,8 +554,8 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
             <div class="checks">
               <label class="ck"><input type="checkbox" id="rec511Cuantia"> El acto recurrido tiene cuant&iacute;a propia (15&nbsp;% de la Escala)</label>
             </div>
-            <div class="checks" style="margin-top:6px">
-              <label class="ck">N&ordm; de recursos <input type="number" id="rec511Num" min="1" step="1" value="1" style="width:56px"></label>
+            <div class="row2" style="margin-top:14px">
+              <div class="fld"><label for="rec511Num">N&ordm; de recursos</label><input id="rec511Num" type="number" min="1" step="1" placeholder="1"></div>
             </div>
           </div>
 
@@ -580,9 +580,9 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
               <label class="ck"><input type="checkbox" id="apelVista"> Vista en la Audiencia (+10&nbsp;%, mín. 150&euro;)</label>
               <label class="ck"><input type="checkbox" id="apelPrueba"> Práctica de prueba (+10&nbsp;%, mín. 150&euro;)</label>
             </div>
-            <div class="checks" style="margin-top:6px">
-              <label class="ck">Sesiones más de vista <input type="number" id="apelSesVista" min="0" step="1" value="0" style="width:56px"></label>
-              <label class="ck">Sesiones más de prueba <input type="number" id="apelSesPrueba" min="0" step="1" value="0" style="width:56px"></label>
+            <div class="row2" style="margin-top:14px">
+              <div class="fld"><label for="apelSesVista">Sesiones más de vista (+150&euro; c/u)</label><input id="apelSesVista" type="number" min="0" step="1" placeholder="0"></div>
+              <div class="fld"><label for="apelSesPrueba">Sesiones más de prueba (+150&euro; c/u)</label><input id="apelSesPrueba" type="number" min="0" step="1" placeholder="0"></div>
             </div>
           </div>
 
@@ -701,7 +701,8 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 <script>
 (function(){
   function q(id){ return document.getElementById(id); }
-  function eur(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(isFinite(n)?n:0); }
+  /* Punto de miles también en cifras de 4 dígitos (1.000,00 €): Intl 'es-ES' lo omite por la regla de mínimo de agrupación. */
+  function eur(n){ n=isFinite(n)?n:0; var neg=n<0, t=(Math.round(Math.abs(n)*100)/100).toFixed(2).split('.'); return (neg?'-':'')+t[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+t[1]+'\u00a0€'; }
 
   
 var ESCALA = [
