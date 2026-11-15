@@ -228,7 +228,7 @@ CTX_BASE = {
     "cautelarModo": "cuantia", "cautelarCuantia": 0, "cautelarTramite": "734", "sentenciaCuantia": 0,
     "noMaterializa": False, "legislacionEspecial": False, "materiaPH": False,
     "tituloVerbalPH": False,
-    "coincidenciaTitulos": "distintos", "numClientesDistintos": 1, "cuantiaDiscutida": 0,
+    "coincidenciaTitulos": "identicos", "numClientesDistintos": 1, "cuantiaDiscutida": 0,   # 15-11-2026: defecto = idénticos (Adolfo)
     "catalogo": None,
 }
 
@@ -545,8 +545,10 @@ CASOS_TEXTO = [
      dict(subtipo="ordinario", cuantia=30000, faseAleg=True, faseAP=True, finalizacion="renuncia"), "totalCliente", ESC[30000] * 0.70),
     ("H6 verbal 5.000, desistimiento: 60 % (DG 2.ª D)",
      dict(subtipo="verbal", cuantia=5000, finalizacion="renuncia", faseAleg=True, faseVista=True), "totalCliente", ESC[5000] * 0.60),
-    ("H7 tres clientes: +40 % /3 solo en la minuta (DG 2.ª G)",
-     dict(subtipo="ordinario", cuantia=30000, numClientes=3), "totalCliente", ESC[30000] * 1.4 / 3),
+    ("H7 tres clientes con títulos distintos: +40 % /3 solo en la minuta (DG 2.ª G)",
+     dict(subtipo="ordinario", cuantia=30000, numClientes=3, coincidenciaTitulos="distintos"), "totalCliente", ESC[30000] * 1.4 / 3),
+    ("H7 tres clientes, por defecto (idénticos, 15-11-2026): sin incremento, /3",
+     dict(subtipo="ordinario", cuantia=30000, numClientes=3), "totalCliente", ESC[30000] / 3),
     ("H7 tres clientes: la tasación no cambia (DG 2.ª G)",
      dict(subtipo="ordinario", cuantia=30000, numClientes=3), "totalCostas", ESC[30000]),
     ("H7 tres vencedores: +40 % /3 solo en costas (DG 2.ª F)",
@@ -719,8 +721,8 @@ FAC_MOTOR = os.environ.get("FAC_MOTOR") or os.path.expanduser("~/Programación/L
 ORD30 = dict(subtipo="ordinario", cuantia=30000)
 CASOS_REPARACION = [
     # D1 · DG 2.ª G · Escala de 30.000 = 4.730,00; tres clientes
-    ("D1 distintos (defecto): +40 % /3", dict(ORD30, numClientes=3), "totalCliente", ESC[30000] * 1.4 / 3),
-    ("D1 distintos explícito: igual que el defecto", dict(ORD30, numClientes=3, coincidenciaTitulos="distintos"), "totalCliente", ESC[30000] * 1.4 / 3),
+    ("D1 idénticos (defecto desde el 15-11-2026): sin incremento, /3", dict(ORD30, numClientes=3), "totalCliente", ESC[30000] / 3),
+    ("D1 distintos explícito: +40 % /3", dict(ORD30, numClientes=3, coincidenciaTitulos="distintos"), "totalCliente", ESC[30000] * 1.4 / 3),
     ("D1 idénticos: sin incremento, /3", dict(ORD30, numClientes=3, coincidenciaTitulos="identicos"), "totalCliente", ESC[30000] / 3),
     ("D1 idénticos con 2 clientes: /2", dict(ORD30, numClientes=2, coincidenciaTitulos="identicos"), "totalCliente", ESC[30000] / 2),
     ("D1 parcial, 2 distintos de 3: cada distinto 1,2 × 4.730 / 3", dict(ORD30, numClientes=3, coincidenciaTitulos="parcial", numClientesDistintos=2), "totalCliente", ESC[30000] * 1.2 / 3),

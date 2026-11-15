@@ -609,11 +609,11 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
                 <div class="row3">
                   <div class="fld"><label for="plurVencedores">Letrados vencedores</label><input id="plurVencedores" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo tasación de costas (DG 2.ª F): +20&nbsp;% por cada uno y se divide</div></div>
                   <div class="fld"><label for="plurContrarios">Partes contrarias</label><input id="plurContrarios" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo tasación de costas (DG 2.ª F): +10&nbsp;% por cada uno</div></div>
-                  <div class="fld"><label for="numClientes">Nº de clientes</label><input id="numClientes" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo minuta al cliente (DG 2.ª G): +20&nbsp;% por cada uno y se divide</div></div>
+                  <div class="fld"><label for="numClientes">Nº de clientes</label><input id="numClientes" type="number" min="1" step="1" placeholder="1"><div class="glosa">Solo minuta al cliente (DG 2.ª G): se divide entre ellos; +20&nbsp;% por cada uno solo si sus títulos son distintos</div></div>
                 </div>
                 <div class="subopt col hidden" id="clientesTitulosOpt">
                   <div class="miniflds">
-                    <div class="fld"><label for="coincidenciaTitulos">¿Los clientes invocan los mismos títulos o causas de pedir?</label><div class="selwrap"><select id="coincidenciaTitulos" class="bigselect"><option value="distintos">No, son distintos (+20&nbsp;% por cada cliente)</option><option value="parcial">Solo en parte</option><option value="identicos">Sí, son idénticos (sin incremento)</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div><div class="glosa">DG 2.ª G: con títulos idénticos no hay incremento y el pago es proporcional; con coincidencia parcial, el incremento recae solo en quienes se apartan de la mayoría.</div></div>
+                    <div class="fld"><label for="coincidenciaTitulos">¿Los clientes invocan los mismos títulos o causas de pedir?</label><div class="selwrap"><select id="coincidenciaTitulos" class="bigselect"><option value="identicos" selected>Sí, son idénticos (sin incremento)</option><option value="parcial">Solo en parte</option><option value="distintos">No, son distintos (+20&nbsp;% por cada cliente)</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div><div class="glosa">DG 2.ª G: con títulos idénticos no hay incremento y el pago es proporcional; con coincidencia parcial, el incremento recae solo en quienes se apartan de la mayoría.</div></div>
                     <div class="fld hidden" id="clientesDistintosWrap"><label for="numClientesDistintos">Clientes con título distinto al de la mayoría</label><input id="numClientesDistintos" type="number" min="1" step="1" placeholder="1"></div>
                   </div>
                 </div>
@@ -1347,7 +1347,7 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
     var res=total, det=[], mayoria=null;
     var n=Math.max(1, clientes||1);
     if(n>1){
-      var modo=coincidencia||'distintos';
+      var modo=coincidencia||'identicos';   /* 15-11-2026 Adolfo: por defecto, títulos idénticos (sin incremento) */
       if(modo==='identicos'){
         res=res/n; det.push('Varios clientes con títulos y causas de pedir idénticos (DG 2.ª G): sin incremento → /'+n);
       } else if(modo==='parcial'){
@@ -1898,7 +1898,7 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
       cuantia:num('cuantia'),
       indeterminada:chk('indeterminada'),
       numSalidasMedio:ent('numSalidasMedio',0), numSalidasDia:ent('numSalidasDia',0), numSalidasExtranjero:ent('numSalidasExtranjero',0), gastosExtras:num('gastosExtras'),
-      numClientes:ent('numClientes',1), coincidenciaTitulos:(q('coincidenciaTitulos')&&q('coincidenciaTitulos').value)||'distintos', numClientesDistintos:ent('numClientesDistintos',1),
+      numClientes:ent('numClientes',1), coincidenciaTitulos:(q('coincidenciaTitulos')&&q('coincidenciaTitulos').value)||'identicos', numClientesDistintos:ent('numClientesDistintos',1),
       cuantiaDiscutida:num('cuantiaDiscutida'),
       plurVencedores:ent('plurVencedores',1), plurContrarios:ent('plurContrarios',1),
       recRev:ent('recRev',0), recRepo:ent('recRepo',0), recQueja:ent('recQueja',0),
