@@ -230,6 +230,7 @@ CTX_BASE = {
     "tituloVerbalPH": False,
     "coincidenciaTitulos": "identicos", "numClientesDistintos": 1, "cuantiaDiscutida": 0,   # 15-11-2026: defecto = idénticos (Adolfo)
     "catalogo": None,
+    "costasContrario": False,   # 17-11-2026: tasación CON CONTRARIO (baremo +10 % sin IPC, a la baja 25/50)
 }
 
 
@@ -266,7 +267,7 @@ def a_script(c):
         rec_con_cuantia=c["recConCuantia"], cuantia_recurso=float(c["recCuantiaImporte"]),
         rec_num=c["rec511Num"], rec_cuantia_propia=c["rec511Cuantia"],
         ipc=(c["ipcManual"] if c["aplicarIPC"] else 0.0), sin_redondeo=not c["aplicarRedondeo"], json=False,
-        catalogo=c.get("catalogo"))
+        catalogo=c.get("catalogo"), contrario=bool(c.get("costasContrario")))
 
 
 def _modulo_calc():
@@ -317,6 +318,10 @@ def casos_generales():
                 caso(**base, legislacionEspecial=True, noMaterializa=(cu > 50000))
                 caso(**base, plurVencedores=3, plurContrarios=2, numClientes=2, aplicarIPC=True, aplicarRedondeo=True)
                 caso(**base, gastosExtras=437.5, numSalidasMedio=1, numSalidasDia=1, numSalidasExtranjero=2, aplicarIPC=True)
+                # 17-11-2026 · con contrario: con y sin redondeo, con pluralidades y suplidos
+                caso(**base, costasContrario=True, aplicarIPC=True, aplicarRedondeo=True)
+                caso(**base, costasContrario=True, aplicarIPC=True, aplicarRedondeo=False, gastosExtras=100)
+                caso(**base, costasContrario=True, plurVencedores=3, plurContrarios=2, numClientes=2, aplicarIPC=True, aplicarRedondeo=True)
     # 31/10/2026 (D1, D2, D4, D5, céntimo): más casos en rejilla
     for cu in (3000, 30000, 60000):
         for n_cli in (2, 3, 4):
@@ -574,6 +579,16 @@ CASOS_TEXTO = [
     ("H12 desahucio de 1.500: preceptiva (art. 31.2.1.º LEC)", dict(subtipo="ar_fp", cuantia=1500), "preceptiva", True),
     ("H12 ordinario de 1.500: preceptiva (art. 31.2.1.º LEC)", dict(subtipo="ordinario", cuantia=1500), "preceptiva", True),
     ("H12 verbal de 1.500: no preceptiva (art. 31.2.1.º LEC)", dict(subtipo="verbal", cuantia=1500), "preceptiva", False),
+    # 17-11-2026 · CON CONTRARIO (Adolfo): baremo +10 % sin IPC, a la baja: 25 € hasta 500 €, 50 € por encima; tercio siempre
+    ("CONTRARIO ordinario 30.000: 4.730 × 1,10 = 5.203 → 5.200", dict(subtipo="ordinario", cuantia=30000, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCostas", 5200.00),
+    ("CONTRARIO ordinario 30.000: la minuta al cliente no cambia (4.730 × 1,3425 → 6.400)", dict(subtipo="ordinario", cuantia=30000, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCliente", 6400.00),
+    ("CONTRARIO ordinario 20.000: 3.590 × 1,10 = 3.949 → 3.900", dict(subtipo="ordinario", cuantia=20000, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCostas", 3900.00),
+    ("CONTRARIO ordinario 60.000: 7.430 × 1,10 = 8.173 → 8.150 (50, no 100)", dict(subtipo="ordinario", cuantia=60000, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCostas", 8150.00),
+    ("CONTRARIO monitorio 3.000: 405 × 1,10 = 445,50 → 425 (25)", dict(subtipo="monitorio_sin", cuantia=3000, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCostas", 425.00),
+    ("CONTRARIO ordinario 1.500: topa en el tercio exacto, 500", dict(subtipo="ordinario", cuantia=1500, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCostas", 500.00),
+    ("CONTRARIO ordinario 2.000: topa en el tercio exacto, 666,67 sin redondear", dict(subtipo="ordinario", cuantia=2000, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCostas", 666.67),
+    ("CONTRARIO sin redondeo: 5.203,00 exacto", dict(subtipo="ordinario", cuantia=30000, costasContrario=True, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=False), "baseCostas", 5203.00),
+    ("SIN CONTRARIO ordinario 30.000: como hasta hoy, 6.400", dict(subtipo="ordinario", cuantia=30000, aplicarIPC=True, ipcManual=34.25, aplicarRedondeo=True), "baseCostas", 6400.00),
 ]
 
 

@@ -218,7 +218,30 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 .dualtot{font-size:27px;font-weight:700;color:var(--ink-950);font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.1}
 .dualsub{font-size:11px;color:var(--ink-400);margin-top:6px;line-height:1.35}
 .dualsub.bite{color:var(--brick)}
+/* 17-11-2026 · tasación con o sin contrario (Adolfo) */
+.contraseg{display:inline-flex;border:1px solid var(--ink-200);border-radius:8px;padding:2px;gap:2px;margin:0 0 9px;background:#fff}
+.contraseg label{display:block;cursor:pointer;margin:0}
+.contraseg input{position:absolute;opacity:0;pointer-events:none}
+.contraseg span{display:block;font-size:11.5px;line-height:1;padding:6px 10px;border-radius:6px;color:var(--ink-500);white-space:nowrap}
+.contraseg input:checked+span{background:var(--ocre);color:#fff;font-weight:600}
+.contraseg input:focus-visible+span{outline:2px solid var(--ocre);outline-offset:1px}
+.contranota{font-size:11px;color:var(--ink-400);margin:-4px 0 8px;line-height:1.35}
 @media(max-width:520px){.dualwrap{grid-template-columns:1fr}}
+/* 17-11-2026 · Cálculo según baremo (tasación): cuenta a dos columnas, concepto | cifra; subtotal y total marcados */
+.cta{margin-top:12px;padding:4px 16px;border:1px solid var(--ink-200);border-radius:10px;background:var(--ink-50)}
+.cta.hidden{display:none}
+.cta-h{padding:10px 0 4px;font-size:13px;font-weight:600;color:var(--ink-900)}
+.cta-f{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:8px 0;border-top:1px solid var(--ink-200)}
+.cta-k{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:13px;color:var(--ink-700)}
+.cta-k small{font-size:12px;font-weight:400;color:var(--ink-400)}
+.cta-v{flex:none;font-size:14px;color:var(--ink-700);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.cta-f.is-cero .cta-v{color:var(--ink-300)}
+.cta-f.is-sub{border-top-color:var(--ink-400)}
+.cta-f.is-sub .cta-k,.cta-f.is-sub .cta-v{font-weight:600;color:var(--ink-950)}
+.cta-f.is-tot{margin-top:4px;padding:12px 0 8px;border-top:2px solid var(--ink-950)}
+.cta-f.is-tot .cta-k{font-size:14px;font-weight:600;color:var(--ink-950)}
+.cta-f.is-tot .cta-v{font-size:16px;font-weight:600;color:var(--ink-950)}
+.cta-f.is-tot .cta-v span{font-size:12px;font-weight:400;color:var(--ink-400)}
 .hidden{display:none!important}
 @media(max-width:1080px){.kpis{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr}}
 @media(max-width:480px){.kpi .val{font-size:21px}.kpi .val .cur{font-size:13px}}
@@ -669,10 +692,16 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
               </div>
               <div class="dualcard" id="dualCostas">
                 <div class="dualhd"><span class="duallab">Tasaci&oacute;n de costas</span><button class="dualcopy" id="copyCostas" type="button" aria-label="Copiar importe para tasación de costas">Copiar</button></div>
+                <div class="contraseg" role="radiogroup" aria-label="¿Hay parte contraria?">
+                  <label><input type="radio" name="costasContrario" id="costasSinContrario" value="no" checked><span>Sin contrario</span></label>
+                  <label><input type="radio" name="costasContrario" id="costasConContrario" value="si"><span>Con contrario</span></label>
+                </div>
+                <div class="contranota" id="contraNota">Baremo con IPC, redondeo al alza</div>
                 <div class="dualtot" id="costasTotal">&mdash;</div>
                 <div class="dualsub" id="costasSub">L&iacute;mite del tercio (art.&nbsp;394.3 LEC)</div>
               </div>
             </div>
+            <div class="cta hidden" id="ctaCostas" aria-live="polite"></div>
           </div>
         </div>
       </div>
@@ -702,6 +731,39 @@ body{font-family:var(--sans);background:var(--ink-50);color:var(--ink-900);font-
 (function(){
   function q(id){ return document.getElementById(id); }
   /* Punto de miles también en cifras de 4 dígitos (1.000,00 €): Intl 'es-ES' lo omite por la regla de mínimo de agrupación. */
+  /* 17-11-2026 · «Cálculo según baremo» de la tasación (igual que en LexArt): tramos → según baremo → +10 % o IPC → redondeo → tercio → total */
+  function pintaCuenta(R){
+    var el=document.getElementById('ctaCostas'); if(!el) return;
+    try{
+      if(!R||R.sinFases||!isFinite(R.totalCostas)){ el.innerHTML=''; el.classList.add('hidden'); return; }
+      var nu=R.nucleoCostas, e=nu&&nu.esc, baremo=R.totalCostas, inc=R.costasIPC, red=R.redondeo?R.costasRed:R.costasIPC, fin=R.baseCostas;
+      var pc=function(x){return String(x).replace('.',',');}, pcT=function(x){return (Math.round(x*10000)/100).toLocaleString('es-ES',{maximumFractionDigits:2})+' %';};
+      var eC=function(x){return eur(x).replace(',00\u00a0€','\u00a0€');}, sg=function(x){return (x<0?'− ':'+ ')+eur(Math.abs(x));};
+      var fila=function(k,sub,v,cls){return '<div class="cta-f'+(cls?' '+cls:'')+'"><span class="cta-k">'+k+(sub?'<small>'+sub+'</small>':'')+'</span><span class="cta-v">'+v+'</span></div>';};
+      var h='', hay=e&&e.total>0;
+      if(hay){
+        if(e.prev>0) h+=fila('Tramos anteriores','escala hasta '+eC(e.prevTop),eur(e.prev));
+        h+=fila(e.prev>0?'Este tramo':'Primer tramo',eC(e.tramoBase)+' × '+pc(e.tramoPct)+' %',eur(e.marginal));
+        var aj=baremo-e.total;
+        if(Math.abs(aj)>0.005){
+          var pf=nu&&nu.pctFase!=null&&nu.pctFase<0.9999?nu.pctFase:1;
+          if(nu&&nu.minDerivAplica) h+=fila('Mínimo del artículo','la escala no llega',sg(aj));
+          else if(pf<1&&Math.abs(baremo-e.total*pf)<0.01) h+=fila('Hasta dónde llegó',pcT(pf)+' de la escala',sg(aj));
+          else h+=fila('Porcentaje del artículo',pcT(baremo/e.total)+' de la escala'+(pf<1?' · fase '+pcT(pf):''),sg(aj));
+        }
+      }
+      h+=fila('Según baremo',hay?'cuantía '+eC(R.sentAplica?(R.ctx.sentenciaCuantia||0):(R.ctx.cuantia||0)):'',eur(baremo),'is-sub');
+      if(R.contrario) h+=fila('Incremento del 10 %','con contrario, sin IPC',sg(inc-baremo));
+      else if(R.aplicar) h+=fila('Actualización IPC','IPC '+pc(R.varIPC)+' %',sg(inc-baremo));
+      else h+=fila('Sin actualizar','no se aplica IPC',eur(0),'is-cero');
+      if(R.redondeo){ var baja=!!R.contrario, dr=red-inc;
+        h+=fila('Redondeo '+(baja?'a la baja':'al alza'),'múltiplo de '+(baja?(inc<=500?'25':'50'):(inc<=500?'25':inc<=2000?'50':'100'))+' €',Math.abs(dr)<0.005?eur(0):sg(dr),Math.abs(dr)<0.005?'is-cero':''); }
+      if(Math.abs(fin-red)>0.005) h+=fila('Tope de un tercio','no se puede pedir más de '+eC(fin),sg(fin-red));
+      if(R.suplidos>0) h+=fila('Suplidos','sin IPC ni IVA',eur(R.suplidos));
+      h+=fila('Total','IVA '+eur(R.ivaCostas)+' · '+eur(R.conIvaCostas)+' con IVA',eur(fin)+' <span>+ IVA</span>','is-tot');
+      el.innerHTML='<div class="cta-h">Cálculo según baremo · tasación de costas</div>'+h; el.classList.remove('hidden');
+    }catch(er){ el.innerHTML=''; el.classList.add('hidden'); }
+  }
   function eur(n){ n=isFinite(n)?n:0; var neg=n<0, t=(Math.round(Math.abs(n)*100)/100).toFixed(2).split('.'); return (neg?'-':'')+t[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+t[1]+'\u00a0€'; }
 
   
@@ -1521,7 +1583,13 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
        (topada o no) se redondean a 2 decimales, mitad hacia arriba (r2 evita el error de coma flotante);
        IVA = r2(base × 0,21); total = base + IVA + suplidos, suma de importes ya redondeados. */
     function r2(x){ return Math.round(x*100+1e-9)/100; }
-    var baseCliente=r2(redondea(clienteIPC)), costasRed=redondea(costasIPC);
+    /* CON CONTRARIO (17-11-2026, Adolfo): en la tasación de costas, si hay contrario, baremo +10 % SIN IPC y redondeo
+       A LA BAJA (múltiplo de 25 € hasta 500 €; de 50 € por encima). Sin contrario: baremo × IPC y redondeo al alza.
+       La minuta al cliente no cambia. El tope del tercio se aplica siempre (si topa, el tope exacto). */
+    var contrario=!!ctx.costasContrario;
+    function redondeaBaja(x){ if(!ctx.aplicarRedondeo || !(x>0)) return x; var paso=x<=500?25:50; return Math.floor(x/paso+1e-9)*paso; }
+    if(contrario) costasIPC=totalCostas*1.10;
+    var baseCliente=r2(redondea(clienteIPC)), costasRed=contrario ? redondeaBaja(costasIPC) : redondea(costasIPC);
 
     var cuantiaTope=(ctx.indeterminada?TOPE_INESTIMABLE:(ctx.cuantia||0)) + ((isDecl2 && ctx.reconvencion) ? (ctx.reconvModo==='cuantia'?(ctx.reconvCuantia||0):TOPE_INESTIMABLE) : 0);
     /* Catálogo: tope del tercio sobre la base del artículo (pretensión indeterminada: 24.000 €). */
@@ -1533,7 +1601,7 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
     return {ctx:ctx, nucleo:N, nucleoCostas:NC, sentAplica:sentAplica, sinFases:N.sinFases,
       totalCliente:totalCliente, totalCostas:totalCostas, salidas:salidas, suplidos:suplidos,
       pluralCliente:pc.detalle, pluralCostas:pk.detalle,
-      aplicar:aplicar, varIPC:varIPC, redondeo:!!ctx.aplicarRedondeo,
+      aplicar:aplicar, varIPC:varIPC, redondeo:!!ctx.aplicarRedondeo, contrario:contrario,
       clienteIPC:clienteIPC, costasIPC:costasIPC, baseCliente:baseCliente, costasRed:costasRed,
       cuantiaTope:cuantiaTope, lim:lim, vencedores:vencedores, limTotal:lim*vencedores,
       muerde:muerde, baseCostas:baseCostas, recorte:recorte,
@@ -1903,6 +1971,7 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
       plurVencedores:ent('plurVencedores',1), plurContrarios:ent('plurContrarios',1),
       recRev:ent('recRev',0), recRepo:ent('recRepo',0), recQueja:ent('recQueja',0),
       aplicarIPC:chk('aplicarIPC'), ipcManual:parseFloat((ipcRaw+'').replace(',','.')), aplicarRedondeo:chk('aplicarRedondeo'),
+      costasContrario:chk('costasConContrario'),   /* 17-11-2026: tasación con contrario */
       desOposicion:chk('desOposicion'), reclRentas:chk('reclRentas'), enerv:chk('enerv'), desOrdinario:chk('desOrdinario'),
       ejPre:chk('ejPre'), ejOpo:chk('ejOpo'), ejEmb:chk('ejEmb'), ejSub:chk('ejSub'),
       apelVista:chk('apelVista'), apelPrueba:chk('apelPrueba'),
@@ -1941,6 +2010,7 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
     refreshSubopts();
     var ctx=leer();
     var R=calcularHonorarios(ctx), N=R.nucleo;
+    pintaCuenta(R);
 
     /* Criterio + articulo (VERBATIM NORMAS) */
     var norma=NORMAS[ctx.subtipo]; var numero=(norma&&norma.numero)||'—'; var extracto=(norma&&norma.extracto)||'';
@@ -1996,6 +2066,7 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
     if(q('clienteSub'))   q('clienteSub').textContent   = 'Sin tope · '+eur(R.baseCliente)+' + IVA'+sup;
     if(q('costasTotal'))  q('costasTotal').textContent  = eur(R.conIvaCostas);
     var costasSub=q('costasSub');
+    if(q('contraNota')) q('contraNota').textContent = R.contrario ? 'Baremo +10 % sin IPC, redondeo a la baja' : 'Baremo con IPC, redondeo al alza';
     if(costasSub){
       var porV = R.vencedores>1 ? ' · por cada vencedor' : '';
       if(R.muerde){ costasSub.classList.add('bite'); costasSub.textContent = 'Topado a 1/3 (art. 394.3 LEC): −'+eur(R.recorte)+' · '+eur(R.baseCostas)+' + IVA'+sup+porV; }
@@ -2062,8 +2133,9 @@ var CATALOGO = [{"id":"a1","art":"Art. 1","cap":"Arbitraje","titulo":"Arbitraje 
       L.push('Base: '+eur(R.baseCliente)+'  ·  IVA (21 %): '+eur(R.ivaCliente)+'  ·  TOTAL: '+eur(R.conIvaCliente));
       if(R.suplidos>0) L.push('Suplidos (sin IPC ni IVA): '+eur(R.suplidos)+' — incluidos en el total');
       L.push('');
-      L.push('— TASACIÓN DE COSTAS (límite del tercio, art. 394.3 LEC) —');
-      if(Math.abs(R.totalCostas-R.totalCliente)>0.005) L.push('Base baremo para costas: '+eur(R.totalCostas)+(R.redondeo||R.aplicar?' → con IPC y redondeo: '+eur(R.costasRed):''));
+      L.push('— TASACIÓN DE COSTAS (límite del tercio, art. 394.3 LEC)'+(R.contrario?' · CON CONTRARIO':' · SIN CONTRARIO')+' —');
+      if(R.contrario) L.push('Base baremo para costas: '+eur(R.totalCostas)+' → +10 % sin IPC: '+eur(R.costasIPC)+(R.redondeo?' → a la baja: '+eur(R.costasRed):''));
+      else if(Math.abs(R.totalCostas-R.totalCliente)>0.005) L.push('Base baremo para costas: '+eur(R.totalCostas)+(R.redondeo||R.aplicar?' → con IPC y redondeo: '+eur(R.costasRed):''));
       L.push('Límite del tercio (cuantía/3'+(R.vencedores>1?', por cada uno de los '+R.vencedores+' vencedores':'')+'): '+eur(R.lim));
       if(R.muerde) L.push('Recorte por el tope: −'+eur(R.recorte));
       L.push('Base: '+eur(R.baseCostas)+'  ·  IVA (21 %): '+eur(R.ivaCostas)+'  ·  TOTAL: '+eur(R.conIvaCostas));
